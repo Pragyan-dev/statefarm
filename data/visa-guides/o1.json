@@ -1,0 +1,74 @@
+{
+  "visa": "O1",
+  "title": {
+    "en": "O1 Visa Holder - Your first 30 days",
+    "es": "Titular de visa O1 - Tus primeros 30 dias"
+  },
+  "steps": [
+    {
+      "week": 1,
+      "step": {
+        "en": "Confirm the petition details",
+        "es": "Confirma los detalles de la peticion"
+      },
+      "details": {
+        "en": "Match your work plans to the employer or agent structure listed in the petition before you start side work.",
+        "es": "Alinea tu plan de trabajo con el empleador o agente listado en la peticion antes de empezar trabajos paralelos."
+      },
+      "docs": ["Passport", "I-797", "I-94"],
+      "link": null
+    },
+    {
+      "week": 1,
+      "step": {
+        "en": "Apply for your SSN",
+        "es": "Solicita tu SSN"
+      },
+      "details": {
+        "en": "Bring passport, I-797, I-94, and a current employer or agent support letter.",
+        "es": "Lleva pasaporte, I-797, I-94 y una carta actual del empleador o agente."
+      },
+      "docs": ["Passport", "I-797", "I-94", "Employer letter"],
+      "link": "https://www.ssa.gov"
+    },
+    {
+      "week": 2,
+      "step": {
+        "en": "Protect the tools you work with",
+        "es": "Protege las herramientas con las que trabajas"
+      },
+      "details": {
+        "en": "If your work depends on gear, computers, or a car, insure them early so one claim does not stop your income.",
+        "es": "Si tu trabajo depende de equipo, computadoras o auto, asegurarlos pronto evita que un siniestro frene tus ingresos."
+      },
+      "docs": ["Equipment list", "Lease", "Driver's license"],
+      "link": "https://www.statefarm.com"
+    },
+    {
+      "week": 3,
+      "step": {
+        "en": "Map every employer relationship",
+        "es": "Mapea cada relacion laboral"
+      },
+      "details": {
+        "en": "Each employer or gig structure may need to fit the petition terms. Document who pays you and why.",
+        "es": "Cada empleador o estructura de trabajo debe ajustarse a la peticion. Documenta quien te paga y por que."
+      },
+      "docs": ["Contracts", "Deal memos"],
+      "link": null
+    },
+    {
+      "week": 4,
+      "step": {
+        "en": "Plan changes before changing jobs",
+        "es": "Planea cambios antes de cambiar de trabajo"
+      },
+      "details": {
+        "en": "A new employer often requires a new filing. Treat job changes as immigration events, not simple admin work.",
+        "es": "Un nuevo empleador suele requerir una nueva presentacion. Trata los cambios de trabajo como eventos migratorios, no como simple administracion."
+      },
+      "docs": ["New offer details"],
+      "link": null
+    }
+  ]
+}

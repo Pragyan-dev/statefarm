@@ -1,0 +1,34 @@
+{
+  "AZ": {
+    "rentersMonthly": 17,
+    "autoLiability": 89,
+    "autoFull": 156,
+    "medicalMonthly": 200,
+    "noAutoFine": 500,
+    "licenseSuspensionDays": 90
+  },
+  "CA": {
+    "rentersMonthly": 20,
+    "autoLiability": 105,
+    "autoFull": 183,
+    "medicalMonthly": 225,
+    "noAutoFine": 450,
+    "licenseSuspensionDays": 0
+  },
+  "TX": {
+    "rentersMonthly": 18,
+    "autoLiability": 94,
+    "autoFull": 162,
+    "medicalMonthly": 210,
+    "noAutoFine": 350,
+    "licenseSuspensionDays": 0
+  },
+  "NY": {
+    "rentersMonthly": 22,
+    "autoLiability": 120,
+    "autoFull": 198,
+    "medicalMonthly": 240,
+    "noAutoFine": 150,
+    "licenseSuspensionDays": 0
+  }
+}

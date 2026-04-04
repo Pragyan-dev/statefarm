@@ -1,0 +1,22 @@
+{
+  "AZ": {
+    "autoNeedsSsn": false,
+    "acceptsItin": true,
+    "undocumentedLicense": false
+  },
+  "CA": {
+    "autoNeedsSsn": false,
+    "acceptsItin": true,
+    "undocumentedLicense": true
+  },
+  "TX": {
+    "autoNeedsSsn": false,
+    "acceptsItin": true,
+    "undocumentedLicense": false
+  },
+  "NY": {
+    "autoNeedsSsn": false,
+    "acceptsItin": true,
+    "undocumentedLicense": true
+  }
+}

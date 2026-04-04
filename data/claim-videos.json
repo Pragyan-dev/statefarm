@@ -1,0 +1,32 @@
+{
+  "auto_accident": [
+    {
+      "title": "What to do after a car accident",
+      "youtubeId": "vM5GqNfFQ8k"
+    },
+    {
+      "title": "How an auto insurance claim works",
+      "youtubeId": "wp4V8O2cV4M"
+    }
+  ],
+  "renters_claim": [
+    {
+      "title": "How renters insurance claims work",
+      "youtubeId": "gA1JwEjVZ0Y"
+    }
+  ],
+  "theft": [
+    {
+      "title": "Filing a theft claim with your insurance",
+      "youtubeId": "j7vBWfV0n7o"
+    }
+  ],
+  "statefarmLinks": {
+    "fileClaim": "https://www.statefarm.com/claims",
+    "autoClaims": "https://www.statefarm.com/claims/auto",
+    "homeClaims": "https://www.statefarm.com/claims/home-and-property",
+    "phone": "800-732-5246",
+    "appIos": "https://apps.apple.com/app/state-farm/id318211833",
+    "appAndroid": "https://play.google.com/store/apps/details?id=com.statefarm.pocketagent"
+  }
+}

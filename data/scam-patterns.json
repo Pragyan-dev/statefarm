@@ -1,0 +1,50 @@
+[
+  {
+    "pattern": "immigration insurance",
+    "flag": "SCAM",
+    "explanation": {
+      "en": "There is no such thing as immigration insurance. The government does not sell insurance by phone.",
+      "es": "No existe algo llamado seguro migratorio. El gobierno no vende seguros por telefono."
+    }
+  },
+  {
+    "pattern": "pay now or lose visa",
+    "flag": "SCAM",
+    "explanation": {
+      "en": "No insurer can change your visa status. This is a pressure tactic.",
+      "es": "Ninguna aseguradora puede cambiar tu visa. Es una tactica de presion."
+    }
+  },
+  {
+    "pattern": "apr over 20%",
+    "flag": "PREDATORY",
+    "explanation": {
+      "en": "Financing insurance above 20% APR is predatory. Typical rates are much lower.",
+      "es": "Financiar el seguro por arriba de 20% APR es depredador. Las tasas normales son mucho menores."
+    }
+  },
+  {
+    "pattern": "no paperwork needed",
+    "flag": "WARNING",
+    "explanation": {
+      "en": "Legitimate insurance always requires documentation. No paperwork usually means no real policy.",
+      "es": "El seguro legitimo siempre pide documentos. Sin papeles suele significar que no hay poliza real."
+    }
+  },
+  {
+    "pattern": "wire transfer only",
+    "flag": "SCAM",
+    "explanation": {
+      "en": "Wire-only payment is a common scam indicator. Legitimate insurers accept safer payment methods.",
+      "es": "Pedir solo transferencia es una senal comun de estafa. Las aseguradoras legitimas aceptan pagos mas seguros."
+    }
+  },
+  {
+    "pattern": "guaranteed approval no questions",
+    "flag": "WARNING",
+    "explanation": {
+      "en": "Real insurers ask basic questions. Guaranteed approval with no review is suspicious.",
+      "es": "Las aseguradoras reales hacen preguntas basicas. Aprobacion garantizada sin revision es sospechoso."
+    }
+  }
+]

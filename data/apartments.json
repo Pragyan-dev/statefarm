@@ -1,0 +1,121 @@
+{
+  "85281": {
+    "city": "Tempe",
+    "state": "AZ",
+    "topRisks": [
+      {
+        "en": "Flash flood",
+        "es": "Inundacion repentina"
+      },
+      {
+        "en": "Extreme heat",
+        "es": "Calor extremo"
+      },
+      {
+        "en": "Dust storm",
+        "es": "Tormenta de polvo"
+      }
+    ],
+    "avgRenters": 17,
+    "apartments": [
+      {
+        "name": "The Vue on Mill",
+        "address": "411 S Mill Ave",
+        "rentRange": "$1,100 - $1,400",
+        "beds": "1-2 BR",
+        "estimate": 17
+      },
+      {
+        "name": "University House",
+        "address": "525 S Forest Ave",
+        "rentRange": "$900 - $1,200",
+        "beds": "Studio-2 BR",
+        "estimate": 15
+      },
+      {
+        "name": "Vela on the Park",
+        "address": "601 S Smith Rd",
+        "rentRange": "$1,300 - $1,800",
+        "beds": "1-3 BR",
+        "estimate": 19
+      },
+      {
+        "name": "Ten01 on the Lake",
+        "address": "1001 E Playa Del Norte",
+        "rentRange": "$1,400 - $2,100",
+        "beds": "1-3 BR",
+        "estimate": 21
+      }
+    ]
+  },
+  "78705": {
+    "city": "Austin",
+    "state": "TX",
+    "topRisks": [
+      {
+        "en": "Hail",
+        "es": "Granizo"
+      },
+      {
+        "en": "Windstorm",
+        "es": "Tormenta de viento"
+      },
+      {
+        "en": "Pipe leaks",
+        "es": "Fugas de tuberia"
+      }
+    ],
+    "avgRenters": 18,
+    "apartments": [
+      {
+        "name": "West Campus Lofts",
+        "address": "2401 Rio Grande St",
+        "rentRange": "$1,050 - $1,420",
+        "beds": "Studio-2 BR",
+        "estimate": 18
+      },
+      {
+        "name": "Pecan Square",
+        "address": "2215 Nueces St",
+        "rentRange": "$1,100 - $1,500",
+        "beds": "1-2 BR",
+        "estimate": 19
+      }
+    ]
+  },
+  "10027": {
+    "city": "New York",
+    "state": "NY",
+    "topRisks": [
+      {
+        "en": "Water damage",
+        "es": "Dano por agua"
+      },
+      {
+        "en": "Theft",
+        "es": "Robo"
+      },
+      {
+        "en": "Winter pipe burst",
+        "es": "Tuberias reventadas en invierno"
+      }
+    ],
+    "avgRenters": 22,
+    "apartments": [
+      {
+        "name": "Morningside House",
+        "address": "308 W 113th St",
+        "rentRange": "$1,600 - $2,100",
+        "beds": "Studio-2 BR",
+        "estimate": 23
+      },
+      {
+        "name": "Lenox Terrace",
+        "address": "480 Malcolm X Blvd",
+        "rentRange": "$1,850 - $2,400",
+        "beds": "1-2 BR",
+        "estimate": 24
+      }
+    ]
+  }
+}

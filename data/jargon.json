@@ -1,0 +1,22 @@
+{
+  "deductible": {
+    "en": "The amount you pay first before insurance starts paying.",
+    "es": "La cantidad que pagas primero antes de que el seguro empiece a pagar."
+  },
+  "liability": {
+    "en": "Coverage for damage or injuries you cause to other people.",
+    "es": "Cobertura por danos o lesiones que causes a otras personas."
+  },
+  "premium": {
+    "en": "The amount you pay every month or year to keep the policy active.",
+    "es": "La cantidad que pagas cada mes o ano para mantener activa la poliza."
+  },
+  "exclusion": {
+    "en": "A situation or item your policy does not cover.",
+    "es": "Una situacion o articulo que tu poliza no cubre."
+  },
+  "copay": {
+    "en": "A fixed amount you pay for a medical visit or service.",
+    "es": "Una cantidad fija que pagas por una visita o servicio medico."
+  }
+}

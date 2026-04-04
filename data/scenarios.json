@@ -1,0 +1,126 @@
+[
+  {
+    "id": "car_accident",
+    "title": {
+      "en": "Car accident with no insurance",
+      "es": "Choque de auto sin seguro"
+    },
+    "appliesIf": "drives",
+    "without": {
+      "total": 4200,
+      "headline": {
+        "en": "One fender bender becomes a job crisis.",
+        "es": "Un choque pequeno se convierte en una crisis laboral."
+      },
+      "narrative": {
+        "en": "You get pulled over after a fender bender. No insurance. A $500 fine. Your license is suspended for 90 days. You cannot drive to work. The repair bill lands before your next paycheck.",
+        "es": "La policia te detiene despues de un choque leve. No tienes seguro. Llega una multa de $500. Tu licencia queda suspendida por 90 dias. No puedes manejar al trabajo. La reparacion llega antes de tu proximo sueldo."
+      }
+    },
+    "with": {
+      "annual": 1568,
+      "outOfPocket": 500,
+      "headline": {
+        "en": "Insurance keeps the emergency small.",
+        "es": "El seguro mantiene pequena la emergencia."
+      },
+      "narrative": {
+        "en": "You pay your deductible. Insurance covers the rest. You keep driving, keep working, and recover faster.",
+        "es": "Pagas tu deducible. El seguro cubre lo demas. Sigues manejando, sigues trabajando y te recuperas mas rapido."
+      }
+    }
+  },
+  {
+    "id": "apartment_flood",
+    "title": {
+      "en": "Apartment pipes burst",
+      "es": "Se revientan las tuberias del apartamento"
+    },
+    "appliesIf": "rents",
+    "without": {
+      "total": 3100,
+      "headline": {
+        "en": "One night of water damage wipes out your setup.",
+        "es": "Una noche de agua arruina todo lo que tienes."
+      },
+      "narrative": {
+        "en": "Pipes burst at 2am. Your laptop, clothes, and immigration documents are soaked. Replacing everything costs about $3,100 when you are still settling in.",
+        "es": "Las tuberias revientan a las 2 de la manana. Tu laptop, ropa y documentos migratorios quedan empapados. Reemplazar todo cuesta unos $3,100 cuando apenas te estas estableciendo."
+      }
+    },
+    "with": {
+      "annual": 454,
+      "outOfPocket": 250,
+      "headline": {
+        "en": "Renter's insurance turns panic into paperwork.",
+        "es": "El seguro de inquilino convierte el panico en tramite."
+      },
+      "narrative": {
+        "en": "You call the insurer, document the damage, and pay a $250 deductible. Coverage replaces most of what you lost.",
+        "es": "Llamas a la aseguradora, documentas el dano y pagas un deducible de $250. La cobertura reemplaza casi todo lo perdido."
+      }
+    }
+  },
+  {
+    "id": "theft",
+    "title": {
+      "en": "Apartment break-in",
+      "es": "Robo en el apartamento"
+    },
+    "appliesIf": "rents",
+    "without": {
+      "total": 2500,
+      "headline": {
+        "en": "A stolen laptop can stall work, school, and visa paperwork.",
+        "es": "Una laptop robada puede frenar trabajo, escuela y tramites."
+      },
+      "narrative": {
+        "en": "Someone breaks in while you are at class. Your laptop, phone, and cash are gone. You replace everything yourself and scramble to secure the apartment.",
+        "es": "Alguien entra mientras estas en clase. Tu laptop, telefono y efectivo desaparecen. Tienes que reemplazar todo por tu cuenta y asegurar el apartamento."
+      }
+    },
+    "with": {
+      "annual": 454,
+      "outOfPocket": 250,
+      "headline": {
+        "en": "A police report plus coverage gets you moving again.",
+        "es": "Un reporte policial mas cobertura te ayuda a seguir."
+      },
+      "narrative": {
+        "en": "You file a police report, call your insurer, and replace the stolen essentials after the deductible.",
+        "es": "Presentas un reporte policial, llamas al seguro y reemplazas lo esencial despues del deducible."
+      }
+    }
+  },
+  {
+    "id": "er_visit",
+    "title": {
+      "en": "Emergency room visit",
+      "es": "Visita a emergencias"
+    },
+    "appliesIf": "always",
+    "without": {
+      "total": 4700,
+      "headline": {
+        "en": "A medical emergency becomes debt in one weekend.",
+        "es": "Una emergencia medica se convierte en deuda en un fin de semana."
+      },
+      "narrative": {
+        "en": "Appendicitis sends you to the ER. The bill, medication, and follow-up add up to about $4,700. Collections calls can start fast.",
+        "es": "Una apendicitis te manda a emergencias. La cuenta, la medicina y el seguimiento suman unos $4,700. Las llamadas de cobranza pueden empezar rapido."
+      }
+    },
+    "with": {
+      "annual": 2650,
+      "outOfPocket": 250,
+      "headline": {
+        "en": "Insurance lets you focus on getting better.",
+        "es": "El seguro te deja concentrarte en recuperarte."
+      },
+      "narrative": {
+        "en": "You show your insurance card, pay a manageable copay, and let coverage handle the rest.",
+        "es": "Muestras tu tarjeta de seguro, pagas un copago manejable y dejas que la cobertura haga el resto."
+      }
+    }
+  }
+]
