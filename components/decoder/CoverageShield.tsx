@@ -187,6 +187,8 @@ function ShieldDetail({
 }) {
   const isSpanish = language === "es";
   const tip = getSegmentTip(segment.key, language);
+  const actionClass =
+    "inline-flex min-h-[3.1rem] items-center justify-center rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
 
   return (
     <div className="grid gap-4">
@@ -237,8 +239,8 @@ function ShieldDetail({
           {segment.gap ? (
             <>
               <p className="text-sm text-[var(--color-muted)]">{segment.gap.description}</p>
-              <div className="rounded-[1rem] bg-[var(--color-ink)] px-4 py-4 text-[var(--color-paper)]">
-                <p className="text-sm">{segment.gap.scenario}</p>
+              <div className="decoder-risk-panel rounded-[1rem] px-4 py-4 text-[var(--color-paper)]">
+                <p className="text-sm text-[rgba(255,247,239,0.88)]">{segment.gap.scenario}</p>
                 <p className="mt-3 text-2xl font-bold text-[#FFB4A8]">
                   {formatCurrency(segment.gap.estimatedRisk, language)}
                 </p>
@@ -255,7 +257,7 @@ function ShieldDetail({
           <button
             type="button"
             onClick={onFixGap}
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-[var(--color-accent)] px-4 text-sm font-semibold text-[var(--color-paper)]"
+            className={actionClass}
           >
             {isSpanish ? "Arreglar esta brecha" : "Fix this gap"}
           </button>

@@ -35,6 +35,10 @@ export function UploadZone({
   const [dragActive, setDragActive] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const primaryActionClass =
+    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-60";
+  const secondaryActionClass =
+    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/80 px-5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px hover:bg-white";
 
   function handleFiles(fileList: FileList | null) {
     const nextFile = fileList?.[0];
@@ -58,45 +62,60 @@ export function UploadZone({
   if (selectedDocument) {
     return (
       <section className="panel-card mx-auto w-full max-w-[34rem] overflow-hidden">
-        <div className="grid gap-4">
-          <DocumentPreview
-            src={selectedDocument.previewSrc}
-            kind={selectedDocument.kind}
-            name={selectedDocument.name}
-            className="mx-auto h-[19rem] w-full max-w-[17.5rem]"
-          />
-
-          <div className="text-center">
-            <p className="font-semibold text-[var(--color-ink)]">{selectedDocument.name}</p>
-            <p className="mt-1 text-sm text-[var(--color-muted)]">{selectedDocument.sizeLabel}</p>
+        <div className="grid gap-5">
+          <div className="rounded-[1.85rem] border border-[rgba(17,24,39,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.8),rgba(251,246,239,0.95))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+            <DocumentPreview
+              src={selectedDocument.previewSrc}
+              kind={selectedDocument.kind}
+              name={selectedDocument.name}
+              className="mx-auto h-[19rem] w-full max-w-[17.5rem]"
+            />
           </div>
 
-          <button
-            type="button"
-            onClick={onAnalyze}
-            disabled={disabled}
-            className="min-h-12 w-full rounded-[1.25rem] bg-[var(--color-ink)] px-4 text-sm font-semibold text-[var(--color-paper)] transition hover:opacity-92 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isSpanish ? "Analizar poliza" : "Analyze policy"}
-          </button>
+          <div className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/60 px-4 py-4 text-center shadow-[0_10px_24px_rgba(17,24,39,0.05)]">
+            <p className="eyebrow">{isSpanish ? "Documento listo" : "Document ready"}</p>
+            <p className="mt-2 font-semibold text-[var(--color-ink)]">{selectedDocument.name}</p>
+            <p className="mt-1 text-sm text-[var(--color-muted)]">{selectedDocument.sizeLabel}</p>
+            <p className="mt-3 text-sm text-[var(--color-muted)]">
+              {isSpanish
+                ? "Escanearemos limites, deducible y brechas de cobertura."
+                : "We’ll scan limits, deductible, and coverage gaps."}
+            </p>
+          </div>
 
-          <div className="flex items-center justify-center gap-4 text-sm">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={onAnalyze}
+              disabled={disabled}
+              className={primaryActionClass}
+            >
+              <FileText className="size-4" />
+              {isSpanish ? "Analizar poliza" : "Analyze policy"}
+            </button>
             <button
               type="button"
               onClick={onReset}
-              className="inline-flex items-center gap-2 font-medium text-[var(--color-muted)] underline-offset-4 hover:text-[var(--color-ink)] hover:underline"
+              className={secondaryActionClass}
             >
               <RefreshCcw className="size-4" />
               {isSpanish ? "Cambiar archivo" : "Change file"}
             </button>
-            {!selectedDocument.isSample ? (
-              <button
-                type="button"
-                onClick={onUseSample}
-                className="font-medium text-[var(--color-accent)] underline-offset-4 hover:underline"
-              >
-                {isSpanish ? "Usar poliza de muestra" : "Use sample policy"}
-              </button>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+            <button
+              type="button"
+              onClick={onUseSample}
+              className="inline-flex items-center gap-2 rounded-full border border-[rgba(212,96,58,0.16)] bg-[rgba(212,96,58,0.08)] px-4 py-2 font-medium text-[var(--color-accent)] transition hover:bg-[rgba(212,96,58,0.12)]"
+            >
+              <ImageUp className="size-4" />
+              {isSpanish ? "Usar poliza de muestra" : "Use sample policy"}
+            </button>
+            {selectedDocument.isSample ? (
+              <span className="inline-flex items-center rounded-full border border-[var(--color-border)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)]">
+                {isSpanish ? "Demo activa" : "Demo active"}
+              </span>
             ) : null}
           </div>
         </div>
@@ -158,7 +177,7 @@ export function UploadZone({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[1.25rem] bg-[var(--color-ink)] px-4 text-sm font-semibold text-[var(--color-paper)] shadow-[0_12px_24px_rgba(17,24,39,0.14)]"
+            className={primaryActionClass}
           >
             <Upload className="size-4" />
             {isSpanish ? "Subir archivo" : "Upload file"}

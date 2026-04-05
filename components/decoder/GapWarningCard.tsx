@@ -33,6 +33,8 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
   const styles = SEVERITY_STYLES[gap.severity];
+  const actionClass =
+    "inline-flex min-h-[3.1rem] items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
 
   return (
     <article
@@ -69,9 +71,22 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
 
       <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">{gap.description}</p>
 
-      <div className="mt-4 rounded-[1.25rem] bg-[var(--color-ink)] px-4 py-4 text-[var(--color-paper)]">
-        <p className="text-sm leading-6">⚠️ {gap.scenario}</p>
-        <p className="mt-3 font-display text-3xl leading-none text-[#FFB4A8]">
+      <div className="decoder-risk-panel mt-4 rounded-[1.25rem] px-4 py-4 text-[var(--color-paper)]">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <p className="max-w-[34ch] text-sm leading-6 text-[rgba(255,247,239,0.88)]">
+            ⚠️ {gap.scenario}
+          </p>
+          <div className="rounded-full bg-[rgba(255,180,168,0.12)] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[#FFB4A8]">
+            {gap.severity === "high"
+              ? isSpanish
+                ? "Golpe grande"
+                : "Big hit"
+              : isSpanish
+                ? "Riesgo real"
+                : "Real risk"}
+          </div>
+        </div>
+        <p className="mt-4 font-display text-3xl leading-none text-[#FFB4A8]">
           {formatCurrency(gap.estimatedRisk, settings.language)}
         </p>
       </div>
@@ -79,7 +94,7 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
       <button
         type="button"
         onClick={onFixGap}
-        className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--color-accent)] px-4 text-sm font-semibold text-[var(--color-paper)]"
+        className={`${actionClass} mt-4`}
       >
         {isSpanish ? "Arreglar esta brecha" : "Fix this gap"}
         <ArrowRight className="size-4" />

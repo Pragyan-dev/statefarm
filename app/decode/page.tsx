@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowRight, RefreshCcw } from "lucide-react";
 
@@ -22,9 +21,9 @@ import { useViewMode } from "@/hooks/useViewMode";
 import type { DecoderAnalysisResponse } from "@/types/policy";
 
 type DecodePhase = "upload" | "scanning" | "results";
+const STATE_FARM_COVERAGE_URL = "https://www.statefarm.com/insurance";
 
 export default function DecodePage() {
-  const router = useRouter();
   const { settings } = useAccessibility();
   const { resolvedMode } = useViewMode();
   const isSpanish = settings.language === "es";
@@ -35,6 +34,10 @@ export default function DecodePage() {
   const [progress, setProgress] = useState(0);
   const [scanVisualComplete, setScanVisualComplete] = useState(false);
   const isWebsite = resolvedMode === "website";
+  const primaryActionClass =
+    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
+  const secondaryActionClass =
+    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/80 px-5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px hover:bg-white";
 
   const narration = useMemo(() => {
     if (!analysis) {
@@ -189,6 +192,10 @@ export default function DecodePage() {
     }
   }
 
+  function goToStateFarmCoverage() {
+    window.location.assign(STATE_FARM_COVERAGE_URL);
+  }
+
   return (
     <div className={`py-6 lg:py-10 ${isWebsite ? "mx-auto max-w-[68rem]" : ""}`}>
       <section className="panel-card hero-ambient overflow-hidden">
@@ -252,9 +259,7 @@ export default function DecodePage() {
           <StaggeredFadeIn delay={600} immediate={settings.reducedMotion}>
             <CoverageShield
               analysis={analysis}
-              onFixGap={() => {
-                router.push("/coverage");
-              }}
+              onFixGap={goToStateFarmCoverage}
             />
           </StaggeredFadeIn>
 
@@ -274,9 +279,7 @@ export default function DecodePage() {
               >
                 <GapWarningCard
                   gap={gap}
-                  onFixGap={() => {
-                    router.push("/coverage");
-                  }}
+                  onFixGap={goToStateFarmCoverage}
                 />
               </StaggeredFadeIn>
             ))}
@@ -288,15 +291,12 @@ export default function DecodePage() {
                 <button
                   type="button"
                   onClick={resetDecoder}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white px-5 text-sm font-semibold text-[var(--color-ink)]"
+                  className={secondaryActionClass}
                 >
                   <RefreshCcw className="size-4" />
                   {isSpanish ? "Subir otra poliza" : "Upload another policy"}
                 </button>
-                <Link
-                  href="/coverage"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)]"
-                >
+                <Link href={STATE_FARM_COVERAGE_URL} className={primaryActionClass}>
                   {isSpanish ? "Conseguir mejor cobertura" : "Get better coverage"}
                   <ArrowRight className="size-4" />
                 </Link>
