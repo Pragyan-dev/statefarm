@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  BadgeAlert,
   BookOpen,
   Home,
   PhoneCall,
@@ -12,6 +11,7 @@ import {
   Settings2,
   Shield,
   Sparkles,
+  WalletCards,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -44,12 +44,12 @@ export function AppShell({
 
   const websiteNav = [
     { href: "/dashboard", label: t("dashboard"), icon: Home },
+    { href: "/newcomer-guide", label: t("newcomerGuide"), icon: BookOpen },
     { href: "/simulate", label: t("shockSimulator"), icon: Sparkles },
     { href: "/coverage", label: t("coverage"), icon: Shield },
-    { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
-    { href: "/newcomer-guide", label: t("newcomerGuide"), icon: BookOpen },
     { href: "/decode", label: t("policyDecoder"), icon: ScanSearch },
-    { href: "/scam", label: t("scamChecker"), icon: BadgeAlert },
+    { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
+    { href: "/afford", label: t("dashboardBudgetTitle"), icon: WalletCards },
   ];
 
   useEffect(() => {

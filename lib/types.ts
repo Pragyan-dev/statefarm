@@ -111,18 +111,6 @@ export interface ClaimGuideResult {
   fallbackReason?: string;
 }
 
-export type ScamFlag = "SCAM" | "PREDATORY" | "WARNING" | "SAFE";
-
-export interface ScamVerdictResult {
-  verdict: ScamFlag;
-  explanation: string;
-  reasons: string[];
-  matchedPattern?: string;
-  demoMode?: boolean;
-  aiSource?: "openrouter" | "local";
-  fallbackReason?: string;
-}
-
 export interface NewcomerGuideStep {
   week: number;
   step: LocalizedText;
