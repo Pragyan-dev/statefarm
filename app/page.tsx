@@ -75,7 +75,7 @@ export default function Home() {
         </div>
 
         <div className="grid gap-6">
-          <section className="panel-card bg-[linear-gradient(180deg,rgba(212,96,58,0.1),rgba(255,255,255,0.8))]">
+          <section className="panel-card bg-[linear-gradient(180deg,var(--color-accent-wash),rgba(255,255,255,0.82))]">
             <p className="eyebrow">{t("homeWhyNow")}</p>
             <h2 className="font-display text-3xl text-[var(--color-ink)]">
               {t("homeWhyNowTitle")}
@@ -93,7 +93,7 @@ export default function Home() {
                 return (
                   <div
                     key={feature.title}
-                    className="rounded-[1.75rem] border border-[var(--color-border)] px-4 py-4"
+                    className="rounded-[1.75rem] border border-[var(--color-border)] px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>

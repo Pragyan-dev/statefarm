@@ -135,7 +135,7 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <section className="panel-card">
+        <section className="panel-card bg-[linear-gradient(180deg,rgba(255,250,249,0.96),rgba(251,246,239,0.96))]">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="eyebrow">{t("dashboardFastFact")}</p>
@@ -161,7 +161,7 @@ export default function DashboardPage() {
                 <Link
                   key={card.href}
                   href={card.href}
-                  className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-paper)]"
+                  className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>

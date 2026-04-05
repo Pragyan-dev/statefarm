@@ -65,7 +65,7 @@ export function CoverageMap({
           radius={11}
           pathOptions={{
             color: "#111827",
-            fillColor: "#D4603A",
+            fillColor: "#C63D36",
             fillOpacity: 0.95,
             weight: 3,
           }}

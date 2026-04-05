@@ -45,7 +45,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[430px] border-t border-white/10 bg-[rgb(8_10_18_/_0.86)] px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl"
+      className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[430px] border-t border-[var(--color-accent-glow)] bg-[linear-gradient(180deg,rgba(32,11,15,0.9),rgba(19,8,12,0.96))] px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl"
     >
       <ul className="grid grid-cols-6 gap-2">
         {items.map((item) => {
@@ -59,8 +59,8 @@ export function BottomNav() {
                 aria-current={active ? "page" : undefined}
                 className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-2xl text-[11px] font-medium ${
                   active
-                    ? "bg-white/12 text-white"
-                    : "text-white/65 hover:bg-white/5 hover:text-white"
+                    ? "bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_var(--color-accent-glow)]"
+                    : "text-white/68 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <Icon className="size-4" />

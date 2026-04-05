@@ -193,7 +193,7 @@ export default function CoveragePage() {
           </h1>
           <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">{heroCopy}</p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            <div className="rounded-full bg-[#FFF2E7] px-4 py-2 text-sm font-semibold text-[var(--color-accent)]">
+            <div className="rounded-full bg-[var(--color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--color-accent)]">
               {zipData.city}, {zipData.state} {activeZip}
             </div>
             <div className="rounded-full border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-muted)]">
