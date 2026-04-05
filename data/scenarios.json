@@ -62,6 +62,37 @@
     }
   },
   {
+    "id": "kitchen_fire",
+    "title": {
+      "en": "Small kitchen fire",
+      "es": "Pequeno incendio en la cocina"
+    },
+    "appliesIf": "rents",
+    "without": {
+      "total": 4100,
+      "headline": {
+        "en": "Smoke and cleanup costs get expensive fast.",
+        "es": "El humo y la limpieza se vuelven caros muy rapido."
+      },
+      "narrative": {
+        "en": "A pan flare-up leaves smoke damage across your kitchen, clothes, and bag. Hotel nights and cleanup charges pile on after the panic ends.",
+        "es": "Un sarten se prende y deja dano por humo en tu cocina, ropa y mochila. Las noches de hotel y la limpieza se acumulan despues del susto."
+      }
+    },
+    "with": {
+      "annual": 454,
+      "outOfPocket": 250,
+      "headline": {
+        "en": "Coverage turns a bad night into a claim.",
+        "es": "La cobertura convierte una mala noche en un reclamo."
+      },
+      "narrative": {
+        "en": "You report it fast, pay the deductible, and let renter's coverage handle most of the replacement and temporary stay costs.",
+        "es": "Lo reportas rapido, pagas el deducible y dejas que el seguro de inquilino cubra la mayor parte del reemplazo y la estancia temporal."
+      }
+    }
+  },
+  {
     "id": "theft",
     "title": {
       "en": "Apartment break-in",
@@ -93,6 +124,37 @@
     }
   },
   {
+    "id": "parking_lot_hit",
+    "title": {
+      "en": "Parking lot hit-and-run",
+      "es": "Choque y fuga en el estacionamiento"
+    },
+    "appliesIf": "drives",
+    "without": {
+      "total": 3450,
+      "headline": {
+        "en": "You come back to your car and inherit the full repair bill.",
+        "es": "Vuelves a tu auto y heredas toda la factura."
+      },
+      "narrative": {
+        "en": "Someone dents your parked car and disappears. Repairs, towing, and a few days without a car become your problem immediately.",
+        "es": "Alguien golpea tu auto estacionado y desaparece. La reparacion, la grua y unos dias sin auto se vuelven tu problema enseguida."
+      }
+    },
+    "with": {
+      "annual": 1620,
+      "outOfPocket": 500,
+      "headline": {
+        "en": "The right auto coverage keeps the damage annoying, not disastrous.",
+        "es": "La cobertura correcta mantiene el dano molesto, no desastroso."
+      },
+      "narrative": {
+        "en": "You file the report, pay the deductible, and let your policy handle most of the repair cost.",
+        "es": "Presentas el reporte, pagas el deducible y dejas que tu poliza cubra la mayor parte de la reparacion."
+      }
+    }
+  },
+  {
     "id": "er_visit",
     "title": {
       "en": "Emergency room visit",
@@ -120,6 +182,37 @@
       "narrative": {
         "en": "You show your insurance card, pay a manageable copay, and let coverage handle the rest.",
         "es": "Muestras tu tarjeta de seguro, pagas un copago manejable y dejas que la cobertura haga el resto."
+      }
+    }
+  },
+  {
+    "id": "scooter_fall",
+    "title": {
+      "en": "E-scooter fall",
+      "es": "Caida en scooter electrico"
+    },
+    "appliesIf": "always",
+    "without": {
+      "total": 2700,
+      "headline": {
+        "en": "A quick fall becomes imaging, medication, and follow-up bills.",
+        "es": "Una caida rapida se convierte en radiografias, medicina y seguimiento."
+      },
+      "narrative": {
+        "en": "A pothole throws you off an e-scooter. The injury is not dramatic, but urgent care, X-rays, and recovery still cost thousands.",
+        "es": "Un bache te tumba de un scooter electrico. La lesion no parece dramatica, pero urgencias, radiografias y recuperacion aun cuestan miles."
+      }
+    },
+    "with": {
+      "annual": 2650,
+      "outOfPocket": 150,
+      "headline": {
+        "en": "Health insurance protects the small emergencies too.",
+        "es": "El seguro medico protege tambien las emergencias pequenas."
+      },
+      "narrative": {
+        "en": "You show your card, pick the right care setting, and keep the whole injury from turning into a giant bill.",
+        "es": "Muestras tu tarjeta, eliges el lugar correcto para atenderte y evitas que toda la lesion se convierta en una gran factura."
       }
     }
   }

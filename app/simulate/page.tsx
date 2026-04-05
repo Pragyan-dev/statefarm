@@ -39,7 +39,7 @@ export default function SimulatePage() {
   const [isStoryPickerOpen, setIsStoryPickerOpen] = useState(false);
   const activeScenarioId = storySession?.scenarioId ?? null;
 
-  const storyScenarios = getRelevantScenarios(profile);
+  const storyScenarios = getRelevantScenarios(profile, settings.language);
   const activeScenario = storyScenarios.find((scenario) => scenario.id === activeScenarioId) ?? null;
   const chartScenarios = useMemo(
     () =>

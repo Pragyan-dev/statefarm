@@ -11,6 +11,7 @@
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.41.1",
     "@types/leaflet": "^1.9.21",
+    "framer-motion": "^12.38.0",
     "html-to-image": "^1.11.13",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.7.0",
