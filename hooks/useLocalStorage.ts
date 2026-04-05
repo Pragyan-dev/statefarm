@@ -1,7 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { dispatchLocalStorageSync, LOCAL_STORAGE_SYNC_EVENT } from "@/lib/localStorageEvents";
+import {
+  dispatchLocalStorageSync,
+  LOCAL_STORAGE_SYNC_EVENT,
+  type LocalStorageSyncDetail,
+} from "@/lib/localStorageEvents";
 
 interface UseLocalStorageOptions {
   fallbackKeys?: string[];
@@ -13,6 +17,10 @@ export function useLocalStorage<T>(
   options?: UseLocalStorageOptions,
 ) {
   const initialValueRef = useRef(initialValue);
+  const syncSourceIdRef = useRef(
+    `local-storage-sync:${Math.random().toString(36).slice(2)}:${Date.now().toString(36)}`,
+  );
+  const shouldBroadcastRef = useRef(false);
   const fallbackKeysKey = (options?.fallbackKeys ?? []).join("|");
   const [value, setStoredValue] = useState<T>(() => initialValueRef.current);
   const [isReady, setIsReady] = useState(false);
@@ -47,6 +55,13 @@ export function useLocalStorage<T>(
     } catch {
       // Ignore persistence errors and keep in-memory state.
     }
+
+    if (!shouldBroadcastRef.current) {
+      return;
+    }
+
+    shouldBroadcastRef.current = false;
+    dispatchLocalStorageSync(key, value, syncSourceIdRef.current);
   }, [isReady, key, value]);
 
   const setValue = useCallback((nextValue: T | ((currentValue: T) => T)) => {
@@ -56,13 +71,15 @@ export function useLocalStorage<T>(
           ? (nextValue as (currentValue: T) => T)(currentValue)
           : nextValue;
 
-      dispatchLocalStorageSync(key, resolvedValue);
+      shouldBroadcastRef.current = !Object.is(currentValue, resolvedValue);
       return resolvedValue;
     });
-  }, [key]);
+  }, []);
 
   useEffect(() => {
     function syncFromStorage() {
+      shouldBroadcastRef.current = false;
+
       try {
         setStoredValue(readStoredValue());
       } catch {
@@ -79,13 +96,17 @@ export function useLocalStorage<T>(
     }
 
     function handleCustomSync(event: Event) {
-      const customEvent = event as CustomEvent<{ key?: string; value?: T }>;
+      const customEvent = event as CustomEvent<LocalStorageSyncDetail<T>>;
 
-      if (customEvent.detail?.key !== key) {
+      if (
+        customEvent.detail?.key !== key ||
+        customEvent.detail.sourceId === syncSourceIdRef.current
+      ) {
         return;
       }
 
       if (customEvent.detail.value !== undefined) {
+        shouldBroadcastRef.current = false;
         setStoredValue(customEvent.detail.value);
         return;
       }
