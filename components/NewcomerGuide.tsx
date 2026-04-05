@@ -5,23 +5,23 @@ import { useMemo, useState } from "react";
 import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { pickText } from "@/lib/content";
-import type { LocalizedText, VisaGuideStep } from "@/lib/types";
+import type { LocalizedText, NewcomerGuideStep } from "@/lib/types";
 
-export interface VisaGuideData {
+export interface NewcomerGuideData {
   visa: string;
   title: LocalizedText;
-  steps: VisaGuideStep[];
+  steps: NewcomerGuideStep[];
   addon?: {
     title: LocalizedText;
     items: LocalizedText[];
   };
 }
 
-export function VisaGuide({
+export function NewcomerGuide({
   guides,
   activeVisa,
 }: {
-  guides: VisaGuideData[];
+  guides: NewcomerGuideData[];
   activeVisa: string;
 }) {
   const { settings } = useAccessibility();
@@ -40,7 +40,7 @@ export function VisaGuide({
         {pickText(activeGuide.title, settings.language)}
       </h2>
 
-      <div role="tablist" aria-label="Visa guides" className="mt-5 grid grid-cols-4 gap-2">
+      <div role="tablist" aria-label="Newcomer guides" className="mt-5 grid grid-cols-4 gap-2">
         {guides.map((guide) => {
           const active = guide.visa === selectedVisa;
           return (
@@ -73,16 +73,7 @@ export function VisaGuide({
         aria-labelledby={`${activeGuide.visa}-tab`}
         className="mt-5"
       >
-        <div className="mb-4 flex gap-2">
-          {activeGuide.steps.map((step) => (
-            <span
-              key={`${activeGuide.visa}-${step.week}-${step.docs.join("-")}`}
-              className={`h-2 flex-1 rounded-full ${
-                step.week - 1 <= expanded ? "bg-[var(--color-accent)]" : "bg-[var(--color-border)]"
-              }`}
-            />
-          ))}
-        </div>
+        {/* Top progress indicator removed per request */}
 
         <div className="grid gap-3">
           {activeGuide.steps.map((step, index) => {

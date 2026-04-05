@@ -103,10 +103,13 @@ export interface ScamVerdictResult {
   demoMode?: boolean;
 }
 
-export interface VisaGuideStep {
+export interface NewcomerGuideStep {
   week: number;
   step: LocalizedText;
   details: LocalizedText;
   docs: string[];
   link: string | null;
 }
+
+// Backwards compatibility type alias (update imports to NewcomerGuideStep)
+export type VisaGuideStep = NewcomerGuideStep;

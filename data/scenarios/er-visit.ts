@@ -92,7 +92,7 @@ export const erVisitScenario: Scenario = {
       showInsuranceTip: "A single emergency surgery can cost more than many people earn in a year. Coverage protects both your health and your future options.",
       actionCTA: {
         label: "Review health coverage basics",
-        href: "/guide",
+        href: "/newcomer-guide",
       },
     },
     {
@@ -138,7 +138,7 @@ export const erVisitScenario: Scenario = {
       showInsuranceTip: "If your school or employer pushed insurance during onboarding, this is why. One emergency can repay the premium many times over.",
       actionCTA: {
         label: "Review health coverage basics",
-        href: "/guide",
+        href: "/newcomer-guide",
       },
     },
   ],

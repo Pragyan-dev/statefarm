@@ -39,7 +39,7 @@ export function AppShell({
     { href: "/simulate", label: t("shockSimulator"), icon: Sparkles },
     { href: "/coverage", label: t("coverage"), icon: Shield },
     { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
-    { href: "/guide", label: t("visaGuide"), icon: BookOpen },
+    { href: "/newcomer-guide", label: t("newcomerGuide"), icon: BookOpen },
     { href: "/decode", label: t("policyDecoder"), icon: ScanSearch },
     { href: "/scam", label: t("scamChecker"), icon: BadgeAlert },
   ];

@@ -78,8 +78,8 @@ const cards = [
     icon: WalletCards,
   },
   {
-    href: "/guide",
-    title: "Visa guide",
+    href: "/newcomer-guide",
+    title: "Newcomer guide",
     description: "See the steps most people miss in the first 30 days.",
     icon: ArrowRight,
   },
