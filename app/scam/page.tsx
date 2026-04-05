@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { AiSourceNotice } from "@/components/AiSourceNotice";
 import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import type { ScamVerdictResult } from "@/lib/types";
@@ -15,9 +16,16 @@ const verdictClasses: Record<ScamVerdictResult["verdict"], string> = {
 
 export default function ScamPage() {
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScamVerdictResult | null>(null);
+  const verdictLabelMap = {
+    SCAM: isSpanish ? "ESTAFA" : "SCAM",
+    PREDATORY: isSpanish ? "ABUSIVO" : "PREDATORY",
+    WARNING: isSpanish ? "ADVERTENCIA" : "WARNING",
+    SAFE: isSpanish ? "SEGURO" : "SAFE",
+  } as const;
 
   async function handleSubmit() {
     setLoading(true);
@@ -44,26 +52,34 @@ export default function ScamPage() {
       <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="grid gap-6">
           <section className="panel-card hero-ambient overflow-hidden">
-            <p className="eyebrow">Scam checker</p>
+            <p className="eyebrow">{isSpanish ? "Detector de estafas" : "Scam checker"}</p>
             <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
-              Pressure tactics are easier to see when someone else names them.
+              {isSpanish
+                ? "Las tacticas de presion se ven mas claras cuando alguien las nombra por ti."
+                : "Pressure tactics are easier to see when someone else names them."}
             </h1>
             <p className="mt-4 text-base text-[var(--color-muted)]">
-              Paste the offer, message, or script. We will look for scam patterns and predatory terms.
+              {isSpanish
+                ? "Pega la oferta, el mensaje o el guion. Buscaremos patrones de estafa y terminos abusivos."
+                : "Paste the offer, message, or script. We will look for scam patterns and predatory terms."}
             </p>
           </section>
 
           <section className="panel-card">
             <label className="block">
               <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
-                Paste the offer or describe what happened
+                {isSpanish ? "Pega la oferta o describe lo que paso" : "Paste the offer or describe what happened"}
               </span>
               <textarea
                 value={value}
                 onChange={(event) => setValue(event.target.value)}
                 rows={6}
                 className="w-full rounded-[1.5rem] border border-[var(--color-border)] bg-transparent px-4 py-3 text-[var(--color-ink)]"
-                placeholder="They said I need immigration insurance and asked for a wire transfer today."
+                placeholder={
+                  isSpanish
+                    ? "Dijeron que necesito seguro de inmigracion y pidieron una transferencia hoy."
+                    : "They said I need immigration insurance and asked for a wire transfer today."
+                }
               />
             </label>
             <button
@@ -72,7 +88,7 @@ export default function ScamPage() {
               disabled={!value || loading}
               className="mt-4 min-h-12 w-full rounded-full bg-[var(--color-ink)] text-sm font-semibold text-[var(--color-paper)] disabled:opacity-50"
             >
-              {loading ? "Checking..." : "Check this offer"}
+              {loading ? (isSpanish ? "Revisando..." : "Checking...") : isSpanish ? "Revisar esta oferta" : "Check this offer"}
             </button>
           </section>
         </div>
@@ -82,10 +98,15 @@ export default function ScamPage() {
             <section className={`panel-card border ${verdictClasses[result.verdict]}`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="eyebrow">Verdict</p>
-                  <h2 className="font-display text-3xl text-[var(--color-ink)]">{result.verdict}</h2>
+                  <p className="eyebrow">{isSpanish ? "Veredicto" : "Verdict"}</p>
+                  <h2 className="font-display text-3xl text-[var(--color-ink)]">
+                    {verdictLabelMap[result.verdict]}
+                  </h2>
                 </div>
                 <ReadAloud text={result.explanation} />
+              </div>
+              <div className="mt-4">
+                <AiSourceNotice aiSource={result.aiSource} fallbackReason={result.fallbackReason} />
               </div>
               <p className="mt-4 text-base text-[var(--color-ink)]">{result.explanation}</p>
               <ul className="mt-4 grid gap-2 text-sm text-[var(--color-muted)]">
@@ -99,13 +120,16 @@ export default function ScamPage() {
           ) : (
             <section className="panel-card flex min-h-[320px] items-center justify-center text-center">
               <div className="max-w-[28ch]">
-                <p className="eyebrow">Verdict</p>
+                <p className="eyebrow">{isSpanish ? "Veredicto" : "Verdict"}</p>
                 <h2 className="font-display text-3xl text-[var(--color-ink)]">
-                  The result shows up here with a clear label and reasons.
+                  {isSpanish
+                    ? "El resultado aparecera aqui con una etiqueta clara y las razones."
+                    : "The result shows up here with a clear label and reasons."}
                 </h2>
                 <p className="mt-4 text-sm text-[var(--color-muted)]">
-                  SCAM, PREDATORY, WARNING, or SAFE. The explanation stays visible next to your
-                  original text on larger screens.
+                  {isSpanish
+                    ? "SCAM, PREDATORY, WARNING o SAFE. La explicacion permanece visible junto a tu texto original en pantallas grandes."
+                    : "SCAM, PREDATORY, WARNING, or SAFE. The explanation stays visible next to your original text on larger screens."}
                 </p>
               </div>
             </section>

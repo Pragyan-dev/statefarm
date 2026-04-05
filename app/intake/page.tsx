@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { useAccessibility } from "@/hooks/useAccessibility";
 import { useViewMode } from "@/hooks/useViewMode";
 import { deriveProfileLocation } from "@/lib/content";
 import { defaultUserProfile, saveStoredProfile } from "@/lib/userProfile";
@@ -13,10 +14,64 @@ const visaOptions: VisaType[] = ["F1", "H1B", "J1", "O1"];
 
 export default function IntakePage() {
   const router = useRouter();
+  const { settings } = useAccessibility();
   const { resolvedMode } = useViewMode();
+  const isSpanish = settings.language === "es";
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<UserProfile>(defaultUserProfile);
   const locationPreview = deriveProfileLocation(profile.zip);
+  const copy = {
+    backHome: isSpanish ? "← Volver al inicio" : "← Back home",
+    intake: isSpanish ? "Ingreso" : "Intake",
+    websiteTitle: isSpanish
+      ? "Construye tu plan de proteccion para los primeros 30 dias en una sola pasada."
+      : "Build your first 30-day protection plan in one pass.",
+    mobileTitle: isSpanish
+      ? "Cuatro preguntas rapidas. Luego tu plan de proteccion de 30 dias."
+      : "Four fast questions. Then your first 30-day protection plan.",
+    introCopy: isSpanish
+      ? "Vamos a personalizar el simulador, la guia de cobertura, la lista de visa y la ayuda para reclamos segun tus primeros meses en Estados Unidos."
+      : "We will tailor the simulator, coverage guide, visa checklist, and claim help to your first months in the US.",
+    visaQuestion: isSpanish ? "Cual es tu tipo de visa?" : "What is your visa status?",
+    ssnQuestion: isSpanish ? "Ya tienes SSN?" : "Do you already have an SSN?",
+    yes: isSpanish ? "Si" : "Yes",
+    no: isSpanish ? "No" : "No",
+    coverageQuestion: isSpanish ? "Que necesitas proteger?" : "What do you need covered?",
+    driveLabel: isSpanish ? "Manejo" : "I drive",
+    driveDetail: isSpanish ? "Mostrar escenarios de seguro de auto" : "Show auto insurance scenarios",
+    rentLabel: isSpanish ? "Alquilo" : "I rent",
+    rentDetail: isSpanish
+      ? "Mostrar seguro de inquilino y riesgo del apartamento"
+      : "Show renter's insurance and apartment risk",
+    locationQuestion: isSpanish ? "Donde estas empezando?" : "Where are you starting?",
+    zipCode: isSpanish ? "Codigo ZIP" : "ZIP code",
+    income: isSpanish ? "Ingreso mensual" : "Monthly income",
+    buildDashboard: isSpanish ? "Crear mi panel" : "Build my dashboard",
+    skipDemo: isSpanish ? "Ir al panel demo" : "Skip to demo dashboard",
+    preview: isSpanish ? "Vista previa" : "Preview",
+    previewTitle: isSpanish
+      ? "Tu perfil ya esta dando forma a la herramienta."
+      : "Your profile is shaping the toolkit already.",
+    visaTrack: isSpanish ? "Ruta de visa" : "Visa track",
+    ssnStatus: isSpanish ? "Estado del SSN" : "SSN status",
+    hasSsn: isSpanish ? "Ya tienes uno" : "Already have one",
+    noSsn: isSpanish ? "Todavia no tienes SSN" : "No SSN yet",
+    locationPreview: isSpanish ? "Vista de ubicacion" : "Location preview",
+    monthlyIncome: isSpanish ? "Ingreso mensual" : "Monthly income",
+    unlocks: isSpanish ? "Lo que desbloqueas despues" : "What unlocks next",
+    simulator: isSpanish ? "Simulador" : "Simulator",
+    simulatorReady: isSpanish ? "Adaptado a tus riesgos" : "Tailored to your risks",
+    simulatorFallback: isSpanish ? "Solo respaldo medico" : "Medical-only fallback",
+    coverageFinder: isSpanish ? "Buscador de cobertura" : "Coverage finder",
+    coverageReady: isSpanish ? "Apartamento + estimado de inquilino listo" : "Apartment + renter's estimate ready",
+    coverageRules: isSpanish ? "Solo reglas estatales" : "State rules only",
+    visaGuide: isSpanish ? "Guia de visa" : "Visa guide",
+    visaGuideReady: isSpanish
+      ? `${profile.visaStatus} checklist y tareas para los primeros 30 dias`
+      : `${profile.visaStatus} checklist and first-30-day tasks`,
+    back: isSpanish ? "Atras" : "Back",
+    next: isSpanish ? "Siguiente" : "Next",
+  };
 
   function completeIntake() {
     const nextProfile = {
@@ -46,17 +101,16 @@ export default function IntakePage() {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="grid gap-6">
             <Link href="/" className="text-sm font-semibold text-[var(--color-muted)]">
-              ← Back home
+              {copy.backHome}
             </Link>
 
             <section className="panel-card hero-ambient overflow-hidden">
-              <p className="eyebrow">Intake</p>
+              <p className="eyebrow">{copy.intake}</p>
               <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[12ch]">
-                Build your first 30-day protection plan in one pass.
+                {copy.websiteTitle}
               </h1>
               <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">
-                We will tailor the simulator, coverage guide, visa checklist, and claim help to
-                your first months in the US.
+                {copy.introCopy}
               </p>
             </section>
 
@@ -69,7 +123,7 @@ export default function IntakePage() {
             >
               <fieldset className="panel-card">
                 <legend className="font-display text-2xl text-[var(--color-ink)]">
-                  What is your visa status?
+                  {copy.visaQuestion}
                 </legend>
                 <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3 md:grid-cols-2">
                   {visaOptions.map((visa) => (
@@ -97,7 +151,7 @@ export default function IntakePage() {
 
               <fieldset className="panel-card">
                 <legend className="font-display text-2xl text-[var(--color-ink)]">
-                  Do you already have an SSN?
+                  {copy.ssnQuestion}
                 </legend>
                 <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3 md:grid-cols-2">
                   {[true, false].map((value) => (
@@ -117,7 +171,7 @@ export default function IntakePage() {
                         }
                         className="h-5 w-5 accent-[var(--color-accent)]"
                       />
-                      <span className="font-semibold text-[var(--color-ink)]">{value ? "Yes" : "No"}</span>
+                      <span className="font-semibold text-[var(--color-ink)]">{value ? copy.yes : copy.no}</span>
                     </label>
                   ))}
                 </div>
@@ -125,13 +179,13 @@ export default function IntakePage() {
 
               <fieldset className="panel-card">
                 <legend className="font-display text-2xl text-[var(--color-ink)]">
-                  What do you need covered?
+                  {copy.coverageQuestion}
                 </legend>
                 <div className="mt-5 grid gap-3 md:grid-cols-2">
                   <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
                     <div>
-                      <p className="font-semibold text-[var(--color-ink)]">I drive</p>
-                      <p className="text-sm text-[var(--color-muted)]">Show auto insurance scenarios</p>
+                      <p className="font-semibold text-[var(--color-ink)]">{copy.driveLabel}</p>
+                      <p className="text-sm text-[var(--color-muted)]">{copy.driveDetail}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -148,10 +202,8 @@ export default function IntakePage() {
 
                   <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
                     <div>
-                      <p className="font-semibold text-[var(--color-ink)]">I rent</p>
-                      <p className="text-sm text-[var(--color-muted)]">
-                        Show renter&apos;s insurance and apartment risk
-                      </p>
+                      <p className="font-semibold text-[var(--color-ink)]">{copy.rentLabel}</p>
+                      <p className="text-sm text-[var(--color-muted)]">{copy.rentDetail}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -169,10 +221,10 @@ export default function IntakePage() {
               </fieldset>
 
               <section className="panel-card">
-                <h2 className="font-display text-2xl text-[var(--color-ink)]">Where are you starting?</h2>
+                <h2 className="font-display text-2xl text-[var(--color-ink)]">{copy.locationQuestion}</h2>
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
                   <label>
-                    <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">ZIP code</span>
+                    <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">{copy.zipCode}</span>
                     <input
                       value={profile.zip}
                       onChange={(event) =>
@@ -188,7 +240,7 @@ export default function IntakePage() {
 
                   <label>
                     <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
-                      Monthly income
+                      {copy.income}
                     </span>
                     <input
                       type="number"
@@ -210,13 +262,13 @@ export default function IntakePage() {
                   type="submit"
                   className="min-h-12 rounded-full bg-[var(--color-ink)] px-6 text-sm font-semibold text-[var(--color-paper)]"
                 >
-                  Build my dashboard
+                  {copy.buildDashboard}
                 </button>
                 <Link
                   href="/dashboard"
                   className="inline-flex min-h-12 items-center rounded-full border border-[var(--color-border)] px-6 text-sm font-semibold text-[var(--color-ink)]"
                 >
-                  Skip to demo dashboard
+                  {copy.skipDemo}
                 </Link>
               </div>
             </form>
@@ -224,29 +276,29 @@ export default function IntakePage() {
 
           <aside className="grid gap-6 lg:sticky lg:top-28 lg:self-start">
             <section className="panel-card">
-              <p className="eyebrow">Preview</p>
+              <p className="eyebrow">{copy.preview}</p>
               <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                Your profile is shaping the toolkit already.
+                {copy.previewTitle}
               </h2>
               <ul className="mt-4 grid gap-3 text-sm text-[var(--color-muted)]">
-                <li>Visa track: {profile.visaStatus}</li>
-                <li>SSN status: {profile.hasSsn ? "Already have one" : "No SSN yet"}</li>
-                <li>Location preview: {locationPreview.city}, {locationPreview.state} {profile.zip}</li>
-                <li>Monthly income: ${profile.monthlyIncome || 0}</li>
+                <li>{copy.visaTrack}: {profile.visaStatus}</li>
+                <li>{copy.ssnStatus}: {profile.hasSsn ? copy.hasSsn : copy.noSsn}</li>
+                <li>{copy.locationPreview}: {locationPreview.city}, {locationPreview.state} {profile.zip}</li>
+                <li>{copy.monthlyIncome}: ${profile.monthlyIncome || 0}</li>
               </ul>
             </section>
 
             <section className="panel-card">
-              <p className="eyebrow">What unlocks next</p>
+              <p className="eyebrow">{copy.unlocks}</p>
               <div className="mt-4 grid gap-3 text-sm text-[var(--color-muted)]">
                 <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
-                  Simulator: {profile.drives || profile.rents ? "Tailored to your risks" : "Medical-only fallback"}
+                  {copy.simulator}: {profile.drives || profile.rents ? copy.simulatorReady : copy.simulatorFallback}
                 </div>
                 <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
-                  Coverage finder: {profile.rents ? "Apartment + renter's estimate ready" : "State rules only"}
+                  {copy.coverageFinder}: {profile.rents ? copy.coverageReady : copy.coverageRules}
                 </div>
                 <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
-                  Visa guide: {profile.visaStatus} checklist and first-30-day tasks
+                  {copy.visaGuide}: {copy.visaGuideReady}
                 </div>
               </div>
             </section>
@@ -259,17 +311,16 @@ export default function IntakePage() {
   return (
     <div className="py-6">
       <Link href="/" className="text-sm font-semibold text-[var(--color-muted)]">
-        ← Back home
+        {copy.backHome}
       </Link>
 
       <section className="panel-card hero-ambient mt-6 overflow-hidden">
-        <p className="eyebrow">Intake</p>
+        <p className="eyebrow">{copy.intake}</p>
         <h1 className="font-display text-4xl text-[var(--color-ink)]">
-          Four fast questions. Then your first 30-day protection plan.
+          {copy.mobileTitle}
         </h1>
         <p className="mt-4 max-w-[34ch] text-base text-[var(--color-muted)]">
-          We will tailor the simulator, coverage guide, visa checklist, and claim help to your
-          first months in the US.
+          {copy.introCopy}
         </p>
 
         <div className="mt-6 flex gap-2">
@@ -287,7 +338,7 @@ export default function IntakePage() {
       {step === 0 ? (
         <fieldset className="panel-card">
           <legend className="font-display text-2xl text-[var(--color-ink)]">
-            What is your visa status?
+            {copy.visaQuestion}
           </legend>
           <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3">
             {visaOptions.map((visa) => (
@@ -317,7 +368,7 @@ export default function IntakePage() {
       {step === 1 ? (
         <fieldset className="panel-card">
           <legend className="font-display text-2xl text-[var(--color-ink)]">
-            Do you already have an SSN?
+            {copy.ssnQuestion}
           </legend>
           <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3">
             {[true, false].map((value) => (
@@ -337,7 +388,7 @@ export default function IntakePage() {
                   }
                   className="h-5 w-5 accent-[var(--color-accent)]"
                 />
-                <span className="font-semibold text-[var(--color-ink)]">{value ? "Yes" : "No"}</span>
+                <span className="font-semibold text-[var(--color-ink)]">{value ? copy.yes : copy.no}</span>
               </label>
             ))}
           </div>
@@ -347,13 +398,13 @@ export default function IntakePage() {
       {step === 2 ? (
         <fieldset className="panel-card">
           <legend className="font-display text-2xl text-[var(--color-ink)]">
-            What do you need covered?
+            {copy.coverageQuestion}
           </legend>
           <div className="mt-5 grid gap-3">
             <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
               <div>
-                <p className="font-semibold text-[var(--color-ink)]">I drive</p>
-                <p className="text-sm text-[var(--color-muted)]">Show auto insurance scenarios</p>
+                <p className="font-semibold text-[var(--color-ink)]">{copy.driveLabel}</p>
+                <p className="text-sm text-[var(--color-muted)]">{copy.driveDetail}</p>
               </div>
               <input
                 type="checkbox"
@@ -370,10 +421,8 @@ export default function IntakePage() {
 
             <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
               <div>
-                <p className="font-semibold text-[var(--color-ink)]">I rent</p>
-                <p className="text-sm text-[var(--color-muted)]">
-                  Show renter&apos;s insurance and apartment risk
-                </p>
+                <p className="font-semibold text-[var(--color-ink)]">{copy.rentLabel}</p>
+                <p className="text-sm text-[var(--color-muted)]">{copy.rentDetail}</p>
               </div>
               <input
                 type="checkbox"
@@ -393,10 +442,10 @@ export default function IntakePage() {
 
       {step === 3 ? (
         <section className="panel-card">
-          <h2 className="font-display text-2xl text-[var(--color-ink)]">Where are you starting?</h2>
+          <h2 className="font-display text-2xl text-[var(--color-ink)]">{copy.locationQuestion}</h2>
           <div className="mt-5 grid gap-4">
             <label>
-              <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">ZIP code</span>
+              <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">{copy.zipCode}</span>
               <input
                 value={profile.zip}
                 onChange={(event) =>
@@ -412,7 +461,7 @@ export default function IntakePage() {
 
             <label>
               <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
-                Monthly income
+                {copy.income}
               </span>
               <input
                 type="number"
@@ -437,14 +486,14 @@ export default function IntakePage() {
           className="min-h-12 flex-1 rounded-full border border-[var(--color-border)] text-sm font-semibold text-[var(--color-ink)]"
           disabled={step === 0}
         >
-          Back
+          {copy.back}
         </button>
         <button
           type="button"
           onClick={nextStep}
           className="min-h-12 flex-1 rounded-full bg-[var(--color-ink)] text-sm font-semibold text-[var(--color-paper)]"
         >
-          {step === 3 ? "Build my dashboard" : "Next"}
+          {step === 3 ? copy.buildDashboard : copy.next}
         </button>
       </div>
     </div>

@@ -23,6 +23,7 @@ const emptyProgress: Record<string, CompletionSummary> = {};
 export default function SimulatePage() {
   const t = useTranslations();
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
   const { resolvedMode, setMode } = useViewMode();
   const [profile, , isProfileReady] = useUserProfile();
   const [progress, setProgress, isProgressReady] = useLocalStorage<
@@ -82,7 +83,9 @@ export default function SimulatePage() {
           <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-black/45">
             ArriveSafe
           </p>
-          <p className="mt-2 text-sm font-medium text-black/70">Loading simulator...</p>
+          <p className="mt-2 text-sm font-medium text-black/70">
+            {isSpanish ? "Cargando simulador..." : "Loading simulator..."}
+          </p>
         </div>
       </div>
     );
@@ -98,11 +101,14 @@ export default function SimulatePage() {
           <section className="panel-card hero-ambient overflow-hidden">
             <p className="eyebrow">{`${t("websiteOverview")} · ${profile.city}, ${profile.state}`}</p>
             <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
-              See the cost gap first, then switch into story mode when you want the immersive walkthrough.
+              {isSpanish
+                ? "Mira primero la brecha de costo y luego cambia al modo historia cuando quieras la experiencia inmersiva."
+                : "See the cost gap first, then switch into story mode when you want the immersive walkthrough."}
             </h1>
             <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">
-              Website view keeps the simulator scannable. App view turns the same risk into a
-              step-by-step story with Safi and branching outcomes.
+              {isSpanish
+                ? "La vista web mantiene el simulador facil de escanear. La vista app convierte el mismo riesgo en una historia paso a paso con Safi y resultados ramificados."
+                : "Website view keeps the simulator scannable. App view turns the same risk into a step-by-step story with Safi and branching outcomes."}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <button
@@ -116,17 +122,18 @@ export default function SimulatePage() {
                 href="/afford"
                 className="inline-flex min-h-12 items-center rounded-full border border-[var(--color-border)] px-5 text-sm font-semibold text-[var(--color-ink)]"
               >
-                Check affordability
+                {isSpanish ? "Revisar asequibilidad" : "Check affordability"}
               </Link>
             </div>
           </section>
 
           <section className="grid gap-6">
             <section className="panel-card">
-              <p className="eyebrow">Coverage anchor</p>
+              <p className="eyebrow">{isSpanish ? "Base de cobertura" : "Coverage anchor"}</p>
               <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                {formatCurrency(monthlyAnchor, settings.language)} / month is the baseline decision you
-                are making.
+                {isSpanish
+                  ? `${formatCurrency(monthlyAnchor, settings.language)} / mes es la decision base que estas tomando.`
+                  : `${formatCurrency(monthlyAnchor, settings.language)} / month is the baseline decision you are making.`}
               </h2>
               <p className="mt-4 text-sm text-[var(--color-muted)]">
                 {affordabilityCopy(profile.monthlyIncome, monthlyAnchor, settings.language)}
@@ -136,12 +143,14 @@ export default function SimulatePage() {
             <section className="panel-card">
               <p className="eyebrow">{t("storyMode")}</p>
               <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                Use App view when you want the full branching experience.
+                {isSpanish
+                  ? "Usa la vista App cuando quieras la experiencia completa con ramas."
+                  : "Use App view when you want the full branching experience."}
               </h2>
               <ul className="mt-4 grid gap-2 text-sm text-[var(--color-muted)]">
-                <li>Character-driven walkthrough with Safi</li>
-                <li>Choice-based good and bad endings</li>
-                <li>Animated loss and savings reveal</li>
+                <li>{isSpanish ? "Recorrido guiado por Safi" : "Character-driven walkthrough with Safi"}</li>
+                <li>{isSpanish ? "Finales buenos y malos segun tus decisiones" : "Choice-based good and bad endings"}</li>
+                <li>{isSpanish ? "Animacion de perdidas y ahorro" : "Animated loss and savings reveal"}</li>
               </ul>
             </section>
           </section>
@@ -150,9 +159,11 @@ export default function SimulatePage() {
         <section className="mt-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <p className="eyebrow">Scenario overview</p>
+              <p className="eyebrow">{isSpanish ? "Resumen de escenarios" : "Scenario overview"}</p>
               <h2 className="font-display text-3xl text-[var(--color-ink)]">
-                Compare the damage before you step into the story.
+                {isSpanish
+                  ? "Compara el dano antes de entrar a la historia."
+                  : "Compare the damage before you step into the story."}
               </h2>
             </div>
           </div>

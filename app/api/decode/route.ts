@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { decodePolicyText } from "@/lib/ai";
+import {
+  getOpenRouterHeaders,
+  getOpenRouterImageModel,
+  OPENROUTER_URL,
+} from "@/lib/openrouter";
 import type { Language } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -30,21 +35,18 @@ async function extractTextFromImage(buffer: Buffer, type: string) {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
+    console.warn("[arrivesafe-ai:decode-image] OPENROUTER_API_KEY missing. Using sample policy text.");
     return samplePolicyText;
   }
 
   const dataUrl = `data:${type};base64,${buffer.toString("base64")}`;
+  const model = getOpenRouterImageModel();
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  const response = await fetch(OPENROUTER_URL, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://arrivesafe.local",
-      "X-Title": "ArriveSafe",
-    },
+    headers: getOpenRouterHeaders(apiKey),
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash-preview",
+      model,
       messages: [
         {
           role: "user",
@@ -66,8 +68,16 @@ async function extractTextFromImage(buffer: Buffer, type: string) {
   });
 
   if (!response.ok) {
+    const errorText = await response.text();
+    console.warn(
+      `[arrivesafe-ai:decode-image] OpenRouter OCR failed for ${model}. ${errorText}`,
+    );
     return samplePolicyText;
   }
+
+  console.info(
+    `[arrivesafe-ai:decode-image] OpenRouter OCR succeeded with ${model}.`,
+  );
 
   const payload = (await response.json()) as {
     choices?: Array<{

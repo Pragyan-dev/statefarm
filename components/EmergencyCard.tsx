@@ -15,6 +15,7 @@ export function EmergencyCard({
 }) {
   const t = useTranslations();
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   async function handleDownload() {
@@ -37,9 +38,9 @@ export function EmergencyCard({
     <section className="panel-card">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="eyebrow">Offline backup</p>
+          <p className="eyebrow">{isSpanish ? "Respaldo sin conexion" : "Offline backup"}</p>
           <h2 className="font-display text-2xl text-[var(--color-ink)]">
-            {settings.language === "es" ? "Tarjeta de emergencia" : "Emergency card"}
+            {isSpanish ? "Tarjeta de emergencia" : "Emergency card"}
           </h2>
         </div>
         <button
@@ -61,28 +62,28 @@ export function EmergencyCard({
         </h3>
         <div className="mt-5 grid gap-4 text-sm">
           <div>
-            <p className="font-semibold">Emergency contacts</p>
-            <p className="mt-2">Claims: {claimVideos.statefarmLinks.phone}</p>
-            <p>State: {profile.state}</p>
+            <p className="font-semibold">{isSpanish ? "Contactos de emergencia" : "Emergency contacts"}</p>
+            <p className="mt-2">{isSpanish ? "Reclamos" : "Claims"}: {claimVideos.statefarmLinks.phone}</p>
+            <p>{isSpanish ? "Estado" : "State"}: {profile.state}</p>
           </div>
           <div>
-            <p className="font-semibold">After a car accident</p>
+            <p className="font-semibold">{isSpanish ? "Despues de un choque" : "After a car accident"}</p>
             <ol className="mt-2 grid gap-1 text-white/80">
-              <li>1. Move to safety.</li>
-              <li>2. Take photos.</li>
-              <li>3. Exchange info.</li>
-              <li>4. Call the insurer.</li>
-              <li>5. Save every receipt.</li>
+              <li>{isSpanish ? "1. Muevete a un lugar seguro." : "1. Move to safety."}</li>
+              <li>{isSpanish ? "2. Toma fotos." : "2. Take photos."}</li>
+              <li>{isSpanish ? "3. Intercambia informacion." : "3. Exchange info."}</li>
+              <li>{isSpanish ? "4. Llama a la aseguradora." : "4. Call the insurer."}</li>
+              <li>{isSpanish ? "5. Guarda cada recibo." : "5. Save every receipt."}</li>
             </ol>
           </div>
           <div>
-            <p className="font-semibold">After apartment damage</p>
+            <p className="font-semibold">{isSpanish ? "Despues de danos en el apartamento" : "After apartment damage"}</p>
             <ol className="mt-2 grid gap-1 text-white/80">
-              <li>1. Stop the source if safe.</li>
-              <li>2. Take photos and video.</li>
-              <li>3. Protect key documents.</li>
-              <li>4. Notify landlord.</li>
-              <li>5. Start the claim quickly.</li>
+              <li>{isSpanish ? "1. Deten la fuente si es seguro." : "1. Stop the source if safe."}</li>
+              <li>{isSpanish ? "2. Toma fotos y video." : "2. Take photos and video."}</li>
+              <li>{isSpanish ? "3. Protege tus documentos clave." : "3. Protect key documents."}</li>
+              <li>{isSpanish ? "4. Notifica al arrendador." : "4. Notify landlord."}</li>
+              <li>{isSpanish ? "5. Empieza el reclamo rapido." : "5. Start the claim quickly."}</li>
             </ol>
           </div>
         </div>
