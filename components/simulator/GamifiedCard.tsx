@@ -37,7 +37,7 @@ export function GamifiedCard({
 }: GamifiedCardProps) {
   const { settings } = useAccessibility();
   const prefersReducedMotion = useReducedMotion();
-  const reduceMotion = settings.reducedMotion || prefersReducedMotion;
+  const reduceMotion = Boolean(settings.reducedMotion || prefersReducedMotion);
   const theme = useMemo(() => getGamifiedTheme(themeColor, index), [index, themeColor]);
   const isPositiveReward = (rewardValue ?? 0) >= 0;
   const cardVariants = {

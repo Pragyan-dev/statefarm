@@ -25,7 +25,7 @@ export function ScenarioSelector({
   const t = useTranslations();
   const { settings } = useAccessibility();
   const prefersReducedMotion = useReducedMotion();
-  const reduceMotion = settings.reducedMotion || prefersReducedMotion;
+  const reduceMotion = Boolean(settings.reducedMotion || prefersReducedMotion);
   const leadTheme = getGamifiedTheme(scenarios[0]?.themeColor, 0);
 
   return (

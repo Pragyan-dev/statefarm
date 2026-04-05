@@ -15,6 +15,14 @@ export interface FinancialEffect {
   monthlyEquivalent?: string;
 }
 
+export interface DialogueMascot {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  mood?: string;
+}
+
 export interface DialogueChoice {
   label: string;
   sublabel?: string;
@@ -30,6 +38,7 @@ export interface DialogueNode {
   choices?: DialogueChoice[];
   next?: string;
   effect?: FinancialEffect;
+  mascot?: DialogueMascot;
   delay?: number;
   showInsuranceTip?: string;
   isEnding?: boolean;

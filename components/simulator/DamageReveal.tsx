@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { formatCurrency } from "@/lib/content";
@@ -15,6 +16,7 @@ export function EffectRevealBase({ effect, onComplete }: EffectRevealProps) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
   const instantReveal = settings.reducedMotion;
+  const itemRevealDelay = instantReveal ? 0 : 220;
   const [visibleItems, setVisibleItems] = useState(() => (instantReveal ? effect.items.length : 0));
   const [showLine, setShowLine] = useState(() => instantReveal);
   const [showTotal, setShowTotal] = useState(() => instantReveal);
@@ -43,35 +45,40 @@ export function EffectRevealBase({ effect, onComplete }: EffectRevealProps) {
     effect.items.forEach((_, index) => {
       const timeout = window.setTimeout(() => {
         setVisibleItems(index + 1);
-      }, 600 * index + 100);
+      }, itemRevealDelay * index + 80);
 
       timeouts.push(timeout);
     });
 
     const lineTimeout = window.setTimeout(() => {
       setShowLine(true);
-    }, effect.items.length * 600 + 250);
+    }, effect.items.length * itemRevealDelay + 120);
     const totalTimeout = window.setTimeout(() => {
       setShowTotal(true);
       onComplete?.();
-    }, effect.items.length * 600 + 800);
+    }, effect.items.length * itemRevealDelay + 300);
 
     timeouts.push(lineTimeout, totalTimeout);
 
     return () => {
       timeouts.forEach((timeout) => window.clearTimeout(timeout));
     };
-  }, [effect.items, instantReveal, onComplete]);
+  }, [effect.items, instantReveal, itemRevealDelay, onComplete]);
 
   const totalLabel = useMemo(() => formatCurrency(effect.total, settings.language), [effect.total, settings.language]);
 
   return (
-    <section className="rounded-[1.15rem] border border-black/10 bg-[#FFFDF8] px-3 py-3">
+    <motion.section
+      initial={instantReveal ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+      className="rounded-[1.15rem] border border-black/10 bg-[#FFFDF8] px-3 py-3"
+    >
       <div className="grid gap-2">
         {effect.items.slice(0, visibleItems).map((item) => (
           <div
             key={`${item.label}-${item.amount}`}
-            className="sim-slide-in-right flex items-center justify-between gap-3 rounded-[0.95rem] bg-stone-50 px-3 py-3"
+            className="sim-slide-in-right flex items-center justify-between gap-3 rounded-[0.95rem] bg-stone-50 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]"
           >
             <div className="flex min-w-0 items-center gap-2">
               <span className="text-base">{item.icon ?? (item.amount === 0 ? "•" : "💸")}</span>
@@ -108,7 +115,7 @@ export function EffectRevealBase({ effect, onComplete }: EffectRevealProps) {
           ) : null}
         </div>
       ) : null}
-    </section>
+    </motion.section>
   );
 }
 

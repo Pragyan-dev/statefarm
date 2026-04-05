@@ -391,6 +391,9 @@ a {
 
 .sim-choice-selected {
   animation: simChoicePulse 300ms ease;
+  box-shadow:
+    0 0 0 3px rgba(17, 24, 39, 0.08),
+    0 14px 28px rgba(17, 24, 39, 0.12);
 }
 
 .sim-slide-in-right {

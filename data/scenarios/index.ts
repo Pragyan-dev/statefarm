@@ -39,6 +39,12 @@ function resolveNode(node: DialogueNode, tokens: Record<string, string>): Dialog
   return {
     ...node,
     text: replaceTokens(node.text, tokens),
+    mascot: node.mascot
+      ? {
+          ...node.mascot,
+          alt: node.mascot.alt ? replaceTokens(node.mascot.alt, tokens) : undefined,
+        }
+      : undefined,
     showInsuranceTip: node.showInsuranceTip
       ? replaceTokens(node.showInsuranceTip, tokens)
       : undefined,

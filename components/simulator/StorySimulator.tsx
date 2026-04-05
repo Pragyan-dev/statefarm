@@ -1,15 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { ArrowLeft, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ChoiceButtons } from "@/components/simulator/ChoiceButtons";
 import { DamageReveal } from "@/components/simulator/DamageReveal";
-import { DialogueBox } from "@/components/simulator/DialogueBox";
-import { SafiCharacter } from "@/components/simulator/SafiCharacter";
+import { DialogueScene } from "@/components/simulator/DialogueScene";
 import { SavingsReveal } from "@/components/simulator/SavingsReveal";
 import { SimulatorResult } from "@/components/simulator/SimulatorResult";
+import { getSafiMascotAsset } from "@/components/simulator/SafiCharacter";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import type {
   CompletionSummary,
@@ -36,6 +37,7 @@ export function StorySimulator({
 }: StorySimulatorProps) {
   const t = useTranslations();
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
   const nodeMap = useMemo(
     () => new Map(scenario.nodes.map((node) => [node.id, node])),
     [scenario.nodes],
@@ -59,6 +61,8 @@ export function StorySimulator({
   );
   const [lastEffect, setLastEffect] = useState<FinancialEffect | null>(initialSession?.lastEffect ?? null);
   const completionRef = useRef<string | null>(null);
+  const transitionTimeoutRef = useRef<number | null>(null);
+  const transitionResetRef = useRef<number | null>(null);
 
   const currentNode = nodeMap.get(currentNodeId) as DialogueNode;
   const emotion = currentNode.emotion ?? "neutral";
@@ -67,48 +71,55 @@ export function StorySimulator({
   const isEffectComplete = !currentNode.effect || completedEffectNodeId === currentNodeId;
   const canInteract = isTextDone && isEffectComplete && !isTransitioning;
 
+  const clearTransitionTimers = useCallback(() => {
+    if (transitionTimeoutRef.current) {
+      window.clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+
+    if (transitionResetRef.current) {
+      window.clearTimeout(transitionResetRef.current);
+      transitionResetRef.current = null;
+    }
+  }, []);
+
   const transitionTo = useCallback(
     (nextNodeId: string) => {
       if (isTransitioning || !nodeMap.has(nextNodeId)) {
         return;
       }
 
+      clearTransitionTimers();
       setIsTransitioning(true);
 
-      window.setTimeout(() => {
+      transitionTimeoutRef.current = window.setTimeout(() => {
         setCompletedTypingNodeId(null);
         setCompletedEffectNodeId(null);
         setHistory((currentHistory) => [...currentHistory, currentNodeId]);
         setCurrentNodeId(nextNodeId);
-      }, settings.reducedMotion ? 20 : 180);
+      }, settings.reducedMotion ? 20 : 150);
 
-      window.setTimeout(() => {
+      transitionResetRef.current = window.setTimeout(() => {
         setIsTransitioning(false);
-      }, settings.reducedMotion ? 30 : 320);
+      }, settings.reducedMotion ? 30 : 240);
     },
-    [currentNodeId, isTransitioning, nodeMap, settings.reducedMotion],
+    [clearTransitionTimers, currentNodeId, isTransitioning, nodeMap, settings.reducedMotion],
   );
 
-  const completionSummary = useMemo(() => {
-    if (!currentNode.isEnding || !currentNode.endingType) {
-      return null;
-    }
-
-    const finalTotal =
-      currentNode.endingType === "bad" ? lastEffect?.total ?? badTotal : lastEffect?.total ?? 0;
-    const savedAmount =
-      currentNode.endingType === "good"
-        ? Math.max(badTotal - (lastEffect?.total ?? 0), 0)
-        : undefined;
-
-    return {
-      scenarioId: scenario.id,
-      endingType: currentNode.endingType,
-      finalTotal,
-      savedAmount,
-      completedAt: new Date().toISOString(),
-    } satisfies CompletionSummary;
-  }, [badTotal, currentNode, lastEffect, scenario.id]);
+  const completionSummary =
+    !currentNode.isEnding || !currentNode.endingType
+      ? null
+      : ({
+          scenarioId: scenario.id,
+          endingType: currentNode.endingType,
+          finalTotal:
+            currentNode.endingType === "bad" ? lastEffect?.total ?? badTotal : lastEffect?.total ?? 0,
+          savedAmount:
+            currentNode.endingType === "good"
+              ? Math.max(badTotal - (lastEffect?.total ?? 0), 0)
+              : undefined,
+          completedAt: new Date().toISOString(),
+        } satisfies CompletionSummary);
 
   useEffect(() => {
     onSessionChange({
@@ -145,22 +156,10 @@ export function StorySimulator({
   }, [completionSummary, onComplete]);
 
   useEffect(() => {
-    if (
-      !currentNode.delay ||
-      !currentNode.next ||
-      currentNode.isEnding ||
-      hasChoices ||
-      !canInteract
-    ) {
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      transitionTo(currentNode.next as string);
-    }, currentNode.delay);
-
-    return () => window.clearTimeout(timeout);
-  }, [canInteract, currentNode.delay, currentNode.isEnding, currentNode.next, hasChoices, transitionTo]);
+    return () => {
+      clearTransitionTimers();
+    };
+  }, [clearTransitionTimers]);
 
   function handleBack() {
     if (!history.length || isTransitioning) {
@@ -174,14 +173,18 @@ export function StorySimulator({
       return;
     }
 
+    clearTransitionTimers();
     setIsTransitioning(true);
-    window.setTimeout(() => {
+    transitionTimeoutRef.current = window.setTimeout(() => {
       setCompletedTypingNodeId(null);
       setCompletedEffectNodeId(null);
       setHistory(nextHistory);
       setCurrentNodeId(previousNodeId);
-    }, settings.reducedMotion ? 20 : 180);
-    window.setTimeout(() => setIsTransitioning(false), settings.reducedMotion ? 30 : 320);
+    }, settings.reducedMotion ? 20 : 150);
+    transitionResetRef.current = window.setTimeout(
+      () => setIsTransitioning(false),
+      settings.reducedMotion ? 30 : 240,
+    );
   }
 
   function handleReplay() {
@@ -193,12 +196,48 @@ export function StorySimulator({
     setCompletedEffectNodeId(null);
   }
 
-  const sceneToneClass =
+  const sceneToneStyle =
     currentNode.effect?.type === "damage"
-      ? "bg-[#f8e3dd]"
+      ? {
+          backgroundColor: "#f6ded6",
+          backgroundImage:
+            "radial-gradient(circle at 18% 16%, rgba(255,255,255,0.78), transparent 28%), radial-gradient(circle at 84% 14%, rgba(182,70,59,0.18), transparent 24%), linear-gradient(180deg, #FAECE7 0%, #F2D8D0 100%)",
+        }
       : currentNode.effect?.type === "saved" || currentNode.endingType === "good"
-        ? "bg-[#e6f3ea]"
-        : "bg-[#eddcc9]";
+        ? {
+            backgroundColor: "#e6f2e7",
+            backgroundImage:
+              "radial-gradient(circle at 20% 18%, rgba(255,255,255,0.72), transparent 30%), radial-gradient(circle at 82% 16%, rgba(31,122,90,0.14), transparent 24%), linear-gradient(180deg, #EFF8F0 0%, #DDEEDD 100%)",
+          }
+        : {
+            backgroundColor: "#efe3d3",
+            backgroundImage:
+              "radial-gradient(circle at 18% 18%, rgba(255,255,255,0.72), transparent 28%), radial-gradient(circle at 84% 16%, rgba(161,201,117,0.16), transparent 24%), linear-gradient(180deg, #F7F0E4 0%, #E9DBC8 100%)",
+          };
+
+  const speakerLabel =
+    currentNode.speaker === "safi"
+      ? t("simulatorSafi")
+      : currentNode.speaker === "system"
+        ? isSpanish
+          ? "Sistema"
+          : "System"
+        : isSpanish
+          ? "Narrador"
+          : "Narrator";
+
+  const defaultMascot = getSafiMascotAsset(emotion);
+  const mascot = {
+    src: currentNode.mascot?.src ?? defaultMascot.src,
+    width: currentNode.mascot?.width ?? defaultMascot.width,
+    height: currentNode.mascot?.height ?? defaultMascot.height,
+    alt:
+      currentNode.mascot?.alt ??
+      (isSpanish
+        ? `${t("simulatorSafi")} con expresion ${emotion}`
+        : `${t("simulatorSafi")} with a ${emotion} expression`),
+    mood: currentNode.mascot?.mood ?? emotion,
+  };
 
   if (currentNode.isEnding && completionSummary) {
     return (
@@ -215,14 +254,14 @@ export function StorySimulator({
   }
 
   return (
-    <div className={`simulator-root flex flex-col transition-colors duration-500 ${sceneToneClass}`}>
-      <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden px-4 pb-2 pt-14">
+    <div className="simulator-root relative flex flex-col transition-colors duration-300" style={sceneToneStyle}>
+      <section className="relative flex min-h-dvh flex-1 flex-col overflow-y-auto px-4 pb-6 pt-16 sm:px-6 lg:px-8">
         <div className="absolute left-4 top-4 z-20">
           <button
             type="button"
             onClick={handleBack}
             disabled={!history.length}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full border-[2px] border-black bg-white/85 px-3 text-sm font-bold text-black shadow-sm disabled:opacity-40"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border-[2px] border-black bg-white/88 px-4 text-sm font-bold text-black shadow-[0_14px_30px_rgba(17,24,39,0.1)] backdrop-blur-sm transition hover:-translate-y-0.5 disabled:opacity-40 disabled:hover:translate-y-0"
           >
             <ArrowLeft className="size-4" />
             {t("simulatorBack")}
@@ -232,84 +271,82 @@ export function StorySimulator({
           <button
             type="button"
             onClick={onExit}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full border-[2px] border-black bg-white/85 px-3 text-sm font-bold text-black shadow-sm"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border-[2px] border-black bg-white/88 px-4 text-sm font-bold text-black shadow-[0_14px_30px_rgba(17,24,39,0.1)] backdrop-blur-sm transition hover:-translate-y-0.5"
           >
             <X className="size-4" />
             {t("simulatorExit")}
           </button>
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[rgba(255,255,255,0.35)]" />
+        <DialogueScene
+          dialogueKey={currentNode.id}
+          speaker={currentNode.speaker}
+          speakerLabel={speakerLabel}
+          text={currentNode.text}
+          mascot={mascot}
+          onAdvance={currentNode.next ? () => transitionTo(currentNode.next as string) : undefined}
+          canAdvance={canInteract}
+          allowTextTapAdvance={Boolean(currentNode.next && !hasChoices)}
+          onTypingChange={(done) => {
+            setCompletedTypingNodeId(done ? currentNode.id : null);
+          }}
+          footer={
+            currentNode.next && !hasChoices ? (
+              <motion.button
+                type="button"
+                onClick={() => transitionTo(currentNode.next as string)}
+                disabled={!canInteract}
+                whileHover={settings.reducedMotion ? undefined : { scale: 1.03, boxShadow: "0 18px 34px rgba(17,24,39,0.26)" }}
+                whileTap={settings.reducedMotion ? undefined : { scale: 0.97 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="inline-flex min-h-12 items-center gap-2 rounded-full bg-black px-5 text-sm font-bold text-white shadow-[0_14px_24px_rgba(17,24,39,0.18)] disabled:opacity-50 disabled:shadow-none"
+              >
+                {t("simulatorNext")} →
+              </motion.button>
+            ) : undefined
+          }
+        >
+          {currentNode.effect ? (
+            currentNode.effect.type === "damage" ? (
+              <DamageReveal
+                key={currentNode.id}
+                effect={currentNode.effect}
+                onComplete={() => {
+                  setLastEffect(currentNode.effect ?? null);
+                  setCompletedEffectNodeId(currentNode.id);
+                }}
+              />
+            ) : (
+              <SavingsReveal
+                key={currentNode.id}
+                effect={currentNode.effect}
+                onComplete={() => {
+                  setLastEffect(currentNode.effect ?? null);
+                  setCompletedEffectNodeId(currentNode.id);
+                }}
+              />
+            )
+          ) : null}
 
-        <div className="relative flex flex-1 items-end justify-center">
-          <div className="absolute bottom-10 h-5 w-40 rounded-full bg-black/10 blur-md" />
-          <div className="relative z-10 h-[40svh] max-h-[360px] w-full max-w-[260px]">
-            <SafiCharacter emotion={emotion} className="mx-auto h-full w-full max-w-[240px]" />
-          </div>
-        </div>
-      </section>
-
-      <DialogueBox
-        key={currentNode.id}
-        speaker={currentNode.speaker}
-        text={currentNode.text}
-        onAdvance={currentNode.next ? () => transitionTo(currentNode.next as string) : undefined}
-        canAdvance={canInteract}
-        allowTextTapAdvance={Boolean(currentNode.next && !hasChoices && !currentNode.delay)}
-        onTypingChange={(done) => {
-          setCompletedTypingNodeId(done ? currentNode.id : null);
-        }}
-      >
-        {currentNode.effect ? (
-          currentNode.effect.type === "damage" ? (
-            <DamageReveal
-              effect={currentNode.effect}
-              onComplete={() => {
-                setLastEffect(currentNode.effect ?? null);
-                setCompletedEffectNodeId(currentNode.id);
-              }}
-            />
-          ) : (
-            <SavingsReveal
-              effect={currentNode.effect}
-              onComplete={() => {
-                setLastEffect(currentNode.effect ?? null);
-                setCompletedEffectNodeId(currentNode.id);
-              }}
-            />
-          )
-        ) : null}
-
-        {currentNode.choices?.length ? (
-          <ChoiceButtons
-            choices={currentNode.choices}
-            disabled={!canInteract}
-            onSelect={(nextNodeId) => transitionTo(nextNodeId)}
-          />
-        ) : null}
-
-        {currentNode.showInsuranceTip && !currentNode.isEnding ? (
-          <div className="rounded-[1rem] bg-[#FFF1DD] px-3 py-3 text-sm leading-6 text-black/75">
-            <span className="block text-[11px] font-bold uppercase tracking-[0.22em] text-black/55">
-              {t("simulatorInsuranceTip")}
-            </span>
-            <p className="mt-1">{currentNode.showInsuranceTip}</p>
-          </div>
-        ) : null}
-
-        {currentNode.next && !hasChoices && !currentNode.delay ? (
-          <div className="mt-1 flex justify-end">
-            <button
-              type="button"
-              onClick={() => transitionTo(currentNode.next as string)}
+          {currentNode.choices?.length ? (
+            <ChoiceButtons
+              key={currentNode.id}
+              choices={currentNode.choices}
               disabled={!canInteract}
-              className="rounded-full bg-black px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
-            >
-              {t("simulatorNext")} →
-            </button>
-          </div>
-        ) : null}
-      </DialogueBox>
+              onSelect={(nextNodeId) => transitionTo(nextNodeId)}
+            />
+          ) : null}
+
+          {currentNode.showInsuranceTip && !currentNode.isEnding ? (
+            <div className="rounded-[1.25rem] border border-black/10 bg-[#FFF2DE] px-4 py-3 text-sm leading-6 text-black/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
+              <span className="block text-[11px] font-bold uppercase tracking-[0.22em] text-black/55">
+                {t("simulatorInsuranceTip")}
+              </span>
+              <p className="mt-1">{currentNode.showInsuranceTip}</p>
+            </div>
+          ) : null}
+        </DialogueScene>
+      </section>
     </div>
   );
 }
