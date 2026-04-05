@@ -45,7 +45,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[430px] border-t border-[var(--color-accent-glow)] bg-[linear-gradient(180deg,rgba(32,11,15,0.9),rgba(19,8,12,0.96))] px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl"
+      className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[430px] border-t border-[var(--color-accent-glow)] bg-[rgba(24,11,15,0.94)] px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl"
     >
       <ul className="grid grid-cols-6 gap-2">
         {items.map((item) => {

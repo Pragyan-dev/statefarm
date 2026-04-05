@@ -34,7 +34,7 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
   const isSpanish = settings.language === "es";
   const styles = SEVERITY_STYLES[gap.severity];
   const actionClass =
-    "inline-flex min-h-[3.1rem] items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
+    "inline-flex min-h-[3.1rem] items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
 
   return (
     <article

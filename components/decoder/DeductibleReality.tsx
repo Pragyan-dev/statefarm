@@ -55,7 +55,7 @@ export function DeductibleReality({
             >
               <div className="h-2 overflow-hidden rounded-full bg-[rgba(17,24,39,0.08)]">
                 <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#D4603A,#F0D9B6)] transition-[width] duration-700 ease-out"
+                  className="h-full rounded-full bg-[#d4603a] transition-[width] duration-700 ease-out"
                   style={{
                     width: visible ? width : "0%",
                     transitionDelay: `${index * 200}ms`,

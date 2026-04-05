@@ -313,7 +313,7 @@ export default function ClaimPage() {
                 type="button"
                 onClick={() => void buildGuide()}
                 disabled={!canBuildGuide}
-                className="inline-flex min-h-[3.35rem] flex-1 items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-55"
+                className="inline-flex min-h-[3.35rem] flex-1 items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-55"
               >
                 {isSpanish ? "Crear mi guia" : "Build my guide"}
                 <ArrowRight className="size-4" />

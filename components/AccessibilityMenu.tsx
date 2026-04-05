@@ -54,7 +54,7 @@ export function AccessibilityMenu({
         aria-label={t("accessibility")}
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="relative border-b border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,252,251,0.96),rgba(251,246,239,0.98))] px-5 py-5 sm:px-6">
+        <header className="relative border-b border-[var(--color-border)] bg-[rgba(251,246,239,0.98)] px-5 py-5 sm:px-6">
           <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[var(--color-accent-wash)] blur-3xl" />
           <div className="relative flex items-start justify-between gap-4">
             <div>
@@ -275,7 +275,7 @@ export function AccessibilityMenu({
           </div>
         </div>
 
-        <div className="border-t border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(251,246,239,0.9),rgba(251,246,239,1))] px-5 py-4 sm:px-6">
+        <div className="border-t border-[var(--color-border)] bg-[rgba(251,246,239,0.96)] px-5 py-4 sm:px-6">
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
               type="button"

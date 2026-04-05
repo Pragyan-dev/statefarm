@@ -60,8 +60,8 @@ export function SimulatorResult({
     <div
       className={`flex min-h-[100dvh] flex-col ${
         isGood
-          ? "bg-gradient-to-b from-green-50 via-[#F6FFF7] to-white"
-          : "bg-gradient-to-b from-red-50 via-[#FFF8F5] to-white"
+          ? "bg-[#eef7f2]"
+          : "bg-[#fbece7]"
       }`}
     >
       <div className="flex flex-1 flex-col px-4 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-6">
