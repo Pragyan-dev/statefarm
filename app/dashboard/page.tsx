@@ -355,8 +355,8 @@ export default function DashboardPage() {
             title={isSpanish ? "Empieza de nuevo si lo necesitas." : "Start fresh if you need to."}
             description={
               isSpanish
-                ? "Borra tu perfil guardado y vuelve al ingreso inicial."
-                : "Clear the saved profile and return to the intake flow."
+                ? "Borra el perfil guardado, quita el acceso al panel y vuelve al resumen web para empezar de nuevo."
+                : "Clear the saved profile, remove dashboard access, and return to the website overview to start over."
             }
           >
             <div className="flex flex-wrap gap-3">

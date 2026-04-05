@@ -105,17 +105,31 @@ export function WebsiteStatRow({
 
 export function WebsiteActionLink({
   href,
+  onClick,
   title,
   description,
   className = "",
 }: {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   title: string;
   description: string;
   className?: string;
 }) {
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={`web-action-row w-full text-left ${className}`}>
+        <div>
+          <p className="font-semibold text-[var(--color-ink)]">{title}</p>
+          <p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">{description}</p>
+        </div>
+        <ArrowRight className="size-4 shrink-0 text-[var(--color-accent)]" />
+      </button>
+    );
+  }
+
   return (
-    <Link href={href} className={`web-action-row ${className}`}>
+    <Link href={href ?? "#"} className={`web-action-row ${className}`}>
       <div>
         <p className="font-semibold text-[var(--color-ink)]">{title}</p>
         <p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">{description}</p>

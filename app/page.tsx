@@ -1,47 +1,66 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowRight, CheckCircle2, Shield, Sparkles, Volume2 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { WebsiteActionLink, WebsiteRailCard, WebsiteSectionHeader, WebsiteSectionPanel } from "@/components/website/WebsitePrimitives";
+import {
+  WebsiteDashboardBuilder,
+  type DashboardBuilderSeed,
+} from "@/components/website/WebsiteDashboardBuilder";
 import { useAccessibility } from "@/hooks/useAccessibility";
 
-type ProductOption = "auto" | "renters" | "auto-renters";
+type ProductOption = DashboardBuilderSeed["product"];
+
+function getSeedFromSearchParams(searchParams: ReturnType<typeof useSearchParams>): DashboardBuilderSeed {
+  const requestedProduct = searchParams.get("product");
+  const requestedZip = searchParams.get("zip");
+
+  return {
+    product:
+      requestedProduct === "auto" || requestedProduct === "renters" || requestedProduct === "auto-renters"
+        ? requestedProduct
+        : "auto-renters",
+    zip: requestedZip?.replace(/\D/g, "").slice(0, 5) || "85281",
+  };
+}
 
 export default function Home() {
-  const router = useRouter();
+  const builderRef = useRef<HTMLElement | null>(null);
+  const searchParams = useSearchParams();
+  const initialSeed = useMemo(() => getSeedFromSearchParams(searchParams), [searchParams]);
   const t = useTranslations();
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
-  const [product, setProduct] = useState<ProductOption>("auto-renters");
-  const [zip, setZip] = useState("85281");
+  const [product, setProduct] = useState<ProductOption>(initialSeed.product);
+  const [zip, setZip] = useState(initialSeed.zip);
+  const [builderOpen, setBuilderOpen] = useState(
+    searchParams.has("product") || searchParams.has("zip"),
+  );
+  const [builderSeed, setBuilderSeed] = useState<DashboardBuilderSeed>(initialSeed);
+  const [builderVersion, setBuilderVersion] = useState(0);
 
-  const features = [
-    t("homeFeatureSsn"),
-    t("homeFeatureDecode"),
-    t("homeFeatureClaim"),
-  ];
+  const features = [t("homeFeatureSsn"), t("homeFeatureDecode"), t("homeFeatureClaim")];
   const toolkitCards = [
     {
       title: t("homeShockTitle"),
       copy: t("homeShockCopy"),
       icon: Sparkles,
-      href: "/intake?product=auto",
+      product: "auto" as const,
     },
     {
       title: t("homeCoverageTitle"),
       copy: t("homeCoverageCopy"),
       icon: Shield,
-      href: "/intake?product=renters",
+      product: "renters" as const,
     },
     {
       title: t("homeClaimTitle"),
       copy: t("homeClaimCopy"),
       icon: ArrowRight,
-      href: "/intake?product=auto-renters",
+      product: "auto-renters" as const,
     },
   ];
   const journeySteps = [
@@ -56,17 +75,21 @@ export default function Home() {
       : "Use the toolkit to review scenarios, compare documents, and prep for claims.",
   ];
 
+  function openBuilder(seed: DashboardBuilderSeed) {
+    setBuilderSeed(seed);
+    setBuilderVersion((current) => current + 1);
+    setBuilderOpen(true);
+    window.setTimeout(() => {
+      builderRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  }
+
   function handleQuickStart(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const params = new URLSearchParams();
-    params.set("product", product);
-    const cleanZip = zip.replace(/\D/g, "").slice(0, 5);
-    if (cleanZip) {
-      params.set("zip", cleanZip);
-    }
-
-    router.push(`/intake?${params.toString()}`);
+    openBuilder({
+      product,
+      zip: zip.replace(/\D/g, "").slice(0, 5) || "85281",
+    });
   }
 
   return (
@@ -83,10 +106,19 @@ export default function Home() {
             description={t("homeWhyNowCopy")}
             actions={
               <>
-                <Link href="/intake" className="web-primary-button">
+                <button
+                  type="button"
+                  className="web-primary-button"
+                  onClick={() =>
+                    openBuilder({
+                      product,
+                      zip: zip.replace(/\D/g, "").slice(0, 5) || "85281",
+                    })
+                  }
+                >
                   {t("getStarted")}
                   <ArrowRight className="size-4" />
-                </Link>
+                </button>
                 <div className="web-secondary-button">
                   <Volume2 className="size-4" />
                   <span>{t("homeVoiceGuidance")}</span>
@@ -125,6 +157,12 @@ export default function Home() {
             </div>
           </section>
 
+          {builderOpen ? (
+            <section id="build-dashboard" ref={builderRef}>
+              <WebsiteDashboardBuilder key={builderVersion} initialSeed={builderSeed} />
+            </section>
+          ) : null}
+
           <WebsiteSectionPanel
             eyebrow={t("homeToolkit")}
             title={isSpanish ? "Tres herramientas, una sola ruta de accion." : "Three tools, one action-ready flow."}
@@ -134,7 +172,12 @@ export default function Home() {
               {toolkitCards.map((feature) => {
                 const Icon = feature.icon;
                 return (
-                  <Link key={feature.title} href={feature.href} className="web-grid-card block">
+                  <button
+                    key={feature.title}
+                    type="button"
+                    className="web-grid-card block text-left"
+                    onClick={() => openBuilder({ product: feature.product, zip: zip || "85281" })}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <h3 className="text-xl font-semibold text-[var(--color-ink)]">{feature.title}</h3>
@@ -142,7 +185,7 @@ export default function Home() {
                       </div>
                       <Icon className="mt-1 size-5 shrink-0 text-[var(--color-accent)]" />
                     </div>
-                  </Link>
+                  </button>
                 );
               })}
             </div>
@@ -171,8 +214,8 @@ export default function Home() {
             title={isSpanish ? "Inicia tu plan personalizado." : "Start your personalized plan."}
             description={
               isSpanish
-                ? "Elige tu enfoque de cobertura y tu ZIP para entrar a la herramienta con la configuracion correcta."
-                : "Choose your coverage focus and ZIP code to enter the toolkit with the right starting setup."
+                ? "Elige tu enfoque de cobertura y tu ZIP para preparar el panel correcto sin salir del resumen web."
+                : "Choose your coverage focus and ZIP code to prepare the right dashboard without leaving the website overview."
             }
           >
             <form className="grid gap-4" onSubmit={handleQuickStart}>
@@ -209,12 +252,20 @@ export default function Home() {
           </WebsiteRailCard>
 
           <div className="grid gap-3">
-            <Link href="/intake?product=auto" className="web-outline-button">
+            <button
+              type="button"
+              className="web-outline-button"
+              onClick={() => openBuilder({ product: "auto", zip: zip || "85281" })}
+            >
               {isSpanish ? "Plan para auto" : "Auto coverage plan"}
-            </Link>
-            <Link href="/intake?product=renters" className="web-outline-button">
+            </button>
+            <button
+              type="button"
+              className="web-outline-button"
+              onClick={() => openBuilder({ product: "renters", zip: zip || "85281" })}
+            >
               {isSpanish ? "Plan para inquilino" : "Renters plan"}
-            </Link>
+            </button>
           </div>
 
           <WebsiteRailCard
@@ -223,22 +274,22 @@ export default function Home() {
             description={
               isSpanish
                 ? "Cuando completes el ingreso, podras navegar el panel, comparar escenarios y preparar documentos."
-                : "Once intake is complete, you can navigate the dashboard, compare scenarios, and prepare documents."
+                : "Once you complete setup, you can navigate the dashboard, compare scenarios, and prepare documents."
             }
           >
             <div className="grid gap-3">
               <WebsiteActionLink
-                href="/intake?product=auto-renters"
+                onClick={() => openBuilder({ product: "auto-renters", zip: zip || "85281" })}
                 title={t("homeShockTitle")}
                 description={t("homeShockCopy")}
               />
               <WebsiteActionLink
-                href="/intake?product=renters"
+                onClick={() => openBuilder({ product: "renters", zip: zip || "85281" })}
                 title={t("homeCoverageTitle")}
                 description={t("homeCoverageCopy")}
               />
               <WebsiteActionLink
-                href="/intake?product=auto-renters"
+                onClick={() => openBuilder({ product: "auto-renters", zip: zip || "85281" })}
                 title={t("homeClaimTitle")}
                 description={t("homeClaimCopy")}
               />

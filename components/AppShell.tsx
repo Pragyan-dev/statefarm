@@ -62,10 +62,7 @@ export function AppShell({
   ];
   const shellNav = accessReady && isDashboardBuilt
     ? [{ href: "/", label: t("websiteOverview") }, ...websiteNav]
-    : [
-        { href: "/", label: t("websiteOverview") },
-        { href: "/intake", label: t("getStarted") },
-      ];
+    : [{ href: "/", label: t("websiteOverview") }];
 
   useEffect(() => {
     if (!shouldRedirectHome) {
@@ -174,7 +171,7 @@ export function AppShell({
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
-                <Link href="/intake" className="web-primary-button">
+                <Link href="/" className="web-primary-button">
                   {t("getStarted")}
                 </Link>
                 {accessReady && isDashboardBuilt ? (
