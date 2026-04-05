@@ -1,6 +1,7 @@
 "use client";
 
 import jargon from "@/data/jargon.json";
+import { AiSourceNotice } from "@/components/AiSourceNotice";
 import { ReadAloud } from "@/components/ReadAloud";
 import { JargonTooltip } from "@/components/JargonTooltip";
 import { useAccessibility } from "@/hooks/useAccessibility";
@@ -45,6 +46,10 @@ export function PolicySummary({
           </p>
         </div>
         <ReadAloud text={narration} />
+      </div>
+
+      <div className="mt-4">
+        <AiSourceNotice aiSource={summary.aiSource} fallbackReason={summary.fallbackReason} />
       </div>
 
       <p className="mt-4 text-base leading-7 text-[var(--color-ink)]">{summary.summary}</p>

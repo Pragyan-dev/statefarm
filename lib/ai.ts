@@ -1,4 +1,9 @@
 import scamPatterns from "@/data/scam-patterns.json";
+import {
+  getOpenRouterHeaders,
+  getOpenRouterModel,
+  OPENROUTER_URL,
+} from "@/lib/openrouter";
 import type {
   ClaimGuideResult,
   Language,
@@ -7,13 +12,20 @@ import type {
   ScamVerdictResult,
 } from "@/lib/types";
 
-const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const DEFAULT_MODEL = "google/gemini-2.5-flash-preview";
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : "Unknown OpenRouter error";
+}
+
+function logAiEvent(level: "info" | "warn" | "error", feature: string, message: string) {
+  console[level](`[arrivesafe-ai:${feature}] ${message}`);
+}
 
 async function requestOpenRouterJson<T>({
+  feature,
   system,
   user,
 }: {
+  feature: string;
   system: string;
   user: string;
 }) {
@@ -23,16 +35,15 @@ async function requestOpenRouterJson<T>({
     throw new Error("OPENROUTER_API_KEY missing");
   }
 
+  const model = getOpenRouterModel();
+
+  logAiEvent("info", feature, `Requesting OpenRouter model ${model}`);
+
   const response = await fetch(OPENROUTER_URL, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://arrivesafe.local",
-      "X-Title": "ArriveSafe",
-    },
+    headers: getOpenRouterHeaders(apiKey),
     body: JSON.stringify({
-      model: DEFAULT_MODEL,
+      model,
       response_format: {
         type: "json_object",
       },
@@ -53,6 +64,8 @@ async function requestOpenRouterJson<T>({
     const errorText = await response.text();
     throw new Error(`OpenRouter request failed: ${errorText}`);
   }
+
+  logAiEvent("info", feature, `OpenRouter request succeeded with ${model}`);
 
   const payload = (await response.json()) as {
     choices?: Array<{
@@ -80,6 +93,7 @@ export async function decodePolicyText({
 }) {
   try {
     const result = await requestOpenRouterJson<PolicySummaryResult>({
+      feature: "decode",
       system:
         "You are an insurance policy translator for immigrants. Return JSON with provider, type, covered, notCovered, deductible { amount, analogy }, monthlyCost, expires, score, gaps, summary. Use 6th grade reading level. Short sentences. No jargon.",
       user: `Language: ${language}. Policy text:\n${text.slice(0, 16000)}`,
@@ -88,9 +102,12 @@ export async function decodePolicyText({
     return {
       ...result,
       demoMode: false,
+      aiSource: "openrouter",
       sourceText: text,
     };
-  } catch {
+  } catch (error) {
+    const fallbackReason = getErrorMessage(error);
+    logAiEvent("warn", "decode", `Using local fallback. ${fallbackReason}`);
     const lower = text.toLowerCase();
     const covered = [];
     const notCovered = [];
@@ -124,6 +141,8 @@ export async function decodePolicyText({
           : "This policy covers common apartment losses but does not appear to cover flood damage.",
       sourceText: text,
       demoMode: true,
+      aiSource: "local",
+      fallbackReason,
     } satisfies PolicySummaryResult;
   }
 }
@@ -137,6 +156,7 @@ export async function coachClaim({
 }) {
   try {
     const result = await requestOpenRouterJson<ClaimGuideResult>({
+      feature: "claim",
       system:
         "You are a claim filing assistant for immigrants who may not speak English fluently. Return JSON with immediateActions, documents, whatNotToDo, timeline, followUpSteps, claimType. Simple English. Short sentences.",
       user: `Language: ${language}. Incident: ${description}`,
@@ -145,8 +165,11 @@ export async function coachClaim({
     return {
       ...result,
       demoMode: false,
+      aiSource: "openrouter",
     };
-  } catch {
+  } catch (error) {
+    const fallbackReason = getErrorMessage(error);
+    logAiEvent("warn", "claim", `Using local fallback. ${fallbackReason}`);
     const lower = description.toLowerCase();
     const claimType = lower.includes("car") || lower.includes("accident")
       ? "auto_accident"
@@ -177,6 +200,8 @@ export async function coachClaim({
           : ["Save every email and reference number.", "Confirm the deductible before repairs or replacements."],
       claimType,
       demoMode: true,
+      aiSource: "local",
+      fallbackReason,
     } satisfies ClaimGuideResult;
   }
 }
@@ -193,17 +218,21 @@ export async function analyzeScam({
   );
 
   if (matched) {
+    logAiEvent("info", "scam", `Using local scam pattern match for "${matched.pattern}"`);
     return {
       verdict: matched.flag as ScamFlag,
       explanation: matched.explanation[language],
       reasons: [matched.explanation[language]],
       matchedPattern: matched.pattern,
       demoMode: true,
+      aiSource: "local",
+      fallbackReason: "Matched a local scam pattern",
     } satisfies ScamVerdictResult;
   }
 
   try {
     const result = await requestOpenRouterJson<ScamVerdictResult>({
+      feature: "scam",
       system:
         "You evaluate suspicious insurance offers for immigrants. Return JSON with verdict, explanation, reasons, matchedPattern. Verdict must be one of SCAM, PREDATORY, WARNING, SAFE.",
       user: `Language: ${language}. Offer: ${description}`,
@@ -212,8 +241,11 @@ export async function analyzeScam({
     return {
       ...result,
       demoMode: false,
+      aiSource: "openrouter",
     };
-  } catch {
+  } catch (error) {
+    const fallbackReason = getErrorMessage(error);
+    logAiEvent("warn", "scam", `Using local fallback. ${fallbackReason}`);
     return {
       verdict: "SAFE",
       explanation:
@@ -226,6 +258,8 @@ export async function analyzeScam({
           : "It does not match a known scam pattern.",
       ],
       demoMode: true,
+      aiSource: "local",
+      fallbackReason,
     } satisfies ScamVerdictResult;
   }
 }

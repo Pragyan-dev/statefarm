@@ -95,6 +95,8 @@ export interface PolicySummaryResult {
   summary: string;
   sourceText?: string;
   demoMode?: boolean;
+  aiSource?: "openrouter" | "local";
+  fallbackReason?: string;
 }
 
 export interface ClaimGuideResult {
@@ -105,6 +107,8 @@ export interface ClaimGuideResult {
   followUpSteps: string[];
   claimType: "auto_accident" | "renters_claim" | "theft";
   demoMode?: boolean;
+  aiSource?: "openrouter" | "local";
+  fallbackReason?: string;
 }
 
 export type ScamFlag = "SCAM" | "PREDATORY" | "WARNING" | "SAFE";
@@ -115,6 +119,8 @@ export interface ScamVerdictResult {
   reasons: string[];
   matchedPattern?: string;
   demoMode?: boolean;
+  aiSource?: "openrouter" | "local";
+  fallbackReason?: string;
 }
 
 export interface VisaGuideStep {

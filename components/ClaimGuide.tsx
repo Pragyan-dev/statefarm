@@ -1,5 +1,6 @@
 "use client";
 
+import { AiSourceNotice } from "@/components/AiSourceNotice";
 import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import type { ClaimGuideResult } from "@/lib/types";
@@ -27,6 +28,10 @@ export function ClaimGuide({
           </h2>
         </div>
         <ReadAloud text={narration} />
+      </div>
+
+      <div className="mt-4">
+        <AiSourceNotice aiSource={guide.aiSource} fallbackReason={guide.fallbackReason} />
       </div>
 
       <div className="mt-5 space-y-5">

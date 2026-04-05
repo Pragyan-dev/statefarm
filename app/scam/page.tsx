@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { AiSourceNotice } from "@/components/AiSourceNotice";
 import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import type { ScamVerdictResult } from "@/lib/types";
@@ -103,6 +104,9 @@ export default function ScamPage() {
                   </h2>
                 </div>
                 <ReadAloud text={result.explanation} />
+              </div>
+              <div className="mt-4">
+                <AiSourceNotice aiSource={result.aiSource} fallbackReason={result.fallbackReason} />
               </div>
               <p className="mt-4 text-base text-[var(--color-ink)]">{result.explanation}</p>
               <ul className="mt-4 grid gap-2 text-sm text-[var(--color-muted)]">
