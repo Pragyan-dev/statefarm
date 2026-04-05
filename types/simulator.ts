@@ -47,6 +47,8 @@ export interface Scenario {
   icon: string;
   estimatedTime: string;
   coverImage?: string;
+  matchReason?: string;
+  themeColor?: string;
   nodes: DialogueNode[];
 }
 
