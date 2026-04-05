@@ -95,34 +95,34 @@ export function ScenarioSelector({
           </motion.div>
 
           <div className="pointer-events-none absolute inset-y-0 right-0 w-[42%]">
-            <motion.div
-              className="absolute right-[14%] top-1/2 hidden w-40 -translate-y-1/2 md:block lg:w-48"
-              initial={reduceMotion ? false : { opacity: 0, scale: 0.92, y: 12 }}
-              animate={
-                reduceMotion
-                  ? undefined
-                  : {
-                      opacity: 1,
-                      y: [-5, 5, -5],
-                      rotate: [-3, 2, -3],
-                      scale: [1, 1.015, 1],
-                    }
-              }
-              transition={{
-                duration: 4.2,
-                ease: "easeInOut",
-                repeat: reduceMotion ? 0 : Infinity,
-              }}
-            >
-              <Image
-                src="/mascot/calm.png"
-                alt={settings.language === "es" ? "Mascota de FirstCover" : "FirstCover mascot"}
-                width={519}
-                height={480}
-                className="h-auto w-full object-contain drop-shadow-[0_22px_30px_rgba(17,24,39,0.16)]"
-                priority
-              />
-            </motion.div>
+            <div className="absolute right-[14%] top-1/2 z-10 hidden w-40 -translate-y-1/2 md:block lg:w-48">
+              <motion.div
+                initial={reduceMotion ? false : { scale: 0.96, y: 12 }}
+                animate={
+                  reduceMotion
+                    ? undefined
+                    : {
+                        x: [0, 6, 0, -4, 0],
+                        y: [-5, 5, -4, 4, -5],
+                        rotate: [-2, 2, -1, 1, -2],
+                      }
+                }
+                transition={{
+                  duration: 5.4,
+                  ease: "easeInOut",
+                  repeat: reduceMotion ? 0 : Infinity,
+                }}
+              >
+                <Image
+                  src="/mascot/calm.png"
+                  alt={settings.language === "es" ? "Mascota de FirstCover" : "FirstCover mascot"}
+                  width={519}
+                  height={480}
+                  className="h-auto w-full object-contain drop-shadow-[0_22px_30px_rgba(17,24,39,0.16)]"
+                  priority
+                />
+              </motion.div>
+            </div>
 
             {!reduceMotion ? (
               <>
@@ -145,7 +145,7 @@ export function ScenarioSelector({
           </div>
         </section>
 
-        <div className="mt-5 grid gap-3">
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
           {scenarios.map((scenario, index) => {
             const completion = progress[scenario.id];
             const rewardValue = completion

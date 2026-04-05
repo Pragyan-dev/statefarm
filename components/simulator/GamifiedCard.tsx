@@ -5,9 +5,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useMemo } from "react";
 
 import { useAccessibility } from "@/hooks/useAccessibility";
-import { FloatingIcon } from "@/components/simulator/FloatingIcon";
 import { AnimatedCheckmark } from "@/components/simulator/AnimatedCheckmark";
 import { AnimatedRewardValue } from "@/components/simulator/AnimatedRewardValue";
+import { FloatingParticles } from "@/components/simulator/FloatingParticles";
 import { getGamifiedTheme } from "@/components/simulator/gamifiedTheme";
 
 interface GamifiedCardProps {
@@ -39,68 +39,79 @@ export function GamifiedCard({
   const prefersReducedMotion = useReducedMotion();
   const reduceMotion = settings.reducedMotion || prefersReducedMotion;
   const theme = useMemo(() => getGamifiedTheme(themeColor, index), [index, themeColor]);
-  const [primaryAccentIcon, secondaryAccentIcon] = theme.accentIcons;
   const isPositiveReward = (rewardValue ?? 0) >= 0;
+  const cardVariants = {
+    rest: {
+      scale: 1,
+      y: 0,
+      boxShadow: `0 16px 34px rgba(17,24,39,0.08), 0 0 0 1px ${theme.border}`,
+    },
+    hover: {
+      scale: 1.02,
+      y: -2,
+      boxShadow: `0 22px 46px rgba(17,24,39,0.1), 0 0 22px ${theme.glow}, 0 0 0 1px ${theme.border}`,
+    },
+    tap: {
+      scale: 0.985,
+      y: 0,
+      boxShadow: `0 16px 30px rgba(17,24,39,0.08), 0 0 16px ${theme.glow}, 0 0 0 1px ${theme.border}`,
+    },
+  } as const;
 
   return (
-    <motion.button
-      type="button"
-      onClick={onSelect}
+    <motion.div
       initial={reduceMotion ? false : { opacity: 0, y: 18 }}
       animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.28, delay: index * 0.06, ease: "easeOut" }}
-      whileHover={reduceMotion ? undefined : { scale: 1.025, y: -2 }}
-      whileTap={reduceMotion ? undefined : { scale: 0.985 }}
-      className="relative flex min-h-20 w-full items-center gap-4 overflow-hidden rounded-[1.4rem] border-[2px] border-black bg-white px-4 py-4 text-left shadow-[0_14px_36px_rgba(17,24,39,0.08)]"
-      style={{
-        boxShadow: `0 18px 46px rgba(17,24,39,0.08), 0 0 0 1px ${theme.glow}`,
-      }}
     >
+      <motion.button
+        type="button"
+        onClick={onSelect}
+        initial="rest"
+        animate="rest"
+        whileHover={reduceMotion ? undefined : "hover"}
+        whileTap={reduceMotion ? undefined : "tap"}
+        variants={cardVariants}
+        className="relative flex min-h-20 w-full items-center gap-4 overflow-hidden rounded-[1.4rem] border-[2px] px-4 py-4 text-left"
+        style={{ borderColor: theme.border }}
+      >
       <motion.span
         className="absolute inset-0"
         aria-hidden="true"
         style={{
-          background: `radial-gradient(circle at 86% 50%, ${theme.glow}, transparent 32%), radial-gradient(circle at 12% 50%, ${theme.soft}, transparent 24%)`,
-          opacity: 0.85,
+          background: `linear-gradient(135deg, ${theme.backgroundFrom} 0%, ${theme.backgroundTo} 100%)`,
+          opacity: isCompleted ? 1 : 0.96,
         }}
-        animate={reduceMotion ? undefined : { opacity: [0.72, 0.94, 0.72] }}
-        transition={{ duration: 3.2, ease: "easeInOut", repeat: Infinity }}
+      />
+      <motion.span
+        className="absolute inset-0"
+        aria-hidden="true"
+        style={{
+          background: `radial-gradient(circle at 18% 16%, ${theme.highlight} 0%, rgba(255,255,255,0) 34%), radial-gradient(circle at 78% 48%, ${theme.glow} 0%, rgba(255,255,255,0) 42%)`,
+          opacity: isCompleted ? 0.95 : 0.82,
+        }}
+        animate={reduceMotion ? undefined : { opacity: [0.72, 0.9, 0.72] }}
+        transition={{ duration: 3.1, ease: "easeInOut", repeat: Infinity }}
+      />
+      <span
+        className="absolute inset-x-3 top-2 h-12 rounded-full blur-2xl"
+        aria-hidden="true"
+        style={{ backgroundColor: theme.highlight, opacity: 0.45 }}
       />
 
-      {!reduceMotion ? (
-        <div className="pointer-events-none absolute inset-y-0 right-24 hidden md:block">
-          <FloatingIcon
-            icon={primaryAccentIcon}
-            color={theme.tint}
-            className="absolute right-16 top-7"
-            delay={index * 0.2}
-            reduceMotion={reduceMotion}
-          />
-          <FloatingIcon
-            icon={secondaryAccentIcon}
-            color={theme.tint}
-            className="absolute right-7 top-14"
-            delay={index * 0.2 + 0.35}
-            size={15}
-            reduceMotion={reduceMotion}
-          />
-          <motion.span
-            className="absolute right-12 top-11 h-2.5 w-2.5 rounded-full"
-            style={{ backgroundColor: theme.tint }}
-            animate={{ opacity: [0.18, 0.58, 0.18], scale: [0.8, 1.2, 0.8] }}
-            transition={{ duration: 2.4, ease: "easeInOut", repeat: Infinity, delay: index * 0.15 }}
-          />
-        </div>
-      ) : null}
+      <FloatingParticles theme={theme} reduceMotion={reduceMotion} />
 
       <motion.span
         className="relative z-10 grid h-12 w-12 place-items-center rounded-2xl text-2xl"
         style={{
-          backgroundColor: theme.soft,
-          boxShadow: `0 0 0 1px ${theme.glow}, 0 0 24px ${theme.iconGlow}`,
+          background: `linear-gradient(180deg, rgba(255,255,255,0.88) 0%, ${theme.soft} 100%)`,
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.92), 0 0 0 1px ${theme.glow}, 0 12px 24px ${theme.shadow}`,
         }}
-        animate={reduceMotion ? undefined : { y: [0, -3, 0] }}
-        transition={{ duration: 2.6, ease: "easeInOut", repeat: Infinity, delay: index * 0.1 }}
+        variants={{
+          rest: { y: 0 },
+          hover: { y: -2 },
+        }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
       >
         {icon}
       </motion.span>
@@ -123,7 +134,11 @@ export function GamifiedCard({
         {matchReason ? (
           <motion.span
             className="mt-2 inline-flex rounded-full px-3 py-1 text-[11px] font-semibold"
-            style={{ backgroundColor: theme.soft, color: theme.chipText }}
+            style={{
+              background: `linear-gradient(180deg, rgba(255,255,255,0.72) 0%, ${theme.soft} 100%)`,
+              color: theme.chipText,
+              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.9)`,
+            }}
             animate={reduceMotion ? undefined : { y: [0, -1.5, 0] }}
             transition={{ duration: 2.4, ease: "easeInOut", repeat: Infinity }}
           >
@@ -136,7 +151,12 @@ export function GamifiedCard({
         </span>
 
         {isCompleted && typeof rewardValue === "number" ? (
-          <span className="mt-2 flex items-center gap-2 text-xs font-medium text-black/78">
+          <motion.span
+            className="mt-2 flex items-center gap-2 text-xs font-medium text-black/78"
+            initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+            animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut", delay: 0.06 }}
+          >
             <span>
               {settings.language === "es"
                 ? isPositiveReward
@@ -147,25 +167,8 @@ export function GamifiedCard({
                   : "Completed - you lost"}
             </span>
             <AnimatedRewardValue amount={Math.abs(rewardValue)} positive={isPositiveReward} />
-            {!reduceMotion ? (
-              <span className="relative ml-1 inline-flex h-5 w-7 items-center">
-                <FloatingIcon
-                  icon={primaryAccentIcon}
-                  color={theme.tint}
-                  size={14}
-                  className="absolute left-0 top-0"
-                  delay={0.1}
-                />
-                <FloatingIcon
-                  icon={secondaryAccentIcon}
-                  color={theme.tint}
-                  size={12}
-                  className="absolute left-3 top-1"
-                  delay={0.35}
-                />
-              </span>
-            ) : null}
-          </span>
+            {!reduceMotion ? <FloatingParticles theme={theme} reduceMotion={reduceMotion} className="relative ml-1 inline-flex h-5 w-7" density="low" /> : null}
+          </motion.span>
         ) : null}
       </span>
 
@@ -177,10 +180,11 @@ export function GamifiedCard({
           transition={{ duration: 0.26, ease: "easeOut", delay: 0.08 }}
         >
           <AnimatedCheckmark
-            className="h-20 w-20"
-            color={theme.arrow}
+            className="h-12 w-12"
+            color={theme.strong}
             glow={theme.soft}
             reduceMotion={reduceMotion}
+            mode="subtle"
           />
         </motion.div>
       ) : null}
@@ -189,19 +193,24 @@ export function GamifiedCard({
         className="relative z-10 mr-1 inline-flex h-12 w-12 items-center justify-center rounded-full"
         style={{
           color: theme.arrow,
-          boxShadow: `0 0 0 1px ${theme.glow}`,
-          backgroundColor: "rgba(255,255,255,0.84)",
+          border: `1px solid ${theme.glow}`,
+          boxShadow: `0 0 0 1px ${theme.glow}, 0 10px 24px ${theme.shadow}`,
+          background: `linear-gradient(180deg, rgba(255,255,255,0.94) 0%, ${theme.soft} 100%)`,
         }}
-        animate={reduceMotion ? undefined : { scale: [1, 1.04, 1], x: [0, 1, 0] }}
+        animate={reduceMotion ? undefined : { scale: [1, 1.04, 1], x: [0, 1, 0], boxShadow: [`0 0 0 1px ${theme.glow}, 0 10px 24px ${theme.shadow}`, `0 0 16px ${theme.glow}, 0 12px 28px ${theme.shadow}`, `0 0 0 1px ${theme.glow}, 0 10px 24px ${theme.shadow}`] }}
         transition={{ duration: 2.8, ease: "easeInOut", repeat: Infinity }}
       >
         <motion.span
-          whileHover={reduceMotion ? undefined : { x: 4 }}
+          variants={{
+            rest: { x: 0 },
+            hover: { x: 4 },
+          }}
           transition={{ duration: 0.18, ease: "easeOut" }}
         >
           <ChevronRight className="size-6" strokeWidth={2.2} />
         </motion.span>
       </motion.span>
-    </motion.button>
+      </motion.button>
+    </motion.div>
   );
 }
