@@ -266,6 +266,7 @@ export default function ClaimPage() {
 
   const canBuildGuide = Boolean(selectedIncident || description.trim());
   const useCompactIntakeLayout = resolvedMode === "website";
+  const shouldFillViewport = useCompactIntakeLayout && phase !== "guide";
   const selectedLabel =
     (selectedIncident ? categoryLabels.get(selectedIncident) : undefined) ??
     (guideIncident ? categoryLabels.get(guideIncident) : undefined) ??
@@ -300,7 +301,9 @@ export default function ClaimPage() {
     <div
       className={`${
         phase === "select" && useCompactIntakeLayout ? "py-4 lg:py-5" : "py-6 lg:py-10"
-      } ${phase === "guide" && isAppMode ? "pb-28" : ""}`}
+      } ${phase === "guide" && isAppMode ? "pb-28" : ""} ${
+        shouldFillViewport ? "flex flex-1 flex-col justify-center" : ""
+      }`}
     >
       {phase === "select" ? (
         <div className={`mx-auto ${useCompactIntakeLayout ? "max-w-[72rem]" : "grid max-w-[56rem] gap-5"}`}>

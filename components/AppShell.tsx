@@ -46,6 +46,7 @@ export function AppShell({
   const shouldUseWebsiteShell =
     (isSimulator && !hasActiveSimulatorStory) || (!isSimulator && resolvedMode === "website");
   const showWebsiteChrome = accessReady && isDashboardBuilt;
+  const shouldPinFooterBelowFold = pathname.startsWith("/decode") || pathname.startsWith("/claim");
 
   const websiteNav = [
     { href: "/dashboard", label: t("dashboard") },
@@ -105,65 +106,67 @@ export function AppShell({
           {t("skipToContent")}
         </a>
         <div className="website-shell min-h-dvh">
-          <header className="website-topbar z-40">
-            <div className="website-topbar-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="website-topbar-row">
-                <Link
-                  href={showWebsiteChrome ? "/dashboard" : "/"}
-                  className="website-topbar-brand font-display text-white"
-                >
-                  FirstCover
-                </Link>
-                <div className="website-topbar-controls">
-                  <a href="tel:8007325246" className="website-topbar-pill">
-                    <span>800-732-5246</span>
-                  </a>
-                  <LanguageToggle tone="light" className="website-topbar-toggle" />
-                  <ViewModeToggle tone="light" compact className="website-topbar-toggle" />
-                  <button
-                    type="button"
-                    onClick={() => setMenuOpen(true)}
-                    aria-label={t("accessibility")}
-                    className="website-topbar-action"
+          <div className={shouldPinFooterBelowFold ? "flex min-h-dvh flex-col" : undefined}>
+            <header className="website-topbar z-40">
+              <div className="website-topbar-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="website-topbar-row">
+                  <Link
+                    href={showWebsiteChrome ? "/dashboard" : "/"}
+                    className="website-topbar-brand font-display text-white"
                   >
-                    <Settings2 className="size-4" />
-                    <span>{t("accessibility")}</span>
-                  </button>
+                    FirstCover
+                  </Link>
+                  <div className="website-topbar-controls">
+                    <a href="tel:8007325246" className="website-topbar-pill">
+                      <span>800-732-5246</span>
+                    </a>
+                    <LanguageToggle tone="light" className="website-topbar-toggle" />
+                    <ViewModeToggle tone="light" compact className="website-topbar-toggle" />
+                    <button
+                      type="button"
+                      onClick={() => setMenuOpen(true)}
+                      aria-label={t("accessibility")}
+                      className="website-topbar-action"
+                    >
+                      <Settings2 className="size-4" />
+                      <span>{t("accessibility")}</span>
+                    </button>
+                  </div>
                 </div>
+                <div className="website-topbar-divider" aria-hidden="true" />
+
+                {showWebsiteChrome ? (
+                  <nav aria-label="Main navigation" className="website-topbar-nav">
+                    {shellNav.map((item) => {
+                      const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          aria-current={active ? "page" : undefined}
+                          className={`website-navlink whitespace-nowrap ${
+                            active ? "website-navlink-active" : ""
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                ) : null}
               </div>
-              <div className="website-topbar-divider" aria-hidden="true" />
+            </header>
 
-              {showWebsiteChrome ? (
-                <nav aria-label="Main navigation" className="website-topbar-nav">
-                  {shellNav.map((item) => {
-                    const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        aria-current={active ? "page" : undefined}
-                        className={`website-navlink whitespace-nowrap ${
-                          active ? "website-navlink-active" : ""
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-              ) : null}
-            </div>
-          </header>
-
-          <main
-            id="main-content"
-            className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${
-              showWebsiteChrome ? "py-8 lg:py-10" : "py-4 lg:py-5"
-            }`}
-          >
-            {children}
-          </main>
+            <main
+              id="main-content"
+              className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${
+                shouldPinFooterBelowFold ? "flex flex-1 flex-col" : ""
+              } ${showWebsiteChrome ? "py-8 lg:py-10" : "py-4 lg:py-5"}`}
+            >
+              {children}
+            </main>
+          </div>
           {showWebsiteChrome ? (
             <footer className="website-footer-band">
               <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

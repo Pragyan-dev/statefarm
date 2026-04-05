@@ -34,6 +34,7 @@ export default function DecodePage() {
   const [progress, setProgress] = useState(0);
   const [scanVisualComplete, setScanVisualComplete] = useState(false);
   const isWebsite = resolvedMode === "website";
+  const shouldFillViewport = isWebsite && phase !== "results";
   const uploadLayoutClass = isWebsite
     ? "mt-2 grid gap-3 xl:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.92fr)] xl:items-stretch"
     : "mt-6";
@@ -200,7 +201,11 @@ export default function DecodePage() {
   }
 
   return (
-    <div className={`py-3 lg:py-4 ${isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""}`}>
+    <div
+      className={`py-3 lg:py-4 ${isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""} ${
+        shouldFillViewport ? "flex flex-1 flex-col justify-center" : ""
+      }`}
+    >
       {phase === "upload" ? (
         <div className={uploadLayoutClass}>
           <section className="panel-card hero-ambient overflow-hidden xl:mt-0 xl:flex xl:min-h-[25.5rem] xl:flex-col xl:justify-between xl:px-7 xl:py-6">
