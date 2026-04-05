@@ -93,7 +93,7 @@ export const carAccidentScenario: Scenario = {
     {
       id: "no_aftermath",
       speaker: "safi",
-      emotion: "worried",
+      emotion: "hurt",
       text: "And there is a second layer of stress. A misdemeanor and missed work can follow you into future visa renewals, apartment applications, and credit checks. One crash becomes a long shadow.",
       next: "no_what_if",
     },

@@ -1,4 +1,4 @@
-export type Emotion = "neutral" | "happy" | "worried" | "shocked" | "celebrating";
+export type Emotion = "neutral" | "happy" | "worried" | "shocked" | "celebrating" | "hurt";
 
 export type Speaker = "safi" | "narrator" | "system";
 
