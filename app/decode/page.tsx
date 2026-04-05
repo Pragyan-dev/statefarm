@@ -34,6 +34,10 @@ export default function DecodePage() {
   const [progress, setProgress] = useState(0);
   const [scanVisualComplete, setScanVisualComplete] = useState(false);
   const isWebsite = resolvedMode === "website";
+  const shouldFillViewport = isWebsite && phase !== "results";
+  const uploadLayoutClass = isWebsite
+    ? "mt-2 grid gap-3 xl:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.92fr)] xl:items-stretch"
+    : "mt-6";
   const primaryActionClass =
     "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
   const secondaryActionClass =
@@ -197,32 +201,66 @@ export default function DecodePage() {
   }
 
   return (
-    <div className={`py-6 lg:py-10 ${isWebsite ? "mx-auto max-w-[68rem]" : ""}`}>
-      <section className="panel-card hero-ambient overflow-hidden">
-        <p className="eyebrow">{isSpanish ? "Decodificador visual de polizas" : "Visual policy decoder"}</p>
-        <h1 className="mt-2 font-display text-4xl leading-[0.96] text-[var(--color-ink)] sm:text-5xl lg:text-6xl">
-          {isSpanish
-            ? "Sube una poliza. Mira la salud real de esa cobertura."
-            : "Upload a policy. See the real health of that coverage."}
-        </h1>
-        <p className="mt-4 max-w-[38rem] text-base text-[var(--color-muted)]">
-          {isSpanish
-            ? "La pagina convierte PDFs y fotos en un puntaje, un escudo de cobertura, comparaciones del deducible y alertas concretas de riesgo."
-            : "This page turns PDFs and photos into a policy score, a coverage shield, deductible comparisons, and concrete gap alerts."}
-        </p>
-      </section>
-
+    <div
+      className={`py-3 lg:py-4 ${isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""} ${
+        shouldFillViewport ? "flex flex-1 flex-col justify-center" : ""
+      }`}
+    >
       {phase === "upload" ? (
-        <div className="mt-6">
+        <div className={uploadLayoutClass}>
+          <section className="panel-card hero-ambient overflow-hidden xl:mt-0 xl:flex xl:min-h-[25.5rem] xl:flex-col xl:justify-between xl:px-7 xl:py-6">
+            <div>
+              <p className="eyebrow">{isSpanish ? "Decodificador visual de polizas" : "Visual policy decoder"}</p>
+              <h1 className="mt-2 max-w-[15ch] font-display text-[clamp(2.7rem,4.1vw,4.2rem)] leading-[0.9] text-[var(--color-ink)]">
+                {isSpanish
+                  ? "Sube una poliza. Mira la salud real de esa cobertura."
+                  : "Upload a policy. See the real health of that coverage."}
+              </h1>
+              <p className="mt-3 max-w-[34rem] text-[0.96rem] leading-relaxed text-[var(--color-muted)] xl:max-w-[32rem]">
+                {isSpanish
+                  ? "La pagina convierte PDFs y fotos en un puntaje, un escudo de cobertura, comparaciones del deducible y alertas concretas de riesgo."
+                  : "This page turns PDFs and photos into a policy score, a coverage shield, deductible comparisons, and concrete gap alerts."}
+              </p>
+            </div>
+
+            <div className="mt-4 grid gap-2.5 text-sm text-[var(--color-muted)] sm:grid-cols-3 xl:mt-5 xl:grid-cols-3 xl:gap-2.5">
+              <div className="rounded-[1.2rem] border border-[var(--color-border)] bg-white/72 px-3.5 py-3">
+                <p className="font-semibold text-[var(--color-ink)]">
+                  {isSpanish ? "Puntaje rapido" : "Fast policy score"}
+                </p>
+                <p className="mt-1">
+                  {isSpanish ? "Lee limites y deducible en segundos." : "See limits and deductible in seconds."}
+                </p>
+              </div>
+              <div className="rounded-[1.2rem] border border-[var(--color-border)] bg-white/72 px-3.5 py-3">
+                <p className="font-semibold text-[var(--color-ink)]">
+                  {isSpanish ? "Brechas claras" : "Clear gap flags"}
+                </p>
+                <p className="mt-1">
+                  {isSpanish ? "Detecta donde la cobertura se queda corta." : "Spot where coverage falls short."}
+                </p>
+              </div>
+              <div className="rounded-[1.2rem] border border-[var(--color-border)] bg-white/72 px-3.5 py-3">
+                <p className="font-semibold text-[var(--color-ink)]">
+                  {isSpanish ? "Listo para comparar" : "Ready to compare"}
+                </p>
+                <p className="mt-1">
+                  {isSpanish ? "Usa una foto, PDF o demo." : "Use a photo, PDF, or demo file."}
+                </p>
+              </div>
+            </div>
+          </section>
+
           <UploadZone
             selectedDocument={selectedDocument}
             onFileSelected={handleFileSelected}
             onAnalyze={handleAnalyze}
             onReset={resetDecoder}
             onUseSample={handleUseSample}
+            compact={isWebsite}
           />
           {error ? (
-            <p className="mx-auto mt-4 max-w-[34rem] text-center text-sm text-[var(--color-danger)]">
+            <p className="xl:col-start-2 xl:mx-0 mx-auto mt-4 max-w-[34rem] text-center text-sm text-[var(--color-danger)] xl:mt-0 xl:text-left">
               {error}
             </p>
           ) : null}

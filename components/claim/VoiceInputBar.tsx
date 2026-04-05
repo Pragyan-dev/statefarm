@@ -17,9 +17,15 @@ function getPreferredMimeType() {
 export function VoiceInputBar({
   value,
   onChange,
+  compact = false,
+  embedded = false,
+  className = "",
 }: {
   value: string;
   onChange: (value: string) => void;
+  compact?: boolean;
+  embedded?: boolean;
+  className?: string;
 }) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
@@ -194,24 +200,32 @@ export function VoiceInputBar({
       : "";
 
   return (
-    <section className="panel-card overflow-hidden">
-      <div className="space-y-4">
+    <section className={`${embedded ? "" : "panel-card overflow-hidden"} ${className}`}>
+      <div className={compact ? "space-y-3.5" : "space-y-4"}>
         <div>
           <p className="eyebrow">{isSpanish ? "Descripcion libre" : "Describe it yourself"}</p>
-          <h2 className="mt-2 font-display text-2xl leading-tight text-[var(--color-ink)]">
+          <h2
+            className={`font-display leading-tight text-[var(--color-ink)] ${
+              compact ? "mt-1.5 text-[1.65rem]" : "mt-2 text-2xl"
+            }`}
+          >
             {isSpanish ? "O cuentanos lo que paso" : "Or describe what happened"}
           </h2>
-          <p className="mt-2 text-sm text-[var(--color-muted)]">
+          <p className={`text-[var(--color-muted)] ${compact ? "mt-1.5 text-[0.92rem] leading-6" : "mt-2 text-sm"}`}>
             {isSpanish
               ? "Habla y luego toca otra vez para pegar el texto, o escribe abajo."
               : "Speak, then tap again to paste the transcript, or type below."}
           </p>
         </div>
 
-        <div className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/75 p-3 shadow-[0_12px_24px_rgba(17,24,39,0.06)]">
+        <div
+          className={`rounded-[1.6rem] border border-[var(--color-border)] bg-white/75 shadow-[0_12px_24px_rgba(17,24,39,0.06)] ${
+            compact ? "p-3" : "p-3"
+          }`}
+        >
           <div className="flex items-end gap-3">
             <div className="min-w-0 flex-1">
-              <div className="mb-2 min-h-6" aria-live="polite">
+              <div className={`mb-2 ${compact ? "min-h-5" : "min-h-6"}`} aria-live="polite">
                 {isRecording ? (
                   <div className="flex items-center gap-1 text-[var(--color-danger)]">
                     <span className="text-sm font-semibold">{statusText}</span>
@@ -243,8 +257,10 @@ export function VoiceInputBar({
                 ref={inputRef}
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
-                rows={4}
-                className="min-h-[6.5rem] w-full resize-none bg-transparent text-base text-[var(--color-ink)] outline-none placeholder:text-[var(--color-muted)]"
+                rows={compact ? 3 : 4}
+                className={`w-full resize-none bg-transparent text-base text-[var(--color-ink)] outline-none placeholder:text-[var(--color-muted)] ${
+                  compact ? "min-h-[5.4rem] leading-6" : "min-h-[6.5rem]"
+                }`}
                 placeholder={
                   isSpanish
                     ? "Ejemplo: alguien golpeo mi carro por atras en un semaforo y ahora no se si debo moverlo."
@@ -253,10 +269,10 @@ export function VoiceInputBar({
               />
             </div>
 
-            <button
-              type="button"
-              onClick={isRecording ? stopRecording : () => void startRecording()}
-              disabled={!isSupported || isProcessing}
+              <button
+                type="button"
+                onClick={isRecording ? stopRecording : () => void startRecording()}
+                disabled={!isSupported || isProcessing}
               aria-label={
                 isRecording
                   ? isSpanish
@@ -266,7 +282,9 @@ export function VoiceInputBar({
                     ? "Grabar descripcion"
                     : "Record description"
               }
-              className={`inline-flex size-14 shrink-0 items-center justify-center rounded-full text-white transition ${
+              className={`inline-flex shrink-0 items-center justify-center rounded-full text-white transition ${
+                compact ? "size-12" : "size-14"
+              } ${
                 isRecording
                   ? "claim-mic-recording bg-[var(--color-danger)]"
                   : "bg-[var(--color-ink)] shadow-[0_12px_24px_rgba(17,24,39,0.16)]"

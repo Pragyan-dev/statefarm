@@ -265,6 +265,8 @@ export default function ClaimPage() {
   }
 
   const canBuildGuide = Boolean(selectedIncident || description.trim());
+  const useCompactIntakeLayout = resolvedMode === "website";
+  const shouldFillViewport = useCompactIntakeLayout && phase !== "guide";
   const selectedLabel =
     (selectedIncident ? categoryLabels.get(selectedIncident) : undefined) ??
     (guideIncident ? categoryLabels.get(guideIncident) : undefined) ??
@@ -296,44 +298,98 @@ export default function ClaimPage() {
   }, [guide, personalization, selectedLabel]);
 
   return (
-    <div className={`py-6 lg:py-10 ${phase === "guide" && isAppMode ? "pb-28" : ""}`}>
+    <div
+      className={`${
+        phase === "select" && useCompactIntakeLayout ? "py-4 lg:py-5" : "py-6 lg:py-10"
+      } ${phase === "guide" && isAppMode ? "pb-28" : ""} ${
+        shouldFillViewport ? "flex flex-1 flex-col justify-center" : ""
+      }`}
+    >
       {phase === "select" ? (
-        <div className="mx-auto grid max-w-[56rem] gap-5">
-          <IncidentSelector
-            categories={categories}
-            selectedType={selectedIncident}
-            onSelect={setSelectedIncident}
-          />
+        <div className={`mx-auto ${useCompactIntakeLayout ? "max-w-[72rem]" : "grid max-w-[56rem] gap-5"}`}>
+          {useCompactIntakeLayout ? (
+            <section className="panel-card hero-ambient overflow-hidden">
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(21rem,0.92fr)] lg:gap-5">
+                <IncidentSelector
+                  categories={categories}
+                  selectedType={selectedIncident}
+                  onSelect={setSelectedIncident}
+                  compact
+                  embedded
+                />
 
-          <VoiceInputBar value={description} onChange={setDescription} />
+                <div className="flex flex-col gap-4 lg:pt-1">
+                  <VoiceInputBar value={description} onChange={setDescription} compact embedded />
 
-          <section className="panel-card mx-auto w-full max-w-[34rem]">
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => void buildGuide()}
-                disabled={!canBuildGuide}
-                className="inline-flex min-h-[3.35rem] flex-1 items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-55"
-              >
-                {isSpanish ? "Crear mi guia" : "Build my guide"}
-                <ArrowRight className="size-4" />
-              </button>
+                  <section className="rounded-[1.45rem] border border-[var(--color-border)] bg-[var(--color-paper)]/85 p-4 shadow-[0_12px_24px_rgba(17,24,39,0.06)]">
+                    <div className="flex flex-col gap-3">
+                      <div className="rounded-[1rem] border border-[var(--color-border)] bg-white/75 px-3.5 py-3 text-sm leading-6 text-[var(--color-muted)]">
+                        {selectedIncident
+                          ? isSpanish
+                            ? `Seleccionado: ${selectedLabel}`
+                            : `Selected: ${selectedLabel}`
+                          : isSpanish
+                            ? "Puedes elegir una categoria o solo describirlo."
+                            : "You can choose a category or just describe it."}
+                      </div>
 
-              <div className="rounded-full border border-[var(--color-border)] bg-white/75 px-4 py-3 text-sm text-[var(--color-muted)]">
-                {selectedIncident
-                  ? isSpanish
-                    ? `Seleccionado: ${selectedLabel}`
-                    : `Selected: ${selectedLabel}`
-                  : isSpanish
-                    ? "Puedes elegir una categoria o solo describirlo."
-                    : "You can choose a category or just describe it."}
+                      <button
+                        type="button"
+                        onClick={() => void buildGuide()}
+                        disabled={!canBuildGuide}
+                        className="inline-flex min-h-[3.2rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-55"
+                      >
+                        {isSpanish ? "Crear mi guia" : "Build my guide"}
+                        <ArrowRight className="size-4" />
+                      </button>
+                    </div>
+
+                    {submitError ? (
+                      <p className="mt-3 text-sm text-[var(--color-danger)]">{submitError}</p>
+                    ) : null}
+                  </section>
+                </div>
               </div>
-            </div>
+            </section>
+          ) : (
+            <>
+              <IncidentSelector
+                categories={categories}
+                selectedType={selectedIncident}
+                onSelect={setSelectedIncident}
+              />
 
-            {submitError ? (
-              <p className="mt-3 text-sm text-[var(--color-danger)]">{submitError}</p>
-            ) : null}
-          </section>
+              <VoiceInputBar value={description} onChange={setDescription} />
+
+              <section className="panel-card mx-auto w-full max-w-[34rem]">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => void buildGuide()}
+                    disabled={!canBuildGuide}
+                    className="inline-flex min-h-[3.35rem] flex-1 items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-55"
+                  >
+                    {isSpanish ? "Crear mi guia" : "Build my guide"}
+                    <ArrowRight className="size-4" />
+                  </button>
+
+                  <div className="rounded-full border border-[var(--color-border)] bg-white/75 px-4 py-3 text-sm text-[var(--color-muted)]">
+                    {selectedIncident
+                      ? isSpanish
+                        ? `Seleccionado: ${selectedLabel}`
+                        : `Selected: ${selectedLabel}`
+                      : isSpanish
+                        ? "Puedes elegir una categoria o solo describirlo."
+                        : "You can choose a category or just describe it."}
+                  </div>
+                </div>
+
+                {submitError ? (
+                  <p className="mt-3 text-sm text-[var(--color-danger)]">{submitError}</p>
+                ) : null}
+              </section>
+            </>
+          )}
         </div>
       ) : null}
 
