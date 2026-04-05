@@ -1,3 +1,4 @@
+import { dispatchLocalStorageSync } from "@/lib/localStorageEvents";
 import type { UserProfile } from "@/lib/types";
 
 export const PROFILE_STORAGE_KEY = "arrivesafe-profile";
@@ -41,6 +42,7 @@ export function saveStoredProfile(profile: UserProfile) {
   }
 
   window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+  dispatchLocalStorageSync(PROFILE_STORAGE_KEY, profile);
 }
 
 export function clearStoredProfile() {

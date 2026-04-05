@@ -128,6 +128,11 @@ export interface NewcomerGuideStep {
   step: LocalizedText;
   details: LocalizedText;
   docs: string[];
+  mapsQuery?: string | null;
+  resources?: Array<{
+    label: LocalizedText;
+    href: string;
+  }>;
   link: string | null;
 }
 
