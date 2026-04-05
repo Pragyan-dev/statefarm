@@ -36,7 +36,7 @@ export default function DecodePage() {
   const isWebsite = resolvedMode === "website";
   const shouldFillViewport = isWebsite && phase !== "results";
   const uploadLayoutClass = isWebsite
-    ? "mt-2 grid gap-3 xl:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.92fr)] xl:items-stretch"
+    ? "mx-auto mt-2 grid w-full max-w-[72rem] gap-3 xl:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.92fr)] xl:items-center"
     : "mt-6";
   const primaryActionClass =
     "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
@@ -205,13 +205,15 @@ export default function DecodePage() {
 
   return (
     <div
-      className={`py-3 lg:py-4 ${isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""} ${
+      className={`${shouldFillViewport ? "website-centered-intake min-h-full" : ""} py-3 lg:py-4 ${
+        isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""
+      } ${
         shouldFillViewport ? "flex flex-1 flex-col justify-center" : ""
       }`}
     >
       {phase === "upload" ? (
         <div className={uploadLayoutClass}>
-          <section className="panel-card hero-ambient overflow-hidden xl:mt-0 xl:flex xl:min-h-[25.5rem] xl:flex-col xl:justify-between xl:px-7 xl:py-6">
+          <section className="panel-blend hero-ambient overflow-hidden xl:mt-0 xl:flex xl:min-h-[25.5rem] xl:flex-col xl:justify-between xl:px-7 xl:py-6">
             <div>
               <p className="eyebrow">{isSpanish ? "Decodificador visual de polizas" : "Visual policy decoder"}</p>
               <h1 className="mt-2 max-w-[15ch] font-display text-[clamp(2.7rem,4.1vw,4.2rem)] leading-[0.9] text-[var(--color-ink)]">

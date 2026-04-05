@@ -299,23 +299,24 @@ export default function ClaimPage() {
 
   return (
     <div
-      className={`${
+      className={`${shouldFillViewport ? "website-centered-intake min-h-full" : ""} ${
         phase === "select" && useCompactIntakeLayout ? "py-4 lg:py-5" : "py-6 lg:py-10"
       } ${phase === "guide" && isAppMode ? "pb-28" : ""} ${
         shouldFillViewport ? "flex flex-1 flex-col justify-center" : ""
       }`}
     >
       {phase === "select" ? (
-        <div className={`mx-auto ${useCompactIntakeLayout ? "max-w-[72rem]" : "grid max-w-[56rem] gap-5"}`}>
+        <div className={`mx-auto w-full ${useCompactIntakeLayout ? "max-w-[72rem]" : "grid max-w-[56rem] gap-5"}`}>
           {useCompactIntakeLayout ? (
-            <section className="panel-card hero-ambient overflow-hidden">
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(21rem,0.92fr)] lg:gap-5">
+            <section className="mx-auto w-full max-w-[72rem]">
+              <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(21rem,0.92fr)] lg:gap-5">
                 <IncidentSelector
                   categories={categories}
                   selectedType={selectedIncident}
                   onSelect={setSelectedIncident}
                   compact
                   embedded
+                  className="panel-blend hero-ambient overflow-hidden"
                 />
 
                 <div className="flex flex-col gap-4 lg:pt-1">
