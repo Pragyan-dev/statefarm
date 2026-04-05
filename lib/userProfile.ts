@@ -42,3 +42,12 @@ export function saveStoredProfile(profile: UserProfile) {
 
   window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
 }
+
+export function clearStoredProfile() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.removeItem(PROFILE_STORAGE_KEY);
+  window.localStorage.removeItem(LEGACY_PROFILE_STORAGE_KEY);
+}

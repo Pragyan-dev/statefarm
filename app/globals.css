@@ -200,6 +200,7 @@ a {
   content: "";
   position: absolute;
   inset: auto -5rem -5rem auto;
+  pointer-events: none;
   height: 12rem;
   width: 12rem;
   border-radius: 9999px;
@@ -211,6 +212,7 @@ a {
   content: "";
   position: absolute;
   inset: -3rem auto auto -4rem;
+  pointer-events: none;
   height: 10rem;
   width: 10rem;
   border-radius: 9999px;

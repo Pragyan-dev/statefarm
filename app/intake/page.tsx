@@ -4,9 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { useDashboardAccess } from "@/hooks/useDashboardAccess";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useViewMode } from "@/hooks/useViewMode";
 import { deriveProfileLocation } from "@/lib/content";
+import { saveStoredDashboardAccess } from "@/lib/dashboardAccess";
 import { defaultUserProfile, saveStoredProfile } from "@/lib/userProfile";
 import type { UserProfile, VisaType } from "@/lib/types";
 
@@ -14,6 +16,7 @@ const visaOptions: VisaType[] = ["F1", "H1B", "J1", "O1"];
 
 export default function IntakePage() {
   const router = useRouter();
+  const [, setIsDashboardBuilt] = useDashboardAccess();
   const { settings } = useAccessibility();
   const { resolvedMode } = useViewMode();
   const isSpanish = settings.language === "es";
@@ -47,7 +50,6 @@ export default function IntakePage() {
     zipCode: isSpanish ? "Codigo ZIP" : "ZIP code",
     income: isSpanish ? "Ingreso mensual" : "Monthly income",
     buildDashboard: isSpanish ? "Crear mi panel" : "Build my dashboard",
-    skipDemo: isSpanish ? "Ir al panel demo" : "Skip to demo dashboard",
     preview: isSpanish ? "Vista previa" : "Preview",
     previewTitle: isSpanish
       ? "Tu perfil ya esta dando forma a la herramienta."
@@ -79,6 +81,8 @@ export default function IntakePage() {
       ...locationPreview,
     };
     saveStoredProfile(nextProfile);
+    saveStoredDashboardAccess(true);
+    setIsDashboardBuilt(true);
     router.push("/dashboard");
   }
 
@@ -264,12 +268,6 @@ export default function IntakePage() {
                 >
                   {copy.buildDashboard}
                 </button>
-                <Link
-                  href="/dashboard"
-                  className="inline-flex min-h-12 items-center rounded-full border border-[var(--color-border)] px-6 text-sm font-semibold text-[var(--color-ink)]"
-                >
-                  {copy.skipDemo}
-                </Link>
               </div>
             </form>
           </div>

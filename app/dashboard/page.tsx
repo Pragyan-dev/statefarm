@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { ProgressChecklist, type ChecklistItem } from "@/components/ProgressChecklist";
 import { ReadAloud } from "@/components/ReadAloud";
+import { ClearDataButton } from "@/components/ClearDataButton";
 import { useAutoRead } from "@/hooks/useAutoRead";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -144,6 +145,9 @@ export default function DashboardPage() {
               {t("dashboardRunSimulator")}
             </Link>
             <ReadAloud text={`${headline} ${ssnMessage}`} />
+            <div className="ml-auto relative z-10">
+              <ClearDataButton />
+            </div>
           </div>
         </section>
 
