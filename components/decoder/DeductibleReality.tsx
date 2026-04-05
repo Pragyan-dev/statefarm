@@ -9,12 +9,14 @@ interface DeductibleRealityProps {
   amount: number;
   comparisons: string[];
   exampleClaim?: number;
+  layout?: "app" | "website";
 }
 
 export function DeductibleReality({
   amount,
   comparisons,
   exampleClaim = 3000,
+  layout = "app",
 }: DeductibleRealityProps) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
@@ -22,6 +24,10 @@ export function DeductibleReality({
   const [visible, setVisible] = useState(reducedMotion);
   const deductibleShare = Math.min(100, Math.max(8, (amount / exampleClaim) * 100));
   const insuranceShare = Math.max(0, 100 - deductibleShare);
+  const containerClass =
+    layout === "website" ? "panel-card w-full px-6 py-6 xl:px-7 xl:py-7" : "panel-card mx-auto w-full max-w-[36rem]";
+  const comparisonsClass =
+    layout === "website" ? "mt-6 grid gap-3 lg:grid-cols-2" : "mt-6 grid gap-3";
 
   useEffect(() => {
     if (reducedMotion) {
@@ -33,18 +39,18 @@ export function DeductibleReality({
   }, [reducedMotion]);
 
   return (
-    <section className="panel-card mx-auto w-full max-w-[36rem]">
+    <section className={containerClass}>
       <p className="eyebrow">{isSpanish ? "Realidad del deducible" : "Deductible reality"}</p>
       <h2 className="mt-3 font-display text-5xl leading-none text-[var(--color-ink)]">
         {formatCurrency(amount, settings.language)}
       </h2>
-      <p className="mt-3 max-w-[24ch] text-base text-[var(--color-muted)]">
+      <p className={`mt-3 text-base text-[var(--color-muted)] ${layout === "website" ? "max-w-[36ch]" : "max-w-[24ch]"}`}>
         {isSpanish
           ? "Esto es lo que pagas antes de que el seguro empiece a ayudarte."
           : "This is what you pay before insurance kicks in."}
       </p>
 
-      <div className="mt-6 grid gap-3">
+      <div className={comparisonsClass}>
         {comparisons.slice(0, 4).map((comparison, index) => {
           const width = `${Math.max(42, 100 - index * 13)}%`;
 

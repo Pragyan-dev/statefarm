@@ -7,17 +7,21 @@ import { useAccessibility } from "@/hooks/useAccessibility";
 interface PolicyHealthGaugeProps {
   score: number;
   animated?: boolean;
+  layout?: "app" | "website";
 }
 
 export function PolicyHealthGauge({
   score,
   animated = true,
+  layout = "app",
 }: PolicyHealthGaugeProps) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
   const reducedMotion = settings.reducedMotion;
   const safeScore = Math.max(0, Math.min(score, 100));
-  const radius = 78;
+  const gaugeSize = layout === "website" ? 208 : 180;
+  const center = gaugeSize / 2;
+  const radius = layout === "website" ? 90 : 78;
   const circumference = 2 * Math.PI * radius;
   const animatedScore = useCountUp(safeScore, reducedMotion || !animated);
   const displayScore = reducedMotion || !animated ? safeScore : animatedScore;
@@ -38,23 +42,27 @@ export function PolicyHealthGauge({
             color: "#639922",
             label: isSpanish ? "Buena cobertura — estas bastante protegido" : "Good coverage — well protected",
           };
+  const containerClass =
+    layout === "website"
+      ? "panel-card flex min-h-[24rem] w-full flex-col items-center justify-center px-6 py-8 text-center xl:min-h-[26rem]"
+      : "panel-card mx-auto flex w-full max-w-[32rem] flex-col items-center text-center";
 
   return (
-    <section className="panel-card mx-auto flex w-full max-w-[32rem] flex-col items-center text-center">
+    <section className={containerClass}>
       <p className="eyebrow">{isSpanish ? "Salud de la poliza" : "Policy health"}</p>
       <div className="relative mt-4">
-        <svg width="180" height="180" viewBox="0 0 180 180" aria-hidden="true">
+        <svg width={gaugeSize} height={gaugeSize} viewBox={`0 0 ${gaugeSize} ${gaugeSize}`} aria-hidden="true">
           <circle
-            cx="90"
-            cy="90"
+            cx={center}
+            cy={center}
             r={radius}
             fill="none"
             stroke="#E5E5E5"
             strokeWidth="12"
           />
           <circle
-            cx="90"
-            cy="90"
+            cx={center}
+            cy={center}
             r={radius}
             fill="none"
             stroke={tone.color}
@@ -62,7 +70,7 @@ export function PolicyHealthGauge({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeOffset}
-            transform="rotate(-90 90 90)"
+            transform={`rotate(-90 ${center} ${center})`}
             style={{
               transition: reducedMotion ? "none" : "stroke-dashoffset 1.5s ease-out",
             }}
@@ -70,7 +78,11 @@ export function PolicyHealthGauge({
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="font-display text-5xl leading-none text-[var(--color-ink)]">
+          <div
+            className={`font-display leading-none text-[var(--color-ink)] ${
+              layout === "website" ? "text-6xl" : "text-5xl"
+            }`}
+          >
             {displayScore}
           </div>
           <div className="mt-1 text-sm font-semibold tracking-[0.18em] text-[var(--color-muted)]">
@@ -79,7 +91,10 @@ export function PolicyHealthGauge({
         </div>
       </div>
 
-      <p className="mt-4 max-w-[24ch] text-base font-semibold" style={{ color: tone.color }}>
+      <p
+        className={`mt-4 text-base font-semibold ${layout === "website" ? "max-w-[28ch]" : "max-w-[24ch]"}`}
+        style={{ color: tone.color }}
+      >
         {tone.label}
       </p>
     </section>
