@@ -19,10 +19,14 @@ import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { AccessibilityMenuButton } from "@/components/AccessibilityMenuButton";
 import { BottomNav } from "@/components/BottomNav";
 import { useDashboardAccess } from "@/hooks/useDashboardAccess";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { ViewModeToggle } from "@/components/ViewModeToggle";
 import { useViewMode } from "@/hooks/useViewMode";
 import { canAccessRoute, isProtectedRoute } from "@/lib/dashboardAccess";
+import type { StorySessionState } from "@/types/simulator";
+
+const SIMULATOR_SESSION_KEY = "arrivesafe-simulator-session";
 
 export function AppShell({
   children,
@@ -36,11 +40,18 @@ export function AppShell({
   const isLanding = pathname === "/";
   const isSimulator = pathname.startsWith("/simulate");
   const { resolvedMode, isReady } = useViewMode();
+  const [storySession, , isStorySessionReady] = useLocalStorage<StorySessionState | null>(
+    SIMULATOR_SESSION_KEY,
+    null,
+  );
   const [isDashboardBuilt, , accessReady] = useDashboardAccess();
   const routeAccessible = canAccessRoute(pathname, isDashboardBuilt);
   const shouldRedirectHome = accessReady && !routeAccessible;
   const waitingOnProtectedAccess = !accessReady && isProtectedRoute(pathname);
   const shouldRenderFallbackChildren = !waitingOnProtectedAccess && !shouldRedirectHome;
+  const hasActiveSimulatorStory = isSimulator && Boolean(storySession?.scenarioId);
+  const shouldUseWebsiteShell =
+    (isSimulator && !hasActiveSimulatorStory) || (!isSimulator && resolvedMode === "website");
 
   const websiteNav = [
     { href: "/dashboard", label: t("dashboard"), icon: Home },
@@ -60,7 +71,7 @@ export function AppShell({
     router.replace("/");
   }, [router, shouldRedirectHome]);
 
-  if (!isReady || waitingOnProtectedAccess || shouldRedirectHome) {
+  if (!isReady || !isStorySessionReady || waitingOnProtectedAccess || shouldRedirectHome) {
     return (
       <>
         <a
@@ -79,7 +90,7 @@ export function AppShell({
     );
   }
 
-  if (resolvedMode === "website") {
+  if (shouldUseWebsiteShell) {
     return (
       <>
         <a

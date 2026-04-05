@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { dispatchLocalStorageSync, LOCAL_STORAGE_SYNC_EVENT } from "@/lib/localStorageEvents";
 
 interface UseLocalStorageOptions {
@@ -17,7 +17,7 @@ export function useLocalStorage<T>(
   const [value, setStoredValue] = useState<T>(() => initialValueRef.current);
   const [isReady, setIsReady] = useState(false);
 
-  function readStoredValue() {
+  const readStoredValue = useCallback(() => {
     const fallbackKeys = fallbackKeysKey ? fallbackKeysKey.split("|") : [];
     const keysToRead = [key, ...fallbackKeys];
     const raw = keysToRead
@@ -25,7 +25,7 @@ export function useLocalStorage<T>(
       .find((storageValue) => Boolean(storageValue));
 
     return raw ? (JSON.parse(raw) as T) : initialValueRef.current;
-  }
+  }, [fallbackKeysKey, key]);
 
   useEffect(() => {
     try {
@@ -35,7 +35,7 @@ export function useLocalStorage<T>(
     } finally {
       setIsReady(true);
     }
-  }, [fallbackKeysKey, key]);
+  }, [readStoredValue]);
 
   useEffect(() => {
     if (!isReady) {
@@ -49,7 +49,7 @@ export function useLocalStorage<T>(
     }
   }, [isReady, key, value]);
 
-  function setValue(nextValue: T | ((currentValue: T) => T)) {
+  const setValue = useCallback((nextValue: T | ((currentValue: T) => T)) => {
     setStoredValue((currentValue) => {
       const resolvedValue =
         typeof nextValue === "function"
@@ -59,7 +59,7 @@ export function useLocalStorage<T>(
       dispatchLocalStorageSync(key, resolvedValue);
       return resolvedValue;
     });
-  }
+  }, [key]);
 
   useEffect(() => {
     function syncFromStorage() {
@@ -100,7 +100,7 @@ export function useLocalStorage<T>(
       window.removeEventListener("storage", handleStorage);
       window.removeEventListener(LOCAL_STORAGE_SYNC_EVENT, handleCustomSync as EventListener);
     };
-  }, [fallbackKeysKey, key]);
+  }, [key, readStoredValue]);
 
   return [value, setValue, isReady] as const;
 }

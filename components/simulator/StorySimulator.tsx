@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ChoiceButtons } from "@/components/simulator/ChoiceButtons";
@@ -16,17 +16,22 @@ import type {
   DialogueNode,
   FinancialEffect,
   Scenario,
+  StorySessionState,
 } from "@/types/simulator";
 
 interface StorySimulatorProps {
   scenario: Scenario;
+  initialSession: StorySessionState | null;
   onComplete: (result: CompletionSummary) => void;
+  onSessionChange: (session: StorySessionState | null) => void;
   onExit: () => void;
 }
 
 export function StorySimulator({
   scenario,
+  initialSession,
   onComplete,
+  onSessionChange,
   onExit,
 }: StorySimulatorProps) {
   const t = useTranslations();
@@ -43,12 +48,16 @@ export function StorySimulator({
     [scenario.nodes],
   );
 
-  const [currentNodeId, setCurrentNodeId] = useState("intro");
-  const [history, setHistory] = useState<string[]>([]);
+  const [currentNodeId, setCurrentNodeId] = useState(initialSession?.currentNodeId ?? "intro");
+  const [history, setHistory] = useState<string[]>(initialSession?.history ?? []);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [completedTypingNodeId, setCompletedTypingNodeId] = useState<string | null>(null);
-  const [completedEffectNodeId, setCompletedEffectNodeId] = useState<string | null>(null);
-  const [lastEffect, setLastEffect] = useState<FinancialEffect | null>(null);
+  const [completedTypingNodeId, setCompletedTypingNodeId] = useState<string | null>(
+    initialSession?.completedTypingNodeId ?? null,
+  );
+  const [completedEffectNodeId, setCompletedEffectNodeId] = useState<string | null>(
+    initialSession?.completedEffectNodeId ?? null,
+  );
+  const [lastEffect, setLastEffect] = useState<FinancialEffect | null>(initialSession?.lastEffect ?? null);
   const completionRef = useRef<string | null>(null);
 
   const currentNode = nodeMap.get(currentNodeId) as DialogueNode;
@@ -100,6 +109,25 @@ export function StorySimulator({
       completedAt: new Date().toISOString(),
     } satisfies CompletionSummary;
   }, [badTotal, currentNode, lastEffect, scenario.id]);
+
+  useEffect(() => {
+    onSessionChange({
+      scenarioId: scenario.id,
+      currentNodeId,
+      history,
+      completedTypingNodeId,
+      completedEffectNodeId,
+      lastEffect,
+    });
+  }, [
+    completedEffectNodeId,
+    completedTypingNodeId,
+    currentNodeId,
+    history,
+    lastEffect,
+    onSessionChange,
+    scenario.id,
+  ]);
 
   useEffect(() => {
     if (!completionSummary) {
@@ -198,6 +226,16 @@ export function StorySimulator({
           >
             <ArrowLeft className="size-4" />
             {t("simulatorBack")}
+          </button>
+        </div>
+        <div className="absolute right-4 top-4 z-20">
+          <button
+            type="button"
+            onClick={onExit}
+            className="inline-flex min-h-10 items-center gap-2 rounded-full border-[2px] border-black bg-white/85 px-3 text-sm font-bold text-black shadow-sm"
+          >
+            <X className="size-4" />
+            {t("simulatorExit")}
           </button>
         </div>
 

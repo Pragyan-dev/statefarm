@@ -57,3 +57,12 @@ export interface CompletionSummary {
   savedAmount?: number;
   completedAt: string;
 }
+
+export interface StorySessionState {
+  scenarioId: string;
+  currentNodeId: string;
+  history: string[];
+  completedTypingNodeId: string | null;
+  completedEffectNodeId: string | null;
+  lastEffect: FinancialEffect | null;
+}

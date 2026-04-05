@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { startTransition, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import scenarios from "@/data/scenarios.json";
 
@@ -15,21 +16,29 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useViewMode } from "@/hooks/useViewMode";
 import { affordabilityCopy, formatCurrency, getStateCosts } from "@/lib/content";
 import type { ScenarioData } from "@/lib/types";
-import type { CompletionSummary } from "@/types/simulator";
+import type { CompletionSummary, StorySessionState } from "@/types/simulator";
 
 const SIMULATOR_PROGRESS_KEY = "arrivesafe-simulator-progress";
+const SIMULATOR_SESSION_KEY = "arrivesafe-simulator-session";
 const emptyProgress: Record<string, CompletionSummary> = {};
+const emptySession = null as StorySessionState | null;
 
 export default function SimulatePage() {
+  const router = useRouter();
   const t = useTranslations();
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
-  const { resolvedMode, setMode } = useViewMode();
+  const { resolvedMode } = useViewMode();
   const [profile, , isProfileReady] = useUserProfile();
   const [progress, setProgress, isProgressReady] = useLocalStorage<
     Record<string, CompletionSummary>
   >(SIMULATOR_PROGRESS_KEY, emptyProgress);
-  const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
+  const [storySession, setStorySession, isSessionReady] = useLocalStorage<StorySessionState | null>(
+    SIMULATOR_SESSION_KEY,
+    emptySession,
+  );
+  const [isStoryPickerOpen, setIsStoryPickerOpen] = useState(false);
+  const activeScenarioId = storySession?.scenarioId ?? null;
 
   const storyScenarios = getRelevantScenarios(profile);
   const activeScenario = storyScenarios.find((scenario) => scenario.id === activeScenarioId) ?? null;
@@ -49,23 +58,21 @@ export default function SimulatePage() {
     [profile.drives, profile.rents],
   );
 
-  useEffect(() => {
-    if (resolvedMode !== "website" || activeScenarioId === null) {
-      return;
-    }
-
-    const reset = window.setTimeout(() => {
-      setActiveScenarioId(null);
-    }, 0);
-
-    return () => {
-      window.clearTimeout(reset);
-    };
-  }, [activeScenarioId, resolvedMode]);
-
   function handleScenarioSelect(scenarioId: string | null) {
     startTransition(() => {
-      setActiveScenarioId(scenarioId);
+      setIsStoryPickerOpen(false);
+      setStorySession(
+        scenarioId
+          ? {
+              scenarioId,
+              currentNodeId: "intro",
+              history: [],
+              completedTypingNodeId: null,
+              completedEffectNodeId: null,
+              lastEffect: null,
+            }
+          : null,
+      );
     });
   }
 
@@ -76,7 +83,12 @@ export default function SimulatePage() {
     }));
   }
 
-  if (!isProfileReady || !isProgressReady) {
+  function handleExitSimulator() {
+    setStorySession(null);
+    router.push("/dashboard");
+  }
+
+  if (!isProfileReady || !isProgressReady || !isSessionReady) {
     return (
       <div className="simulator-root grid place-items-center bg-[linear-gradient(180deg,#F6F0E7_0%,#EFE4D8_100%)] px-6">
         <div className="rounded-[1.75rem] border-[2px] border-black bg-white/85 px-5 py-4 text-center shadow-[0_18px_50px_rgba(17,24,39,0.1)]">
@@ -88,6 +100,28 @@ export default function SimulatePage() {
           </p>
         </div>
       </div>
+    );
+  }
+
+  if (activeScenario) {
+    return (
+      <StorySimulator
+        scenario={activeScenario}
+        initialSession={storySession}
+        onComplete={handleComplete}
+        onSessionChange={setStorySession}
+        onExit={handleExitSimulator}
+      />
+    );
+  }
+
+  if (resolvedMode === "website" && isStoryPickerOpen) {
+    return (
+      <ScenarioSelector
+        scenarios={storyScenarios}
+        progress={progress}
+        onSelect={(scenario) => handleScenarioSelect(scenario.id)}
+      />
     );
   }
 
@@ -113,7 +147,7 @@ export default function SimulatePage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={() => setMode("app")}
+                onClick={() => setIsStoryPickerOpen(true)}
                 className="min-h-12 rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)]"
               >
                 {t("openStoryMode")}
@@ -174,16 +208,6 @@ export default function SimulatePage() {
           </div>
         </section>
       </div>
-    );
-  }
-
-  if (activeScenario) {
-    return (
-      <StorySimulator
-        scenario={activeScenario}
-        onComplete={handleComplete}
-        onExit={() => handleScenarioSelect(null)}
-      />
     );
   }
 

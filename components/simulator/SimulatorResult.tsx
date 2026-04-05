@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useAccessibility } from "@/hooks/useAccessibility";
@@ -64,6 +65,16 @@ export function SimulatorResult({
       }`}
     >
       <div className="flex flex-1 flex-col px-4 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-6">
+        <div className="mb-4 flex justify-end">
+          <button
+            type="button"
+            onClick={onExit}
+            className="inline-flex min-h-10 items-center gap-2 rounded-full border-[2px] border-black bg-white/85 px-3 text-sm font-bold text-black shadow-sm"
+          >
+            <X className="size-4" />
+            {t("simulatorExit")}
+          </button>
+        </div>
         <div className="rounded-[2rem] border-[2px] border-black bg-white px-5 py-5 shadow-[0_24px_70px_rgba(17,24,39,0.14)]">
           <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-black/55">
             {scenario.title}
@@ -150,13 +161,6 @@ export function SimulatorResult({
               className="rounded-full border-[2px] border-black/15 bg-white px-5 py-3 text-sm font-bold text-black"
             >
               {copied ? t("simulatorCopied") : t("simulatorShare")}
-            </button>
-            <button
-              type="button"
-              onClick={onExit}
-              className="rounded-full border-[2px] border-black/15 bg-white px-5 py-3 text-sm font-bold text-black"
-            >
-              {t("simulatorNextScenario")} →
             </button>
           </div>
         </div>
