@@ -3,10 +3,11 @@
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import ssnRequirements from "@/data/ssn-requirements.json";
 
+import ssnRequirements from "@/data/ssn-requirements.json";
 import { ApartmentCoverageCard } from "@/components/ApartmentCoverageCard";
 import { ApartmentSelector } from "@/components/ApartmentSelector";
+import { AutoInsuranceEstimator } from "@/components/coverage/AutoInsuranceEstimator";
 import { FemaTimeline } from "@/components/FemaTimeline";
 import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
@@ -57,7 +58,7 @@ export default function CoveragePage() {
   const [activeZip, setActiveZip] = useState(DEFAULT_APARTMENT_ZIP);
   const [selectedApartmentAddress, setSelectedApartmentAddress] = useState<string | null>(null);
   const [disasterData, setDisasterData] = useState<DisasterHistoryPayload>(
-    buildFallbackDisasterHistory("AZ", "en", "fetch-failed"),
+    buildFallbackDisasterHistory("Tempe", "AZ", "en", "fetch-failed"),
   );
   const [loadingDisasters, setLoadingDisasters] = useState(false);
   const initializedRef = useRef(false);
@@ -103,18 +104,30 @@ export default function CoveragePage() {
       setLoadingDisasters(true);
 
       try {
-        const response = await fetch(`/api/fema?state=${coverageState}&language=${settings.language}`);
+        const params = new URLSearchParams({
+          city: zipData.city,
+          state: coverageState,
+          language: settings.language,
+        });
+
+        for (const area of zipData.disasterAreaMatches ?? [zipData.city]) {
+          params.append("area", area);
+        }
+
+        const response = await fetch(`/api/fema?${params.toString()}`);
         const payload = (await response.json()) as DisasterHistoryPayload;
         setDisasterData(payload);
       } catch {
-        setDisasterData(buildFallbackDisasterHistory(coverageState, settings.language, "fetch-failed"));
+        setDisasterData(
+          buildFallbackDisasterHistory(zipData.city, coverageState, settings.language, "fetch-failed"),
+        );
       } finally {
         setLoadingDisasters(false);
       }
     }
 
     void loadDisasters();
-  }, [coverageState, isReady, settings.language]);
+  }, [coverageState, isReady, settings.language, zipData.city, zipData.disasterAreaMatches]);
 
   const selectedApartment =
     zipData.apartments.find((apartment) => apartment.address === selectedApartmentAddress) ??
@@ -183,7 +196,9 @@ export default function CoveragePage() {
 
   return (
     <div className="website-page mx-auto max-w-[1380px]">
-      <section className={`grid gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,0.96fr)_minmax(360px,0.84fr)]" : ""}`}>
+      <section
+        className={`grid gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,0.96fr)_minmax(360px,0.84fr)]" : ""}`}
+      >
         <section className="page-hero mt-0 p-6 sm:p-8 lg:p-10">
           <p className="eyebrow">{isSpanish ? "Buscador de cobertura" : "Coverage finder"}</p>
           <h1 className="sf-section-title mt-3 max-w-[11ch]">
@@ -198,7 +213,9 @@ export default function CoveragePage() {
             </div>
             <div className="status-badge status-badge-neutral border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-muted)]">
               {formatCurrency(selectedApartment.estimate, settings.language)}
-              {isSpanish ? "/mes promedio para tu apartamento seleccionado" : "/mo average for your selected apartment"}
+              {isSpanish
+                ? "/mes promedio para tu apartamento seleccionado"
+                : "/mo average for your selected apartment"}
             </div>
           </div>
         </section>
@@ -253,8 +270,10 @@ export default function CoveragePage() {
           : `Selected apartment: ${selectedApartment.name} in ${zipData.city}`}
       </div>
 
-      <section className={`mt-6 grid items-start gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,1.18fr)_minmax(360px,0.82fr)]" : ""}`}>
-        <div className="grid gap-6 min-w-0">
+      <section
+        className={`mt-6 grid items-start gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,1.18fr)_minmax(360px,0.82fr)]" : ""}`}
+      >
+        <div className="grid min-w-0 gap-6">
           <section className="sf-band mt-0 overflow-hidden p-6 sm:p-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div className="max-w-[40rem]">
@@ -297,12 +316,6 @@ export default function CoveragePage() {
         </div>
 
         <div className={`grid gap-6 ${isWebsite ? "xl:sticky xl:top-28" : ""}`}>
-          <ApartmentCoverageCard
-            apartment={selectedApartment}
-            zipData={zipData}
-            language={settings.language}
-          />
-
           <FemaTimeline
             state={coverageState}
             language={settings.language}
@@ -310,7 +323,17 @@ export default function CoveragePage() {
             topRisks={zipData.topRisks}
             loading={loadingDisasters}
           />
+
+          <ApartmentCoverageCard
+            apartment={selectedApartment}
+            zipData={zipData}
+            language={settings.language}
+          />
         </div>
+      </section>
+
+      <section className="mt-6">
+        <AutoInsuranceEstimator state={coverageState} zip={activeZip} />
       </section>
     </div>
   );

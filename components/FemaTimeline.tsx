@@ -1,10 +1,10 @@
 "use client";
 
-import { AlertCircle, CloudLightning } from "lucide-react";
+import { AlertCircle, CloudLightning, ExternalLink } from "lucide-react";
 
 import { formatDate, pickText } from "@/lib/content";
-import type { LocalizedText, Language } from "@/lib/types";
 import type { DisasterHistoryPayload, DisasterSummary } from "@/lib/fema";
+import type { LocalizedText, Language } from "@/lib/types";
 
 export function FemaTimeline({
   state,
@@ -30,7 +30,7 @@ export function FemaTimeline({
           <h2 className="text-3xl font-semibold text-[var(--color-ink)]">
             {isSpanish ? "FEMA + contexto de riesgo local" : "FEMA + local risk context"}
           </h2>
-          <p className="mt-2 text-sm text-[var(--color-muted)]">
+          <p className="mt-2 text-sm leading-5 text-[var(--color-muted)]">
             {loading
               ? isSpanish
                 ? "Cargando declaraciones recientes..."
@@ -45,12 +45,12 @@ export function FemaTimeline({
           {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
-              className="h-20 animate-pulse rounded-[1.5rem] bg-[rgba(17,24,39,0.06)]"
+              className="h-16 animate-pulse rounded-[1.35rem] bg-[rgba(17,24,39,0.06)]"
             />
           ))}
         </div>
       ) : data.items.length ? (
-        <ul className="mt-5 grid gap-4">
+        <ul className="mt-5 grid gap-3">
           {data.items.map((item, index) => (
             <TimelineItem
               key={`${item.title}-${item.date}-${index}`}
@@ -108,23 +108,51 @@ function TimelineItem({
   index: number;
 }) {
   return (
-    <li className="relative pl-7">
+    <li className="relative pl-6">
       <span
         aria-hidden="true"
-        className={`absolute left-2 top-0 h-full w-px ${index === 0 ? "bg-[var(--color-accent)]" : "bg-[rgba(17,24,39,0.12)]"}`}
+        className={`absolute left-1.5 top-0 h-full w-px ${index === 0 ? "bg-[var(--color-accent)]" : "bg-[rgba(17,24,39,0.12)]"}`}
       />
       <span
         aria-hidden="true"
-        className="absolute left-0 top-4 size-4 rounded-full border-2 border-[var(--color-paper)] bg-[var(--color-accent)] shadow-[0_0_0_3px_var(--color-accent-glow)]"
+        className="absolute left-0 top-3.5 size-3 rounded-full border-2 border-[var(--color-paper)] bg-[var(--color-accent)] shadow-[0_0_0_3px_var(--color-accent-glow)]"
       />
-      <div className="rounded-[1rem] border border-[var(--color-border)] bg-white px-4 py-4 shadow-[var(--shadow-sm)]">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
-          <span>{formatDate(item.date, language)}</span>
-          {item.incidentType ? <span>{item.incidentType}</span> : null}
+      {item.href ? (
+        <a
+          href={item.href}
+          target="_blank"
+          rel="noreferrer"
+          className="block rounded-[1.35rem] border border-[var(--color-border)] bg-white/85 px-4 py-3 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"
+        >
+          <TimelineItemContent item={item} language={language} />
+        </a>
+      ) : (
+        <div className="block rounded-[1.35rem] border border-[var(--color-border)] bg-white/85 px-4 py-3">
+          <TimelineItemContent item={item} language={language} />
         </div>
-        <p className="mt-3 text-lg font-semibold text-[var(--color-ink)]">{item.title}</p>
-        {item.area ? <p className="mt-1 text-sm text-[var(--color-muted)]">{item.area}</p> : null}
-      </div>
+      )}
     </li>
+  );
+}
+
+function TimelineItemContent({
+  item,
+  language,
+}: {
+  item: DisasterSummary;
+  language: Language;
+}) {
+  return (
+    <>
+      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+        <span>{formatDate(item.date, language)}</span>
+        {item.incidentType ? <span>{item.incidentType}</span> : null}
+      </div>
+      <div className="mt-2 flex items-start justify-between gap-3">
+        <p className="text-base font-semibold text-[var(--color-ink)]">{item.title}</p>
+        {item.href ? <ExternalLink className="mt-0.5 size-4 shrink-0 text-[var(--color-accent)]" /> : null}
+      </div>
+      {item.area ? <p className="mt-1 text-sm text-[var(--color-muted)]">{item.area}</p> : null}
+    </>
   );
 }

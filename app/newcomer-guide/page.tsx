@@ -12,41 +12,66 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 export default function NewcomerGuidePage() {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
-  const [profile, , isReady] = useUserProfile();
+  const [profile, setProfile, isReady] = useUserProfile();
   const guides = [f1Guide, h1bGuide, j1Guide, o1Guide] as NewcomerGuideData[];
 
+  function toggleGuideTask(taskId: string) {
+    setProfile((current) => ({
+      ...current,
+      checklist: current.checklist.includes(taskId)
+        ? current.checklist.filter((item) => item !== taskId)
+        : [...current.checklist, taskId],
+    }));
+  }
+
   if (!isReady) {
-    return <div className="py-10 text-sm text-[var(--color-muted)]">{isSpanish ? "Cargando guia..." : "Loading guide..."}</div>;
+    return (
+      <div className="py-10 text-sm text-[var(--color-muted)]">
+        {isSpanish ? "Cargando guia..." : "Loading guide..."}
+      </div>
+    );
   }
 
   return (
     <div className="website-page">
       <section className="sf-main-grid xl:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
         <div className="grid gap-6">
-        <section className="page-hero p-6 sm:p-8 lg:p-10">
-          <p className="eyebrow">{isSpanish ? "Guia para recien llegados" : "Newcomer guide"}</p>
-          <h1 className="sf-section-title mt-3 max-w-[11ch]">
-            {isSpanish
-              ? "Los primeros 30 dias son papeleo y logistica. Mantenlos organizados."
-              : "The first 30 days are paperwork and logistics. Keep them organized."}
-          </h1>
-          <p className="sf-body-copy mt-4 max-w-[42rem]">
-            {isSpanish
-              ? "Empieza con tu tipo de visa y cambia entre las pestanas cuando necesites comparar como cambian las reglas."
-              : "Start with your visa track, then jump across the tabs when you need to compare how the rules change."}
-          </p>
-        </section>
+          <section className="page-hero p-6 sm:p-8 lg:p-10">
+            <p className="eyebrow">{isSpanish ? "Guia para recien llegados" : "Newcomer guide"}</p>
+            <h1 className="sf-section-title mt-3 max-w-[11ch]">
+              {isSpanish
+                ? "Instalarte en Estados Unidos implica papeleo y logistica. Mantenlos organizados."
+                : "Settling into the United States means paperwork and logistics. Keep them organized."}
+            </h1>
+            <p className="sf-body-copy mt-4 max-w-[42rem]">
+              {isSpanish
+                ? "Tus primeros pasos para instalarte en Estados Unidos, mantenerte al dia y evitar retrasos comunes."
+                : "Your first steps to settle into the United States, stay on track, and avoid common delays."}
+            </p>
+          </section>
 
-        <NewcomerGuide guides={guides} activeVisa={profile.visaStatus} zipCode={profile.zip} />
+          <NewcomerGuide
+            guides={guides}
+            activeVisa={profile.visaStatus}
+            zipCode={profile.zip}
+            completedTaskIds={profile.checklist}
+            onToggleTask={toggleGuideTask}
+          />
         </div>
 
         <aside className="sf-rail xl:sticky xl:top-28">
           <section className="sf-side-panel">
             <p className="eyebrow">{isSpanish ? "Perfil activo" : "Active profile"}</p>
             <div className="sf-side-list mt-4 text-sm text-[var(--color-muted)]">
-              <div>{isSpanish ? "Visa" : "Visa"}: {profile.visaStatus}</div>
-              <div>{isSpanish ? "ZIP" : "ZIP"}: {profile.zip || "85004"}</div>
-              <div>{isSpanish ? "Estado" : "State"}: {profile.state}</div>
+              <div>
+                {isSpanish ? "Visa" : "Visa"}: {profile.visaStatus}
+              </div>
+              <div>
+                {isSpanish ? "ZIP" : "ZIP"}: {profile.zip || "85004"}
+              </div>
+              <div>
+                {isSpanish ? "Estado" : "State"}: {profile.state}
+              </div>
             </div>
           </section>
 

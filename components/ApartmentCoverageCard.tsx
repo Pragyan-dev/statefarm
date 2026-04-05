@@ -5,6 +5,8 @@ import { Home, ShieldCheck, Sofa, TriangleAlert } from "lucide-react";
 import { formatCurrency, pickText } from "@/lib/content";
 import type { ApartmentListing, ApartmentZipData, Language } from "@/lib/types";
 
+const STATE_FARM_RENTERS_INFO_URL = "https://www.statefarm.com/insurance/renters";
+
 function getLowerRentAmount(range: string) {
   const match = range.replaceAll(",", "").match(/\$([0-9]+)/);
   return match ? Number(match[1]) : 1200;
@@ -53,7 +55,7 @@ export function ApartmentCoverageCard({
           <p className="mt-2 text-sm text-[var(--color-muted)]">{apartment.address}</p>
         </div>
         <a
-          href="https://www.statefarm.com/insurance/renters"
+          href={STATE_FARM_RENTERS_INFO_URL}
           target="_blank"
           rel="noreferrer"
           className="button-ink shrink-0 px-4 text-sm font-semibold"
@@ -62,7 +64,12 @@ export function ApartmentCoverageCard({
         </a>
       </div>
 
-      <div className="mt-5 grid gap-4 rounded-[1rem] border border-[var(--color-border)] bg-[var(--color-subtle)] p-5">
+      <a
+        href={STATE_FARM_RENTERS_INFO_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-5 grid gap-4 rounded-[1.7rem] bg-[var(--color-paper)] p-5 shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)] transition hover:bg-[var(--color-accent-soft)]"
+      >
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-muted)]">
@@ -75,9 +82,7 @@ export function ApartmentCoverageCard({
               </span>
             </p>
           </div>
-          <div className="status-badge status-badge-success">
-            {apartment.rentRange}
-          </div>
+          <div className="status-badge status-badge-success">{apartment.rentRange}</div>
         </div>
 
         <div>
@@ -101,17 +106,14 @@ export function ApartmentCoverageCard({
             />
           </div>
         </div>
-      </div>
+      </a>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {coverageItems.map((item) => {
           const Icon = item.icon;
 
           return (
-            <div
-              key={item.label}
-              className="service-card px-4 py-4"
-            >
+            <div key={item.label} className="service-card px-4 py-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)]">
                 <Icon className="size-4" />
                 <span>{item.label}</span>
