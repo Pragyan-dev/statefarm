@@ -107,7 +107,7 @@ export function ScanningAnimation({
           </p>
           <div className="mt-4 h-2.5 w-[16rem] overflow-hidden rounded-full bg-[rgba(17,24,39,0.08)]">
             <div
-              className="h-full rounded-full bg-[linear-gradient(90deg,#378ADD,#7CC4FF)] transition-[width] duration-300"
+              className="h-full rounded-full bg-[#378add] transition-[width] duration-300"
               style={{ width: `${Math.max(4, Math.min(progress, 100))}%` }}
             />
           </div>

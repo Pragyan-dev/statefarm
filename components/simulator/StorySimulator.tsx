@@ -195,10 +195,10 @@ export function StorySimulator({
 
   const sceneToneClass =
     currentNode.effect?.type === "damage"
-      ? "bg-[linear-gradient(180deg,#FDECEC_0%,#F8E3DD_100%)]"
+      ? "bg-[#f8e3dd]"
       : currentNode.effect?.type === "saved" || currentNode.endingType === "good"
-        ? "bg-[linear-gradient(180deg,#ECF7F1_0%,#E1F2E8_100%)]"
-        : "bg-[linear-gradient(180deg,#F6F0E7_0%,#EBDDCE_100%)]";
+        ? "bg-[#e6f3ea]"
+        : "bg-[#eddcc9]";
 
   if (currentNode.isEnding && completionSummary) {
     return (
@@ -239,7 +239,7 @@ export function StorySimulator({
           </button>
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.85),transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[rgba(255,255,255,0.35)]" />
 
         <div className="relative flex flex-1 items-end justify-center">
           <div className="absolute bottom-10 h-5 w-40 rounded-full bg-black/10 blur-md" />

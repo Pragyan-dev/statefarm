@@ -26,7 +26,7 @@ export function PolicySummaryHeader({
     <section className="panel-card mx-auto w-full max-w-[36rem]">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
-          <div className="flex size-14 items-center justify-center rounded-[1.25rem] bg-[linear-gradient(180deg,rgba(212,96,58,0.2),rgba(31,122,90,0.16))] font-semibold text-[var(--color-ink)] shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)]">
+          <div className="flex size-14 items-center justify-center rounded-[1.25rem] bg-[rgba(212,96,58,0.14)] font-semibold text-[var(--color-ink)] shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)]">
             {providerInitials || "PI"}
           </div>
           <div>

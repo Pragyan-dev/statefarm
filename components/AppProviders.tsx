@@ -23,10 +23,8 @@ function AppClassBridge({
     const root = document.documentElement;
     root.lang = settings.language;
     root.dataset.viewMode = isReady ? resolvedMode : "website";
+    root.style.setProperty("--base-font-size", `${settings.textSize}px`);
     root.classList.remove(
-      "text-size-normal",
-      "text-size-large",
-      "text-size-xl",
       "high-contrast",
       "cb-protanopia",
       "cb-deuteranopia",
@@ -34,8 +32,6 @@ function AppClassBridge({
       "reduced-motion",
       "screen-reader-optimized",
     );
-
-    root.classList.add(`text-size-${settings.textSize}`);
 
     if (settings.highContrast) {
       root.classList.add("high-contrast");

@@ -103,7 +103,7 @@ export function ApartmentCoverageCard({
             aria-valuenow={Number(rentPercent.toFixed(1))}
           >
             <div
-              className="h-full rounded-full bg-[linear-gradient(90deg,#C63D36_0%,#E78D84_100%)] transition-[width]"
+              className="h-full rounded-full bg-[#c63d36] transition-[width]"
               style={{ width: `${progressWidth}%` }}
             />
           </div>

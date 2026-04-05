@@ -146,7 +146,7 @@ export function AutoInsuranceEstimator({
 
       <div className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.92fr)]">
         <div className="grid gap-4">
-          <div className="rounded-[1.6rem] border border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(251,246,239,0.96))] p-4">
+          <div className="rounded-[1.6rem] border border-[var(--color-border)] bg-[rgba(251,246,239,0.96)] p-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-sm font-semibold text-[var(--color-ink)]">
@@ -328,7 +328,7 @@ export function AutoInsuranceEstimator({
           </div>
         </div>
 
-        <div className="rounded-[1.9rem] border border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,223,219,0.48))] p-5 shadow-[0_18px_42px_rgba(17,24,39,0.08)]">
+        <div className="rounded-[1.9rem] border border-[var(--color-border)] bg-[rgba(248,223,219,0.62)] p-5 shadow-[0_18px_42px_rgba(17,24,39,0.08)]">
           <p className="eyebrow">{isSpanish ? "Resultado rapido" : "Quick result"}</p>
           {result ? (
             <div className="mt-3 grid gap-4">
