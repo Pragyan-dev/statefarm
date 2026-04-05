@@ -27,7 +27,7 @@ export function FemaTimeline({
       <p className="eyebrow">{isSpanish ? "Historial reciente de desastres" : "Recent disaster history"}</p>
       <div className="mt-3 flex items-start justify-between gap-4">
         <div>
-          <h2 className="font-display text-3xl text-[var(--color-ink)]">
+          <h2 className="text-3xl font-semibold text-[var(--color-ink)]">
             {isSpanish ? "FEMA + contexto de riesgo local" : "FEMA + local risk context"}
           </h2>
           <p className="mt-2 text-sm text-[var(--color-muted)]">
@@ -61,7 +61,7 @@ export function FemaTimeline({
           ))}
         </ul>
       ) : (
-        <div className="mt-5 rounded-[1.7rem] border border-[var(--color-border)] bg-[var(--color-accent-soft)] px-5 py-5">
+        <div className="mt-5 rounded-[1rem] border border-[var(--color-border)] bg-[var(--color-accent-soft)] px-5 py-5">
           <div className="flex items-start gap-3">
             <AlertCircle className="mt-0.5 size-5 text-[var(--color-warning)]" />
             <div>
@@ -78,7 +78,7 @@ export function FemaTimeline({
         </div>
       )}
 
-      <div className="mt-5 rounded-[1.6rem] border border-[var(--color-border)] bg-white/75 px-4 py-4">
+      <div className="service-card-soft mt-5 px-4 py-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)]">
           <CloudLightning className="size-4 text-[var(--color-accent)]" />
           <span>{riskLabel}</span>
@@ -117,7 +117,7 @@ function TimelineItem({
         aria-hidden="true"
         className="absolute left-0 top-4 size-4 rounded-full border-2 border-[var(--color-paper)] bg-[var(--color-accent)] shadow-[0_0_0_3px_var(--color-accent-glow)]"
       />
-      <div className="rounded-[1.5rem] border border-[var(--color-border)] bg-white/85 px-4 py-4">
+      <div className="rounded-[1rem] border border-[var(--color-border)] bg-white px-4 py-4 shadow-[var(--shadow-sm)]">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
           <span>{formatDate(item.date, language)}</span>
           {item.incidentType ? <span>{item.incidentType}</span> : null}

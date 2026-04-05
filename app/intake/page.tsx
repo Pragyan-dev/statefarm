@@ -101,19 +101,19 @@ export default function IntakePage() {
 
   if (resolvedMode === "website") {
     return (
-      <div className="py-6 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="website-page">
+        <div className="sf-main-grid lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
           <div className="grid gap-6">
-            <Link href="/" className="text-sm font-semibold text-[var(--color-muted)]">
+            <Link href="/" className="button-quiet w-fit text-sm">
               {copy.backHome}
             </Link>
 
-            <section className="panel-card hero-ambient overflow-hidden">
+            <section className="page-hero p-6 sm:p-8 lg:p-10">
               <p className="eyebrow">{copy.intake}</p>
-              <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[12ch]">
+              <h1 className="sf-section-title mt-3 max-w-[12ch]">
                 {copy.websiteTitle}
               </h1>
-              <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">
+              <p className="sf-body-copy mt-4 max-w-[42rem]">
                 {copy.introCopy}
               </p>
             </section>
@@ -126,14 +126,16 @@ export default function IntakePage() {
               className="grid gap-6"
             >
               <fieldset className="panel-card">
-                <legend className="font-display text-2xl text-[var(--color-ink)]">
+                <legend className="text-2xl font-semibold text-[var(--color-ink)]">
                   {copy.visaQuestion}
                 </legend>
                 <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3 md:grid-cols-2">
                   {visaOptions.map((visa) => (
                     <label
                       key={visa}
-                      className="flex cursor-pointer items-center gap-3 rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 focus-within:ring-2 focus-within:ring-blue-500"
+                      className={`choice-card flex cursor-pointer items-center gap-3 px-4 py-4 focus-within:ring-2 focus-within:ring-blue-500 ${
+                        profile.visaStatus === visa ? "choice-card-active" : ""
+                      }`}
                     >
                       <input
                         type="radio"
@@ -154,14 +156,16 @@ export default function IntakePage() {
               </fieldset>
 
               <fieldset className="panel-card">
-                <legend className="font-display text-2xl text-[var(--color-ink)]">
+                <legend className="text-2xl font-semibold text-[var(--color-ink)]">
                   {copy.ssnQuestion}
                 </legend>
                 <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3 md:grid-cols-2">
                   {[true, false].map((value) => (
                     <label
                       key={String(value)}
-                      className="flex cursor-pointer items-center gap-3 rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 focus-within:ring-2 focus-within:ring-blue-500"
+                      className={`choice-card flex cursor-pointer items-center gap-3 px-4 py-4 focus-within:ring-2 focus-within:ring-blue-500 ${
+                        profile.hasSsn === value ? "choice-card-active" : ""
+                      }`}
                     >
                       <input
                         type="radio"
@@ -182,11 +186,11 @@ export default function IntakePage() {
               </fieldset>
 
               <fieldset className="panel-card">
-                <legend className="font-display text-2xl text-[var(--color-ink)]">
+                <legend className="text-2xl font-semibold text-[var(--color-ink)]">
                   {copy.coverageQuestion}
                 </legend>
                 <div className="mt-5 grid gap-3 md:grid-cols-2">
-                  <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+                  <label className={`choice-card flex cursor-pointer items-center justify-between px-4 py-4 ${profile.drives ? "choice-card-active" : ""}`}>
                     <div>
                       <p className="font-semibold text-[var(--color-ink)]">{copy.driveLabel}</p>
                       <p className="text-sm text-[var(--color-muted)]">{copy.driveDetail}</p>
@@ -204,7 +208,7 @@ export default function IntakePage() {
                     />
                   </label>
 
-                  <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+                  <label className={`choice-card flex cursor-pointer items-center justify-between px-4 py-4 ${profile.rents ? "choice-card-active" : ""}`}>
                     <div>
                       <p className="font-semibold text-[var(--color-ink)]">{copy.rentLabel}</p>
                       <p className="text-sm text-[var(--color-muted)]">{copy.rentDetail}</p>
@@ -225,10 +229,10 @@ export default function IntakePage() {
               </fieldset>
 
               <section className="panel-card">
-                <h2 className="font-display text-2xl text-[var(--color-ink)]">{copy.locationQuestion}</h2>
+                <h2 className="text-2xl font-semibold text-[var(--color-ink)]">{copy.locationQuestion}</h2>
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
                   <label>
-                    <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">{copy.zipCode}</span>
+                    <span className="field-label">{copy.zipCode}</span>
                     <input
                       value={profile.zip}
                       onChange={(event) =>
@@ -237,13 +241,13 @@ export default function IntakePage() {
                           zip: event.target.value.slice(0, 5),
                         }))
                       }
-                      className="w-full rounded-[1.5rem] border border-[var(--color-border)] bg-transparent px-4 py-3 text-[var(--color-ink)]"
+                      className="field-input"
                       inputMode="numeric"
                     />
                   </label>
 
                   <label>
-                    <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
+                    <span className="field-label">
                       {copy.income}
                     </span>
                     <input
@@ -255,7 +259,7 @@ export default function IntakePage() {
                           monthlyIncome: Number(event.target.value) || 0,
                         }))
                       }
-                      className="w-full rounded-[1.5rem] border border-[var(--color-border)] bg-transparent px-4 py-3 text-[var(--color-ink)]"
+                      className="field-input"
                     />
                   </label>
                 </div>
@@ -264,38 +268,41 @@ export default function IntakePage() {
               <div className="flex flex-wrap gap-3 pb-6">
                 <button
                   type="submit"
-                  className="min-h-12 rounded-full bg-[var(--color-ink)] px-6 text-sm font-semibold text-[var(--color-paper)]"
+                  className="button-ink px-6 text-sm font-semibold"
                 >
                   {copy.buildDashboard}
                 </button>
+                <Link href="/newcomer-guide" className="button-secondary px-6 text-sm font-semibold">
+                  {isSpanish ? "Ver la guia de recien llegados" : "View the newcomer guide"}
+                </Link>
               </div>
             </form>
           </div>
 
-          <aside className="grid gap-6 lg:sticky lg:top-28 lg:self-start">
-            <section className="panel-card">
+          <aside className="sf-rail lg:sticky lg:top-28 lg:self-start">
+            <section className="sf-side-panel">
               <p className="eyebrow">{copy.preview}</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
+              <h2 className="mt-2 text-2xl font-semibold text-[var(--color-ink)]">
                 {copy.previewTitle}
               </h2>
-              <ul className="mt-4 grid gap-3 text-sm text-[var(--color-muted)]">
-                <li>{copy.visaTrack}: {profile.visaStatus}</li>
-                <li>{copy.ssnStatus}: {profile.hasSsn ? copy.hasSsn : copy.noSsn}</li>
-                <li>{copy.locationPreview}: {locationPreview.city}, {locationPreview.state} {profile.zip}</li>
-                <li>{copy.monthlyIncome}: ${profile.monthlyIncome || 0}</li>
-              </ul>
+              <div className="sf-side-list mt-4 text-sm text-[var(--color-muted)]">
+                <div>{copy.visaTrack}: {profile.visaStatus}</div>
+                <div>{copy.ssnStatus}: {profile.hasSsn ? copy.hasSsn : copy.noSsn}</div>
+                <div>{copy.locationPreview}: {locationPreview.city}, {locationPreview.state} {profile.zip}</div>
+                <div>{copy.monthlyIncome}: ${profile.monthlyIncome || 0}</div>
+              </div>
             </section>
 
             <section className="panel-card">
               <p className="eyebrow">{copy.unlocks}</p>
               <div className="mt-4 grid gap-3 text-sm text-[var(--color-muted)]">
-                <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
+                <div className="sf-stat-card">
                   {copy.simulator}: {profile.drives || profile.rents ? copy.simulatorReady : copy.simulatorFallback}
                 </div>
-                <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
+                <div className="sf-stat-card">
                   {copy.coverageFinder}: {profile.rents ? copy.coverageReady : copy.coverageRules}
                 </div>
-                <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
+                <div className="sf-stat-card">
                   {copy.visaGuide}: {copy.visaGuideReady}
                 </div>
               </div>

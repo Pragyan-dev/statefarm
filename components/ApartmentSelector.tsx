@@ -36,7 +36,7 @@ export function ApartmentSelector({
 
   return (
     <div className="grid gap-4">
-      <div className="flex flex-col gap-3 rounded-[1.5rem] border border-[var(--color-border)] bg-white/55 px-4 py-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-3 rounded-[1rem] border border-[var(--color-border)] bg-[var(--color-subtle)] px-4 py-4 md:flex-row md:items-center md:justify-between">
         <div className="min-w-0">
           <p className="eyebrow">{isSpanish ? "Ubicacion demo" : "Demo location"}</p>
           <p className="mt-2 text-base font-semibold text-[var(--color-ink)]">
@@ -47,7 +47,7 @@ export function ApartmentSelector({
         <button
           type="button"
           onClick={() => void onLocate()}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-ink)] px-4 text-sm font-semibold text-[var(--color-paper)]"
+          className="button-ink px-4 text-sm font-semibold"
         >
           <Navigation className="size-4" />
           <span>{isSpanish ? "Usar ubicacion demo" : "Use demo location"}</span>
@@ -62,13 +62,13 @@ export function ApartmentSelector({
           <input
             value={zipInput}
             onChange={(event) => onZipInputChange(event.target.value)}
-            className="w-full rounded-2xl border border-[var(--color-border)] bg-white/75 px-4 py-3 text-base text-[var(--color-ink)]"
+            className="field-input"
             inputMode="numeric"
             maxLength={5}
           />
         </label>
         <div
-          className="rounded-[1.25rem] border border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-3 text-sm text-[var(--color-muted)]"
+          className="rounded-[0.9rem] border border-[var(--color-border)] bg-[var(--color-subtle)] px-4 py-3 text-sm text-[var(--color-muted)]"
           aria-live="polite"
           aria-atomic="true"
         >
@@ -77,7 +77,7 @@ export function ApartmentSelector({
       </div>
 
       {unsupportedZip ? (
-        <div className="rounded-[1.5rem] border border-[var(--color-warning)] bg-[#FFF7E8] px-4 py-4 text-sm text-[var(--color-ink)]">
+        <div className="rounded-[1rem] border border-[var(--color-warning)] bg-[#fff8ed] px-4 py-4 text-sm text-[var(--color-ink)]">
           <p className="font-semibold">
             {isSpanish
               ? "Ese ZIP no esta en la demo todavia."
@@ -107,12 +107,12 @@ export function ApartmentSelector({
               type="button"
               onClick={() => onApartmentSelect(apartment)}
               aria-pressed={isSelected}
-              className={`rounded-[1.6rem] border px-4 py-4 text-left transition ${
+              className={`rounded-[1rem] border px-4 py-4 text-left transition ${
                 isWebsite ? "min-h-[186px]" : "min-h-[170px] min-w-[82%] snap-start"
               } ${
                 isSelected
-                  ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] shadow-[0_18px_36px_var(--color-accent-glow)]"
-                  : "border-[var(--color-border)] bg-white/85 hover:border-[var(--color-accent)] hover:bg-[var(--color-paper)]"
+                  ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] shadow-[0_12px_28px_var(--color-accent-glow)]"
+                  : "border-[var(--color-border)] bg-white hover:border-[var(--color-accent)] hover:bg-[var(--color-subtle)]"
               }`}
             >
               <div className="flex h-full flex-col">
@@ -123,7 +123,7 @@ export function ApartmentSelector({
                     </h3>
                     <p className="mt-1 text-sm text-[var(--color-muted)]">{apartment.address}</p>
                   </div>
-                  <span className="shrink-0 rounded-full bg-[var(--color-highlight)] px-3 py-1 text-xs font-semibold text-[var(--color-ink)]">
+                  <span className="status-badge status-badge-neutral shrink-0 px-3 py-1 text-xs">
                     {formatCurrency(apartment.estimate, settings.language)}
                     {isSpanish ? "/mes" : "/mo"}
                   </span>
@@ -140,8 +140,8 @@ export function ApartmentSelector({
                   {zipData.topRisks.slice(0, 2).map((risk) => (
                     <span
                       key={`${apartment.address}-${risk.en}`}
-                      className="rounded-full border border-[var(--color-border)] bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-[var(--color-muted)]"
-                    >
+                        className="rounded-full border border-[var(--color-border)] bg-[var(--color-subtle)] px-2.5 py-1 text-[11px] font-semibold text-[var(--color-muted)]"
+                      >
                       {pickText(risk, settings.language)}
                     </span>
                   ))}

@@ -47,7 +47,7 @@ export function ApartmentCoverageCard({
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
           <p className="eyebrow">{isSpanish ? "Apartamento seleccionado" : "Selected apartment"}</p>
-          <h2 className="font-display text-3xl leading-tight text-[var(--color-ink)]">
+          <h2 className="text-3xl font-semibold leading-tight text-[var(--color-ink)]">
             {apartment.name}
           </h2>
           <p className="mt-2 text-sm text-[var(--color-muted)]">{apartment.address}</p>
@@ -56,13 +56,13 @@ export function ApartmentCoverageCard({
           href="https://www.statefarm.com/insurance/renters"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] px-4 text-sm font-semibold text-[var(--color-paper)] transition hover:bg-[var(--color-accent-strong)]"
+          className="button-ink shrink-0 px-4 text-sm font-semibold"
         >
           {isSpanish ? "Conseguir cobertura" : "Get covered"}
         </a>
       </div>
 
-      <div className="mt-5 grid gap-4 rounded-[1.7rem] bg-[var(--color-paper)] p-5 shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)]">
+      <div className="mt-5 grid gap-4 rounded-[1rem] border border-[var(--color-border)] bg-[var(--color-subtle)] p-5">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-muted)]">
@@ -75,7 +75,7 @@ export function ApartmentCoverageCard({
               </span>
             </p>
           </div>
-          <div className="rounded-full bg-[#E8F2EC] px-3 py-2 text-xs font-semibold text-[var(--color-success)]">
+          <div className="status-badge status-badge-success">
             {apartment.rentRange}
           </div>
         </div>
@@ -110,7 +110,7 @@ export function ApartmentCoverageCard({
           return (
             <div
               key={item.label}
-              className="rounded-[1.4rem] border border-[var(--color-border)] bg-white/75 px-4 py-4"
+              className="service-card px-4 py-4"
             >
               <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)]">
                 <Icon className="size-4" />
@@ -122,7 +122,7 @@ export function ApartmentCoverageCard({
             </div>
           );
         })}
-        <div className="rounded-[1.4rem] border border-[var(--color-border)] bg-white/75 px-4 py-4 sm:col-span-2">
+        <div className="service-card px-4 py-4 sm:col-span-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)]">
             <TriangleAlert className="size-4 text-[var(--color-warning)]" />
             <span>{language === "es" ? "Deducible" : "Deductible"}</span>
@@ -137,7 +137,7 @@ export function ApartmentCoverageCard({
         {zipData.topRisks.map((risk) => (
           <span
             key={`${apartment.address}-${risk.en}`}
-            className="rounded-full border border-[var(--color-border)] bg-[var(--color-accent-soft)] px-3 py-2 text-xs font-semibold text-[var(--color-muted)]"
+            className="rounded-full border border-[rgba(226,41,37,0.14)] bg-[var(--color-accent-soft)] px-3 py-2 text-xs font-semibold text-[var(--color-muted)]"
           >
             {pickText(risk, language)}
           </span>

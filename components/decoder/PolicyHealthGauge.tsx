@@ -70,7 +70,7 @@ export function PolicyHealthGauge({
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="font-display text-5xl leading-none text-[var(--color-ink)]">
+          <div className="text-5xl font-semibold leading-none text-[var(--color-ink)]">
             {displayScore}
           </div>
           <div className="mt-1 text-sm font-semibold tracking-[0.18em] text-[var(--color-muted)]">

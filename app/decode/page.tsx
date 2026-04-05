@@ -34,10 +34,8 @@ export default function DecodePage() {
   const [progress, setProgress] = useState(0);
   const [scanVisualComplete, setScanVisualComplete] = useState(false);
   const isWebsite = resolvedMode === "website";
-  const primaryActionClass =
-    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
-  const secondaryActionClass =
-    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/80 px-5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px hover:bg-white";
+  const primaryActionClass = "button-ink inline-flex w-full px-5 text-sm font-semibold";
+  const secondaryActionClass = "button-secondary inline-flex w-full px-5 text-sm font-semibold";
 
   const narration = useMemo(() => {
     if (!analysis) {
@@ -197,15 +195,15 @@ export default function DecodePage() {
   }
 
   return (
-    <div className={`py-6 lg:py-10 ${isWebsite ? "mx-auto max-w-[68rem]" : ""}`}>
-      <section className="panel-card hero-ambient overflow-hidden">
+    <div className={`website-page ${isWebsite ? "mx-auto max-w-[68rem]" : ""}`}>
+      <section className="page-hero p-6 sm:p-8 lg:p-10">
         <p className="eyebrow">{isSpanish ? "Decodificador visual de polizas" : "Visual policy decoder"}</p>
-        <h1 className="mt-2 font-display text-4xl leading-[0.96] text-[var(--color-ink)] sm:text-5xl lg:text-6xl">
+        <h1 className="sf-section-title mt-3 max-w-[12ch]">
           {isSpanish
             ? "Sube una poliza. Mira la salud real de esa cobertura."
             : "Upload a policy. See the real health of that coverage."}
         </h1>
-        <p className="mt-4 max-w-[38rem] text-base text-[var(--color-muted)]">
+        <p className="sf-body-copy mt-4 max-w-[42rem]">
           {isSpanish
             ? "La pagina convierte PDFs y fotos en un puntaje, un escudo de cobertura, comparaciones del deducible y alertas concretas de riesgo."
             : "This page turns PDFs and photos into a policy score, a coverage shield, deductible comparisons, and concrete gap alerts."}
@@ -213,20 +211,43 @@ export default function DecodePage() {
       </section>
 
       {phase === "upload" ? (
-        <div className="mt-6">
-          <UploadZone
-            selectedDocument={selectedDocument}
-            onFileSelected={handleFileSelected}
-            onAnalyze={handleAnalyze}
-            onReset={resetDecoder}
-            onUseSample={handleUseSample}
-          />
-          {error ? (
-            <p className="mx-auto mt-4 max-w-[34rem] text-center text-sm text-[var(--color-danger)]">
-              {error}
-            </p>
+        <section className={`mt-6 ${isWebsite ? "sf-main-grid xl:grid-cols-[minmax(0,1fr)_minmax(300px,0.8fr)]" : ""}`}>
+          <div>
+            <UploadZone
+              selectedDocument={selectedDocument}
+              onFileSelected={handleFileSelected}
+              onAnalyze={handleAnalyze}
+              onReset={resetDecoder}
+              onUseSample={handleUseSample}
+            />
+            {error ? (
+              <p className="mx-auto mt-4 max-w-[34rem] text-center text-sm text-[var(--color-danger)]">
+                {error}
+              </p>
+            ) : null}
+          </div>
+
+          {isWebsite ? (
+            <aside className="sf-rail">
+              <section className="sf-side-panel">
+                <p className="eyebrow">{isSpanish ? "Antes de subir" : "Before you upload"}</p>
+                <div className="sf-side-list mt-4 text-sm text-[var(--color-muted)]">
+                  <div>{isSpanish ? "Acepta fotos o PDF de polizas." : "Accepts photos or PDF policy files."}</div>
+                  <div>{isSpanish ? "Marca deducibles, vacios y cobertura util." : "Flags deductibles, gaps, and useful coverage."}</div>
+                  <div>{isSpanish ? "Te envia al sitio oficial para la siguiente accion." : "Sends you to the official site for the next action."}</div>
+                </div>
+              </section>
+
+              <section className="panel-card">
+                <p className="eyebrow">{isSpanish ? "Accion rapida" : "Quick action"}</p>
+                <button type="button" onClick={goToStateFarmCoverage} className={secondaryActionClass}>
+                  {isSpanish ? "Explorar cobertura oficial" : "Explore official coverage"}
+                  <ArrowRight className="size-4" />
+                </button>
+              </section>
+            </aside>
           ) : null}
-        </div>
+        </section>
       ) : null}
 
       {phase === "scanning" && selectedDocument ? (
@@ -287,6 +308,7 @@ export default function DecodePage() {
 
           <StaggeredFadeIn delay={1600} immediate={settings.reducedMotion}>
             <section className="panel-card mx-auto w-full max-w-[36rem]">
+              <p className="eyebrow">{isSpanish ? "Siguiente paso" : "Next step"}</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
                   type="button"

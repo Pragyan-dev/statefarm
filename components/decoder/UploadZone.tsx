@@ -35,10 +35,8 @@ export function UploadZone({
   const [dragActive, setDragActive] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const primaryActionClass =
-    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-60";
-  const secondaryActionClass =
-    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/80 px-5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px hover:bg-white";
+  const primaryActionClass = "button-ink w-full px-5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60";
+  const secondaryActionClass = "button-secondary w-full px-5 text-sm font-semibold";
 
   function handleFiles(fileList: FileList | null) {
     const nextFile = fileList?.[0];
@@ -63,7 +61,7 @@ export function UploadZone({
     return (
       <section className="panel-card mx-auto w-full max-w-[34rem] overflow-hidden">
         <div className="grid gap-5">
-          <div className="rounded-[1.85rem] border border-[rgba(17,24,39,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.8),rgba(251,246,239,0.95))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+          <div className="rounded-[1rem] border border-[var(--color-border)] bg-[var(--color-subtle)] p-4">
             <DocumentPreview
               src={selectedDocument.previewSrc}
               kind={selectedDocument.kind}
@@ -72,7 +70,7 @@ export function UploadZone({
             />
           </div>
 
-          <div className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/60 px-4 py-4 text-center shadow-[0_10px_24px_rgba(17,24,39,0.05)]">
+          <div className="service-card-soft px-4 py-4 text-center">
             <p className="eyebrow">{isSpanish ? "Documento listo" : "Document ready"}</p>
             <p className="mt-2 font-semibold text-[var(--color-ink)]">{selectedDocument.name}</p>
             <p className="mt-1 text-sm text-[var(--color-muted)]">{selectedDocument.sizeLabel}</p>
@@ -107,7 +105,7 @@ export function UploadZone({
             <button
               type="button"
               onClick={onUseSample}
-              className="inline-flex items-center gap-2 rounded-full border border-[rgba(212,96,58,0.16)] bg-[rgba(212,96,58,0.08)] px-4 py-2 font-medium text-[var(--color-accent)] transition hover:bg-[rgba(212,96,58,0.12)]"
+              className="inline-flex items-center gap-2 rounded-full border border-[rgba(226,41,37,0.18)] bg-[var(--color-accent-soft)] px-4 py-2 font-medium text-[var(--color-accent)] transition hover:bg-[#fbe4e3]"
             >
               <ImageUp className="size-4" />
               {isSpanish ? "Usar poliza de muestra" : "Use sample policy"}
@@ -125,10 +123,10 @@ export function UploadZone({
 
   return (
     <section
-      className={`mx-auto w-full max-w-[34rem] rounded-[2rem] border-2 border-dashed bg-[rgba(251,246,239,0.82)] p-5 shadow-[0_22px_50px_rgba(17,24,39,0.08)] transition decoder-upload-pulse ${
+      className={`mx-auto w-full max-w-[34rem] rounded-[1rem] border-2 border-dashed bg-[var(--color-subtle)] p-5 shadow-[var(--shadow-md)] transition decoder-upload-pulse ${
         dragActive
-          ? "border-[var(--color-accent)] bg-[rgba(240,217,182,0.4)]"
-          : "border-[rgba(17,24,39,0.18)]"
+          ? "border-[var(--color-accent)] bg-[#fff8f8]"
+          : "border-[var(--color-border-strong)]"
       }`}
       onDragEnter={(event) => {
         event.preventDefault();
@@ -151,14 +149,14 @@ export function UploadZone({
       }}
     >
       <div className="flex min-h-[24rem] flex-col items-center justify-center text-center">
-        <div className="flex size-24 items-center justify-center rounded-[2rem] bg-[linear-gradient(180deg,rgba(212,96,58,0.16),rgba(31,122,90,0.1))] text-[var(--color-ink)] shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)]">
+        <div className="flex size-24 items-center justify-center rounded-[1rem] bg-white text-[var(--color-ink)] shadow-[var(--shadow-sm)]">
           <div className="relative">
             <FileText className="size-12" strokeWidth={1.8} />
-            <Camera className="absolute -bottom-2 -right-3 size-6 rounded-full bg-[var(--color-paper)] p-1 text-[var(--color-accent)] shadow-[0_8px_16px_rgba(17,24,39,0.14)]" />
+            <Camera className="absolute -bottom-2 -right-3 size-6 rounded-full bg-white p-1 text-[var(--color-accent)] shadow-[0_8px_16px_rgba(17,24,39,0.14)]" />
           </div>
         </div>
 
-        <h1 className="mt-6 font-display text-4xl leading-[1] text-[var(--color-ink)]">
+        <h1 className="mt-6 text-4xl font-semibold leading-[1] text-[var(--color-ink)]">
           {isSpanish ? "Sube tu documento de poliza" : "Upload your policy document"}
         </h1>
         <p className="mt-3 max-w-[24ch] text-base text-[var(--color-muted)]">
@@ -169,7 +167,7 @@ export function UploadZone({
           <button
             type="button"
             onClick={() => cameraInputRef.current?.click()}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[1.25rem] border border-[var(--color-border)] bg-white px-4 text-sm font-semibold text-[var(--color-ink)] shadow-sm"
+            className="button-secondary rounded-[0.9rem] px-4 text-sm font-semibold"
           >
             <Camera className="size-4" />
             {isSpanish ? "Tomar foto" : "Take photo"}

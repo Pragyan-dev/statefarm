@@ -69,7 +69,7 @@ export function ReadAloud({
     <button
       type="button"
       onClick={handleToggle}
-      className={`inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--color-border)] px-4 text-sm font-semibold text-[var(--color-ink)] ${className}`}
+      className={`button-secondary px-4 text-sm font-semibold ${className}`}
       aria-label={playing ? t("stopReading") : t("readAloud")}
     >
       {playing ? <PauseCircle className="size-4" /> : <Volume2 className="size-4" />}

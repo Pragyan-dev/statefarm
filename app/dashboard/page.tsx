@@ -115,70 +115,109 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="py-6 lg:py-10">
-      <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <section className="panel-card hero-ambient overflow-hidden">
-          <p className="eyebrow">{t("dashboardEyebrow")}</p>
-          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch] lg:text-5xl">
-            {headline}
-          </h1>
-          <p className="mt-4 max-w-[38ch] text-base text-[var(--color-muted)]">
-            {t("dashboardHeroCopy")}
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              href="/simulate"
-              className="button-ink px-5 py-3 text-sm font-semibold"
-            >
-              {t("dashboardRunSimulator")}
-            </Link>
-            <ReadAloud text={`${headline} ${ssnMessage}`} />
-            <div className="ml-auto relative z-10">
-              <ClearDataButton />
+    <div className="website-page">
+      <section className="sf-main-grid xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
+        <div className="grid gap-6">
+          <section className="page-hero p-6 sm:p-8 lg:p-10">
+            <p className="eyebrow">{t("dashboardEyebrow")}</p>
+            <h1 className="sf-section-title mt-3 max-w-[11ch]">{headline}</h1>
+            <p className="sf-body-copy mt-4 max-w-[42rem]">
+              {t("dashboardHeroCopy")}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/simulate" className="button-ink px-5 py-3 text-sm font-semibold">
+                {t("dashboardRunSimulator")}
+              </Link>
+              <ReadAloud text={`${headline} ${ssnMessage}`} />
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="panel-card bg-[linear-gradient(180deg,rgba(255,250,249,0.96),rgba(251,246,239,0.96))]">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="eyebrow">{t("dashboardFastFact")}</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                {t("dashboardFastFactTitle")}
-              </h2>
+          <section className="sf-band p-6 sm:p-8">
+            <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+              <div>
+                <p className="eyebrow">{t("dashboardToolkit")}</p>
+                <h2 className="mt-2 text-3xl font-semibold text-[var(--color-ink)]">
+                  {isSpanish ? "Tus siguientes tareas" : "Your next tasks"}
+                </h2>
+              </div>
+              <p className="text-sm leading-7 text-[var(--color-muted)]">
+                {isSpanish
+                  ? "Este panel mantiene el simulador, la cobertura y las tareas de visa conectadas al mismo perfil."
+                  : "This hub keeps your simulator, coverage, and visa tasks connected to the same profile."}
+              </p>
             </div>
-            <BadgeAlert className="mt-1 size-6 text-[var(--color-accent)]" />
-          </div>
-          <p className="mt-4 text-base text-[var(--color-muted)]">{ssnMessage}</p>
-        </section>
-      </section>
-
-      <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_1fr] xl:grid-cols-[1.05fr_0.95fr]">
-        <ProgressChecklist items={checklistItems} profile={profile} onProfileChange={setProfile} />
-
-        <section className="panel-card">
-          <p className="eyebrow">{t("dashboardToolkit")}</p>
-          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
-            {cards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <Link
-                  key={card.href}
-                  href={card.href}
-                  className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-semibold text-[var(--color-ink)]">{card.title}</h3>
-                      <p className="mt-2 text-sm text-[var(--color-muted)]">{card.description}</p>
+            <div className="sf-product-grid mt-6 md:grid-cols-2">
+              {cards.map((card) => {
+                const Icon = card.icon;
+                return (
+                  <Link
+                    key={card.href}
+                    href={card.href}
+                    className="sf-product-tile transition hover:border-[var(--color-accent)]"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-semibold text-[var(--color-ink)]">{card.title}</h3>
+                        <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">{card.description}</p>
+                      </div>
+                      <Icon className="mt-1 size-5 text-[var(--color-accent)]" />
                     </div>
-                    <Icon className="size-5 text-[var(--color-accent)]" />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+
+          <ProgressChecklist items={checklistItems} profile={profile} onProfileChange={setProfile} />
+        </div>
+
+        <aside className="sf-rail xl:sticky xl:top-28">
+          <section className="sf-side-panel">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="eyebrow">{t("dashboardFastFact")}</p>
+                <h2 className="mt-2 text-2xl font-semibold text-[var(--color-ink)]">
+                  {t("dashboardFastFactTitle")}
+                </h2>
+              </div>
+              <BadgeAlert className="mt-1 size-6 text-[var(--color-accent)]" />
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[var(--color-muted)]">{ssnMessage}</p>
+          </section>
+
+          <section className="panel-card">
+            <p className="eyebrow">{isSpanish ? "Tu perfil" : "Your profile"}</p>
+            <div className="sf-side-list mt-4 text-sm text-[var(--color-muted)]">
+              <div>
+                <p className="font-semibold text-[var(--color-ink)]">{isSpanish ? "Visa" : "Visa"}</p>
+                <p>{profile.visaStatus}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-[var(--color-ink)]">{isSpanish ? "Estado" : "State"}</p>
+                <p>{profile.state}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-[var(--color-ink)]">{isSpanish ? "Ingreso mensual" : "Monthly income"}</p>
+                <p>${profile.monthlyIncome}</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="panel-card">
+            <p className="eyebrow">{isSpanish ? "Administrar" : "Manage"}</p>
+            <div className="mt-4 grid gap-3">
+              <Link href="/claim" className="sf-text-link">
+                {isSpanish ? "Abrir ayuda de reclamos" : "Open claim help"}
+              </Link>
+              <Link href="/coverage" className="sf-text-link">
+                {isSpanish ? "Revisar cobertura estimada" : "Review estimated coverage"}
+              </Link>
+              <div className="pt-2">
+                <ClearDataButton />
+              </div>
+            </div>
+          </section>
+        </aside>
       </section>
     </div>
   );

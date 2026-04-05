@@ -23,7 +23,7 @@ export function ClaimGuide({
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="eyebrow">{settings.language === "es" ? "Guia de reclamo" : "Claim guide"}</p>
-          <h2 className="font-display text-2xl text-[var(--color-ink)]">
+          <h2 className="text-2xl font-semibold text-[var(--color-ink)]">
             {settings.language === "es" ? "Que hacer ahora" : "What to do now"}
           </h2>
         </div>
@@ -52,7 +52,7 @@ export function ClaimGuide({
           title={settings.language === "es" ? "Siguientes pasos" : "Follow-up steps"}
           items={guide.followUpSteps}
         />
-        <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 text-sm text-[var(--color-muted)]">
+        <div className="service-card-soft px-4 py-4 text-sm text-[var(--color-muted)]">
           <p className="font-semibold text-[var(--color-ink)]">
             {settings.language === "es" ? "Tiempo estimado" : "Timeline"}
           </p>
@@ -73,7 +73,7 @@ function GuideSection({
   numbered?: boolean;
 }) {
   return (
-    <section className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+    <section className="service-card px-4 py-4">
       <h3 className="font-semibold text-[var(--color-ink)]">{title}</h3>
       <ol className="mt-3 grid gap-2 text-sm text-[var(--color-muted)]">
         {items.map((item, index) => (

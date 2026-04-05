@@ -25,7 +25,7 @@ export function ScenarioSelector({
     <div className="simulator-root bg-[linear-gradient(180deg,#F6F0E7_0%,#EFE4D8_100%)] px-4 py-6">
       <section className="rounded-[2rem] border-[2px] border-black bg-white/70 px-5 py-5 shadow-[0_22px_70px_rgba(17,24,39,0.1)] backdrop-blur">
         <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-black/50">
-          ArriveSafe
+          FirstCover
         </p>
         <h1 className="mt-3 font-display text-4xl leading-none text-black">
           {t("simulatorChooseTitle")}

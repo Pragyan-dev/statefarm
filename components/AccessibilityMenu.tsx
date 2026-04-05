@@ -44,24 +44,23 @@ export function AccessibilityMenu({
 
   return (
     <div
-      className="fixed inset-0 z-[1200] flex items-center justify-center bg-[rgb(7_10_22_/_0.76)] px-3 py-3 backdrop-blur-md sm:px-6 sm:py-6"
+      className="fixed inset-0 z-[1200] flex items-center justify-center bg-[rgba(31,31,31,0.35)] px-3 py-3 backdrop-blur-sm sm:px-6 sm:py-6"
       onClick={onClose}
     >
       <section
-        className="relative flex max-h-[min(92dvh,960px)] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-black/8 bg-[var(--color-paper)] shadow-[0_30px_90px_rgba(0,0,0,0.34)]"
+        className="relative flex max-h-[min(92dvh,960px)] w-full max-w-4xl flex-col overflow-hidden rounded-[1rem] border border-[var(--color-border)] bg-[var(--color-paper)] shadow-[var(--shadow-lg)]"
         role="dialog"
         aria-modal="true"
         aria-label={t("accessibility")}
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="relative border-b border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,252,251,0.96),rgba(251,246,239,0.98))] px-5 py-5 sm:px-6">
-          <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[var(--color-accent-wash)] blur-3xl" />
+        <header className="relative border-b border-[var(--color-border)] bg-[var(--color-subtle)] px-5 py-5 sm:px-6">
           <div className="relative flex items-start justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">
-                ArriveSafe
+                FirstCover
               </p>
-              <h2 className="font-display text-2xl leading-tight text-[var(--color-ink)] sm:text-3xl">
+              <h2 className="text-2xl font-semibold leading-tight text-[var(--color-ink)] sm:text-3xl">
                 {t("accessibility")}
               </h2>
               <p className="mt-2 max-w-[42ch] text-sm text-[var(--color-muted)]">
@@ -73,7 +72,7 @@ export function AccessibilityMenu({
             <button
               type="button"
               onClick={onClose}
-              className="min-h-11 min-w-11 rounded-full border border-[var(--color-border)] bg-white/70 text-[var(--color-ink)] shadow-sm"
+              className="button-secondary min-h-11 min-w-11 rounded-full px-0"
               aria-label={isSpanish ? "Cerrar menu" : "Close menu"}
             >
               <X className="mx-auto size-4" />
@@ -83,7 +82,7 @@ export function AccessibilityMenu({
 
         <div className="overflow-y-auto px-5 py-5 sm:px-6">
           <div className="grid gap-4 lg:grid-cols-2">
-            <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
+            <section className="service-card p-4 sm:p-5">
               <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">{t("language")}</p>
               <div className="grid grid-cols-2 gap-2">
                 {(["en", "es"] as const).map((language) => (
@@ -96,10 +95,10 @@ export function AccessibilityMenu({
                         language,
                       }))
                     }
-                    className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                    className={`rounded-[0.75rem] border px-4 py-3 text-sm font-semibold transition ${
                       settings.language === language
-                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
-                        : "border-[var(--color-border)] bg-white text-[var(--color-ink)]"
+                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-white shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
+                        : "border-[var(--color-border)] bg-[var(--color-subtle)] text-[var(--color-ink)]"
                     }`}
                   >
                     {language === "en" ? t("english") : t("spanish")}
@@ -108,7 +107,7 @@ export function AccessibilityMenu({
               </div>
             </section>
 
-            <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
+            <section className="service-card p-4 sm:p-5">
               <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">
                 {isSpanish ? "Tamano del texto" : "Text size"}
               </p>
@@ -127,10 +126,10 @@ export function AccessibilityMenu({
                         textSize: item.value as "normal" | "large" | "xl",
                       }))
                     }
-                    className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                    className={`rounded-[0.75rem] border px-4 py-3 text-sm font-semibold transition ${
                       settings.textSize === item.value
-                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
-                        : "border-[var(--color-border)] bg-white text-[var(--color-ink)]"
+                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-white shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
+                        : "border-[var(--color-border)] bg-[var(--color-subtle)] text-[var(--color-ink)]"
                     }`}
                   >
                     {item.label}
@@ -188,7 +187,7 @@ export function AccessibilityMenu({
                 role="switch"
                 aria-checked={item.checked}
                 onClick={() => item.onChange(!item.checked)}
-                className="flex min-h-16 items-center justify-between gap-4 rounded-[1.5rem] border border-[var(--color-border)] bg-white/70 px-4 py-4 text-left transition hover:bg-white/90"
+                className="flex min-h-16 items-center justify-between gap-4 rounded-[1rem] border border-[var(--color-border)] bg-white px-4 py-4 text-left transition hover:border-[var(--color-border-strong)]"
               >
                 <span className="min-w-0">
                   <span className="block text-sm font-semibold text-[var(--color-ink)]">
@@ -215,7 +214,7 @@ export function AccessibilityMenu({
           </div>
 
           <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-            <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
+            <section className="service-card p-4 sm:p-5">
               <div className="mb-3 flex items-center justify-between gap-3 text-sm font-semibold text-[var(--color-ink)]">
                 <span>{isSpanish ? "Velocidad de voz" : "Voice speed"}</span>
                 <span>{settings.voiceSpeed.toFixed(1)}x</span>
@@ -237,7 +236,7 @@ export function AccessibilityMenu({
               />
             </section>
 
-            <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
+            <section className="service-card p-4 sm:p-5">
               <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">
                 {isSpanish ? "Modo daltonismo" : "Color blind mode"}
               </p>

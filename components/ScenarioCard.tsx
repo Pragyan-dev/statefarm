@@ -38,7 +38,7 @@ export function ScenarioCard({
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="eyebrow">{isSpanish ? "Simulador de impacto" : "Shock simulator"}</p>
-          <h3 className="font-display text-2xl text-[var(--color-ink)]">
+          <h3 className="text-2xl font-semibold text-[var(--color-ink)]">
             {pickText(scenario.title, settings.language)}
           </h3>
         </div>
@@ -46,7 +46,7 @@ export function ScenarioCard({
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
-        <div className="rounded-[1.75rem] bg-[var(--color-ink)]/4 p-4">
+        <div className="sf-stat-card bg-[var(--color-rail)] p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-muted)]">
             {isSpanish ? "Sin cobertura" : "Without coverage"}
           </p>
@@ -66,7 +66,7 @@ export function ScenarioCard({
           </p>
         </div>
 
-        <div className="rounded-[1.75rem] bg-[var(--color-ink)]/4 p-4">
+        <div className="sf-stat-card bg-[var(--color-rail)] p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-muted)]">
             {isSpanish ? "Con cobertura" : "With coverage"}
           </p>
@@ -87,7 +87,7 @@ export function ScenarioCard({
         </div>
       </div>
 
-      <div className="mt-5 grid gap-3 rounded-[1.5rem] bg-[var(--color-paper)] p-4 text-sm text-[var(--color-muted)] shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)]">
+      <div className="mt-5 grid gap-3 rounded-[1rem] border border-[var(--color-border)] bg-[var(--color-rail)] p-4 text-sm text-[var(--color-muted)]">
         <p>{pickText(scenario.without.narrative, settings.language)}</p>
         <p>{pickText(scenario.with.narrative, settings.language)}</p>
         <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">

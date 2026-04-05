@@ -39,11 +39,11 @@ export function NewcomerGuide({
   return (
     <section className="panel-card">
       <p className="eyebrow">{isSpanish ? "Primeros 30 dias" : "First 30 days"}</p>
-      <h2 className="font-display text-2xl text-[var(--color-ink)]">
+      <h2 className="text-2xl font-semibold text-[var(--color-ink)]">
         {pickText(activeGuide.title, settings.language)}
       </h2>
 
-      <div role="tablist" aria-label={isSpanish ? "Guias de visa" : "Visa guides"} className="mt-5 grid grid-cols-4 gap-2">
+      <div role="tablist" aria-label={isSpanish ? "Guias de visa" : "Visa guides"} className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {guides.map((guide) => {
           const active = guide.visa === selectedVisa;
           return (
@@ -58,10 +58,10 @@ export function NewcomerGuide({
                 setSelectedVisa(guide.visa);
                 setExpanded(0);
               }}
-              className={`rounded-full px-3 py-3 text-sm font-semibold ${
+              className={`rounded-full border px-3 py-3 text-sm font-semibold transition ${
                 active
-                  ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
-                  : "border border-[var(--color-border)] text-[var(--color-ink)]"
+                  ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-white"
+                  : "border-[var(--color-border)] bg-white text-[var(--color-ink)]"
               }`}
             >
               {guide.visa}
@@ -103,7 +103,11 @@ export function NewcomerGuide({
             return (
               <article
                 key={`${activeGuide.visa}-${index}`}
-                className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4"
+                className={`rounded-[1rem] border px-4 py-4 transition ${
+                  isExpanded
+                    ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)]"
+                    : "border-[var(--color-border)] bg-white"
+                }`}
               >
                 <button
                   type="button"
@@ -111,14 +115,14 @@ export function NewcomerGuide({
                   className="flex w-full items-start justify-between gap-3 text-left"
                 >
                   <div>
-                    <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
+                    <p className="text-xs uppercase tracking-[0.22em] text-[var(--color-muted)]">
                       TO DO{index + 1}
                     </p>
                     <h3 className="mt-1 font-semibold text-[var(--color-ink)]">
                       {pickText(step.step, settings.language)}
                     </h3>
                   </div>
-                  <span className="rounded-full bg-[var(--color-highlight)] px-3 py-1 text-xs font-semibold text-[var(--color-ink)]">
+                  <span className="status-badge status-badge-neutral px-3 py-1 text-xs">
                     {isExpanded ? "-" : "+"}
                   </span>
                 </button>
@@ -136,7 +140,7 @@ export function NewcomerGuide({
                         {step.docs.map((doc) => (
                           <span
                             key={doc}
-                            className="rounded-full border border-[var(--color-border)] px-3 py-2 text-xs font-semibold text-[var(--color-muted)]"
+                            className="rounded-full border border-[var(--color-border)] bg-[var(--color-subtle)] px-3 py-2 text-xs font-semibold text-[var(--color-muted)]"
                           >
                             {doc}
                           </span>
@@ -148,7 +152,7 @@ export function NewcomerGuide({
                         href={mapsUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex min-h-11 items-center rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-ink)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                        className="button-secondary px-4 py-2 text-sm font-semibold"
                       >
                         {isSpanish ? "Buscar ubicacion cercana" : "Find nearest location"}
                       </a>
@@ -161,7 +165,7 @@ export function NewcomerGuide({
                             href={resource.href}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex min-h-11 items-center rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-accent)] transition hover:border-[var(--color-accent)]"
+                            className="button-secondary px-4 py-2 text-sm font-semibold text-[var(--color-accent)]"
                           >
                             {pickText(resource.label, settings.language)}
                           </a>
@@ -177,7 +181,7 @@ export function NewcomerGuide({
         </div>
 
         {activeGuide.addon ? (
-          <div className="mt-5 rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+          <div className="sf-side-panel mt-5 px-4 py-4">
             <h3 className="font-semibold text-[var(--color-ink)]">
               {pickText(activeGuide.addon.title, settings.language)}
             </h3>

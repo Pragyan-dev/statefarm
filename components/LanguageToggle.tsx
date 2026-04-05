@@ -16,8 +16,8 @@ export function LanguageToggle({
     <div
       className={`inline-flex rounded-full border p-1 ${
         tone === "light"
-          ? "border-[var(--color-border)] bg-white/80"
-          : "border-white/20 bg-white/10 backdrop-blur"
+          ? "border-[var(--color-border)] bg-[var(--color-subtle)]"
+          : "border-white/20 bg-transparent"
       }`}
       role="group"
       aria-label={t("language")}
@@ -34,12 +34,14 @@ export function LanguageToggle({
                 language,
               }))
             }
-            className={`min-h-11 rounded-full px-4 text-sm font-semibold transition ${
+            className={`min-h-10 rounded-full px-3 text-sm font-semibold transition sm:px-4 ${
               active
-                ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
+                ? tone === "light"
+                  ? "bg-[var(--color-accent)] text-white"
+                  : "bg-white text-[var(--color-accent)]"
                 : tone === "light"
                   ? "text-[var(--color-muted)]"
-                  : "text-[var(--color-paper)]/75"
+                  : "text-white/80"
             }`}
             aria-pressed={active}
           >

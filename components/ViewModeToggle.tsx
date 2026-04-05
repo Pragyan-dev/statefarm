@@ -7,13 +7,11 @@ import { useViewMode } from "@/hooks/useViewMode";
 import type { ViewMode } from "@/lib/types";
 
 function isActiveClass(active: boolean, tone: "light" | "dark") {
-  if (tone === "light") {
-    return active
-      ? "bg-[var(--color-ink)] text-[var(--color-paper)] shadow-sm"
-      : "text-[var(--color-muted)]";
+  if (!active) {
+    return tone === "light" ? "text-[var(--color-muted)]" : "text-white/80";
   }
 
-  return active ? "bg-white text-[var(--color-ink)] shadow-sm" : "text-white/70";
+  return tone === "light" ? "bg-[var(--color-accent)] text-white" : "bg-white text-[var(--color-accent)]";
 }
 
 export function ViewModeToggle({
@@ -37,8 +35,8 @@ export function ViewModeToggle({
     <div
       className={`inline-flex rounded-full border p-1 ${
         tone === "light"
-          ? "border-[var(--color-border)] bg-white/80"
-          : "border-white/15 bg-black/35 backdrop-blur"
+          ? "border-[var(--color-border)] bg-[var(--color-subtle)]"
+          : "border-white/20 bg-transparent"
       } ${className}`}
       role="group"
       aria-label={t("viewMode")}
@@ -54,7 +52,7 @@ export function ViewModeToggle({
             onClick={() => setMode(mode.value)}
             aria-pressed={active}
             className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition ${
-              compact ? "min-w-[110px]" : "min-w-[128px]"
+              compact ? "min-w-[92px] sm:min-w-[110px]" : "min-w-[120px] sm:min-w-[128px]"
             } ${isActiveClass(active, tone)}`}
           >
             <Icon className="size-4" />

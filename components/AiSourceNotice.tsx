@@ -18,7 +18,7 @@ export function AiSourceNotice({
 
   if (aiSource === "openrouter") {
     return (
-      <div className="rounded-full border border-[rgba(31,122,90,0.22)] bg-[rgba(31,122,90,0.08)] px-3 py-1.5 text-xs font-semibold text-[var(--color-success)]">
+      <div className="status-badge status-badge-success">
         {isSpanish ? "OpenRouter en vivo" : "OpenRouter live"}
       </div>
     );

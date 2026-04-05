@@ -56,7 +56,7 @@ export function ClearDataButton() {
       <button
         ref={buttonRef}
         onClick={handleOpen}
-        className="relative z-10 inline-flex min-h-12 items-center gap-2 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 shadow-sm transition hover:bg-red-50 hover:text-red-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
+        className="relative z-10 inline-flex min-h-12 items-center gap-2 rounded-full border border-[rgba(191,31,28,0.2)] bg-[var(--color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--color-danger)] transition hover:bg-[#f9dfde]"
       >
         <Trash2 className="size-4" />
         <span>{typeof window !== "undefined" && window.navigator.language.startsWith("es") ? "Borrar datos" : "Clear Data"}</span>
@@ -66,9 +66,9 @@ export function ClearDataButton() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(31,31,31,0.35)] p-4 backdrop-blur-sm"
         >
-          <div className="max-w-md rounded-xl bg-white p-6 shadow-lg dark:bg-[var(--color-paper)]">
+          <div className="max-w-md rounded-[1rem] border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-lg)]">
             <h3 className="text-lg font-semibold text-[var(--color-ink)]">
               {typeof window !== "undefined" && window.navigator.language.startsWith("es")
                 ? "¿Borrar datos guardados?"
@@ -84,7 +84,7 @@ export function ClearDataButton() {
               <button
                 ref={cancelRef}
                 onClick={handleCancel}
-                className="rounded-md px-3 py-2 text-sm"
+                className="button-secondary min-h-11 px-4 text-sm"
                 disabled={isProcessing}
               >
                 {typeof window !== "undefined" && window.navigator.language.startsWith("es") ? "Cancelar" : "Cancel"}
@@ -92,7 +92,7 @@ export function ClearDataButton() {
 
               <button
                 onClick={handleConfirm}
-                className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                className="button-ink min-h-11 px-4 text-sm font-semibold disabled:opacity-60"
                 disabled={isProcessing}
               >
                 {isProcessing

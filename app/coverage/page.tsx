@@ -182,30 +182,30 @@ export default function CoveragePage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1380px] py-4 lg:py-6">
-      <section className={`grid gap-4 ${isWebsite ? "xl:grid-cols-[minmax(0,0.92fr)_minmax(360px,0.78fr)]" : ""}`}>
-        <section className="panel-card hero-ambient mt-0 overflow-hidden">
+    <div className="website-page mx-auto max-w-[1380px]">
+      <section className={`grid gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,0.96fr)_minmax(360px,0.84fr)]" : ""}`}>
+        <section className="page-hero mt-0 p-6 sm:p-8 lg:p-10">
           <p className="eyebrow">{isSpanish ? "Buscador de cobertura" : "Coverage finder"}</p>
-          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
+          <h1 className="sf-section-title mt-3 max-w-[11ch]">
             {isSpanish
               ? "El seguro se entiende mejor cuando puedes ver la cuadra, no solo la cuenta."
               : "Insurance hits harder when you can see the block, not just the bill."}
           </h1>
-          <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">{heroCopy}</p>
+          <p className="sf-body-copy mt-4 max-w-[42rem]">{heroCopy}</p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            <div className="rounded-full bg-[var(--color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--color-accent)]">
+            <div className="status-badge status-badge-accent px-4 py-2 text-sm font-semibold">
               {zipData.city}, {zipData.state} {activeZip}
             </div>
-            <div className="rounded-full border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-muted)]">
+            <div className="status-badge status-badge-neutral border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-muted)]">
               {formatCurrency(selectedApartment.estimate, settings.language)}
               {isSpanish ? "/mes promedio para tu apartamento seleccionado" : "/mo average for your selected apartment"}
             </div>
           </div>
         </section>
 
-        <section className="panel-card mt-0">
+        <section className="sf-side-panel">
           <p className="eyebrow">{t("stateRequirements")}</p>
-          <h2 className="font-display text-2xl text-[var(--color-ink)]">
+          <h2 className="mt-2 text-2xl font-semibold text-[var(--color-ink)]">
             {requirements.autoNeedsSsn
               ? isSpanish
                 ? `Algunas aseguradoras en ${coverageState} pueden pedir SSN.`
@@ -219,7 +219,7 @@ export default function CoveragePage() {
             <ReadAloud text={stateCallout} />
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+            <div className="sf-stat-card">
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
                 {isSpanish ? "Responsabilidad auto" : "Auto liability"}
               </p>
@@ -227,7 +227,7 @@ export default function CoveragePage() {
                 {formatCurrency(costs.autoLiability, settings.language)}
               </p>
             </div>
-            <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+            <div className="sf-stat-card">
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
                 {isSpanish ? "Base de inquilino por ZIP" : "ZIP renter baseline"}
               </p>
@@ -235,7 +235,7 @@ export default function CoveragePage() {
                 {formatCurrency(zipData.avgRenters, settings.language)}
               </p>
             </div>
-            <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+            <div className="sf-stat-card">
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
                 {isSpanish ? "Multa sin seguro" : "No-insurance fine"}
               </p>
@@ -255,11 +255,11 @@ export default function CoveragePage() {
 
       <section className={`mt-6 grid items-start gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,1.18fr)_minmax(360px,0.82fr)]" : ""}`}>
         <div className="grid gap-6 min-w-0">
-          <section className="panel-card mt-0 overflow-hidden">
+          <section className="sf-band mt-0 overflow-hidden p-6 sm:p-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div className="max-w-[40rem]">
                 <p className="eyebrow">{isSpanish ? "Mapa + apartamentos" : "Map + apartments"}</p>
-                <h2 className="font-display text-3xl leading-tight text-[var(--color-ink)]">
+                <h2 className="mt-2 text-3xl font-semibold leading-tight text-[var(--color-ink)]">
                   {isSpanish
                     ? "Explora la zona primero. Luego elige el apartamento que encaja con tu presupuesto."
                     : "Explore the block first. Then choose the apartment that matches your budget."}

@@ -33,17 +33,15 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
   const styles = SEVERITY_STYLES[gap.severity];
-  const actionClass =
-    "inline-flex min-h-[3.1rem] items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
 
   return (
     <article
-      className={`rounded-[1.75rem] border border-[var(--color-border)] px-4 py-4 shadow-[0_18px_34px_rgba(17,24,39,0.08)] ${
+      className={`rounded-[1rem] border border-[var(--color-border)] px-4 py-4 shadow-[var(--shadow-sm)] ${
         gap.severity === "high" ? "decoder-gap-pulse" : ""
       }`}
       style={{
         background: styles.background,
-        boxShadow: `inset 4px 0 0 ${styles.border}, 0 18px 34px rgba(17,24,39,0.08)`,
+        boxShadow: `inset 4px 0 0 ${styles.border}, var(--shadow-sm)`,
       }}
     >
       <div className="flex items-start justify-between gap-4">
@@ -64,14 +62,14 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
                   ? "Riesgo bajo"
                   : "Low risk"}
           </div>
-          <h3 className="mt-3 font-display text-2xl text-[var(--color-ink)]">{gap.title}</h3>
+          <h3 className="mt-3 text-2xl font-semibold text-[var(--color-ink)]">{gap.title}</h3>
         </div>
         <AlertTriangle className="mt-1 size-5" style={{ color: styles.border }} />
       </div>
 
       <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">{gap.description}</p>
 
-      <div className="decoder-risk-panel mt-4 rounded-[1.25rem] px-4 py-4 text-[var(--color-paper)]">
+      <div className="mt-4 rounded-[1rem] border border-[var(--color-border)] bg-[rgba(31,31,31,0.96)] px-4 py-4 text-[var(--color-paper)]">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <p className="max-w-[34ch] text-sm leading-6 text-[rgba(255,247,239,0.88)]">
             ⚠️ {gap.scenario}
@@ -86,7 +84,7 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
                 : "Real risk"}
           </div>
         </div>
-        <p className="mt-4 font-display text-3xl leading-none text-[#FFB4A8]">
+        <p className="mt-4 text-3xl font-semibold leading-none text-[#FFB4A8]">
           {formatCurrency(gap.estimatedRisk, settings.language)}
         </p>
       </div>
@@ -94,7 +92,7 @@ export function GapWarningCard({ gap, onFixGap }: GapWarningCardProps) {
       <button
         type="button"
         onClick={onFixGap}
-        className={`${actionClass} mt-4`}
+        className="button-ink mt-4 px-5 text-sm font-semibold"
       >
         {isSpanish ? "Arreglar esta brecha" : "Fix this gap"}
         <ArrowRight className="size-4" />

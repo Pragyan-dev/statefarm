@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 
 import { AppProviders } from "@/components/AppProviders";
 import { AppShell } from "@/components/AppShell";
 import "./globals.css";
-
-const fraunces = Fraunces({
-  variable: "--font-display",
-  subsets: ["latin"],
-});
 
 const manrope = Manrope({
   variable: "--font-body",
@@ -17,7 +12,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "ArriveSafe",
+  title: "FirstCover",
   description: "Insurance onboarding and policy decoding for immigrants in the US.",
 };
 
@@ -30,7 +25,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${manrope.variable} h-full antialiased`}
+      className={`${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         <AppProviders>

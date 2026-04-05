@@ -39,7 +39,7 @@ export function ProgressChecklist({
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="eyebrow">{isSpanish ? "Plan de 30 dias" : "30-day plan"}</p>
-          <h2 className="font-display text-2xl text-[var(--color-ink)]">
+          <h2 className="text-2xl font-semibold text-[var(--color-ink)]">
             {isSpanish ? "Lista de progreso" : "Progress checklist"}
           </h2>
         </div>
@@ -53,7 +53,7 @@ export function ProgressChecklist({
               ? `Progreso de la guia ${Math.round((profile.checklist.length / items.length) * 100)} por ciento`
               : `Guide completion ${Math.round((profile.checklist.length / items.length) * 100)} percent`
           }
-          className="rounded-full bg-[var(--color-paper)] px-3 py-2 text-sm font-semibold text-[var(--color-ink)]"
+          className="status-badge status-badge-accent"
         >
           {profile.checklist.length}/{items.length}
         </div>
@@ -64,7 +64,13 @@ export function ProgressChecklist({
           const checked = profile.checklist.includes(item.id);
           return (
             <li key={item.id}>
-              <label className="flex cursor-pointer items-start gap-3 rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+              <label
+                className={`flex cursor-pointer items-start gap-3 rounded-[1rem] border px-4 py-4 transition ${
+                  checked
+                    ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)]"
+                    : "border-[var(--color-border)] bg-[var(--color-rail)]"
+                }`}
+              >
                 <input
                   type="checkbox"
                   checked={checked}

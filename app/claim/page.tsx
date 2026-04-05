@@ -58,50 +58,63 @@ export default function ClaimPage() {
   const matchedVideos = guide ? videos[guide.claimType] ?? [] : [];
 
   return (
-    <div className="py-6 lg:py-10">
-      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+    <div className="website-page">
+      <section className="sf-main-grid lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)]">
         <div className="grid gap-6">
-          <section className="panel-card hero-ambient overflow-hidden">
+          <section className="page-hero p-6 sm:p-8 lg:p-10">
             <p className="eyebrow">{isSpanish ? "Guia de reclamo" : "Claim coach"}</p>
-            <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
+            <h1 className="sf-section-title mt-3 max-w-[11ch]">
               {isSpanish
                 ? "Cuenta el incidente en voz alta. Recibe los siguientes pasos en lenguaje claro."
                 : "Speak the incident out loud. Get the next steps in plain language."}
             </h1>
-            <p className="mt-4 text-base text-[var(--color-muted)]">
+            <p className="sf-body-copy mt-4 max-w-[42rem]">
               {isSpanish
                 ? "Esto sirve para choques, danos en el apartamento, robos y esos momentos incomodos cuando el ingles no es tu primer idioma."
                 : "This works for car accidents, apartment damage, theft, and the awkward claims moments when English is not your first language."}
             </p>
           </section>
 
-          <VoiceInput value={description} onChange={setDescription} />
+          <section className="sf-band p-6 sm:p-8">
+            <p className="eyebrow">{isSpanish ? "Describe el incidente" : "Describe the incident"}</p>
+            <p className="mt-2 text-sm leading-7 text-[var(--color-muted)]">
+              {isSpanish
+                ? "Habla o escribe lo que paso. Luego FirstCover resumira las acciones inmediatas, documentos y enlaces oficiales."
+                : "Speak or type what happened. FirstCover will summarize immediate actions, documents, and official links next."}
+            </p>
+            <div className="mt-5">
+              <VoiceInput value={description} onChange={setDescription} />
+            </div>
 
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!description || loading}
-            className="min-h-12 w-full rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)] disabled:opacity-50"
-          >
-            {loading
-              ? isSpanish
-                ? "Generando guia de reclamo..."
-                : "Generating claim guide..."
-              : isSpanish
-                ? "Generar guia de reclamo"
-                : "Generate claim guide"}
-          </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!description || loading}
+              className="button-ink mt-5 w-full px-5 text-sm font-semibold disabled:opacity-50"
+            >
+              {loading
+                ? isSpanish
+                  ? "Generando guia de reclamo..."
+                  : "Generating claim guide..."
+                : isSpanish
+                  ? "Generar guia de reclamo"
+                  : "Generate claim guide"}
+            </button>
+          </section>
 
           {guide ? <ClaimGuide guide={guide} /> : null}
         </div>
 
-        <div className="grid gap-6">
-          <section className="panel-card">
+        <aside className="sf-rail">
+          <section className="sf-side-panel">
             <p className="eyebrow">{isSpanish ? "Acciones de State Farm" : "State Farm actions"}</p>
+            <h2 className="mt-2 text-2xl font-semibold text-[var(--color-ink)]">
+              {isSpanish ? "Ayuda rapida" : "Quick help"}
+            </h2>
             <div className="mt-4 grid gap-3">
               <a
                 href={`tel:${videos.statefarmLinks.phone}`}
-                className="rounded-full bg-[var(--color-ink)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-paper)]"
+                className="button-ink px-5 py-3 text-center text-sm font-semibold"
               >
                 {isSpanish ? `Llamar reclamos: ${videos.statefarmLinks.phone}` : `Call claims: ${videos.statefarmLinks.phone}`}
               </a>
@@ -109,7 +122,7 @@ export default function ClaimPage() {
                 href={videos.statefarmLinks.fileClaim}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-[var(--color-border)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-ink)]"
+                className="button-secondary px-5 py-3 text-center text-sm font-semibold"
               >
                 {isSpanish ? "Presentar en linea" : "File online"}
               </a>
@@ -117,7 +130,7 @@ export default function ClaimPage() {
                 href={videos.statefarmLinks.appIos}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-[var(--color-border)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-ink)]"
+                className="button-secondary px-5 py-3 text-center text-sm font-semibold"
               >
                 {isSpanish ? "Abrir app movil" : "Open mobile app"}
               </a>
@@ -127,7 +140,7 @@ export default function ClaimPage() {
           {matchedVideos.length ? (
             <section className="panel-card">
               <p className="eyebrow">{isSpanish ? "Aprende con video" : "Learn by video"}</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
+              <h2 className="mt-2 text-2xl font-semibold text-[var(--color-ink)]">
                 {isSpanish
                   ? "Mira una vez el flujo exacto del reclamo antes de llamar."
                   : "Watch the exact claim flow once before you call."}
@@ -144,7 +157,7 @@ export default function ClaimPage() {
           ) : null}
 
           {isReady ? <EmergencyCard profile={profile} /> : null}
-        </div>
+        </aside>
       </section>
     </div>
   );
