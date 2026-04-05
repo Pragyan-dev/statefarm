@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
@@ -16,6 +17,7 @@ export function AccessibilityMenu({
   const t = useTranslations();
   const { settings, setSettings, resetSettings } = useAccessibility();
   const isSpanish = settings.language === "es";
+  const textSizeProgress = ((settings.textSize - 16) / (24 - 16)) * 100;
 
   useEffect(() => {
     if (!open) {
@@ -109,33 +111,47 @@ export function AccessibilityMenu({
             </section>
 
             <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
-              <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">
-                {isSpanish ? "Tamano del texto" : "Text size"}
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { label: "A", value: "normal" },
-                  { label: "A+", value: "large" },
-                  { label: "A++", value: "xl" },
-                ].map((item) => (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() =>
-                      setSettings((current) => ({
-                        ...current,
-                        textSize: item.value as "normal" | "large" | "xl",
-                      }))
-                    }
-                    className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                      settings.textSize === item.value
-                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
-                        : "border-[var(--color-border)] bg-white text-[var(--color-ink)]"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-[var(--color-ink)]">
+                  {isSpanish ? "Tamano del texto" : "Text size"}
+                </p>
+                <span className="rounded-full border border-[var(--color-border)] bg-white px-3 py-1 text-xs font-semibold text-[var(--color-muted)]">
+                  {settings.textSize}px
+                </span>
+              </div>
+              <div className="rounded-[1.35rem] border border-[var(--color-border)] bg-[rgba(255,255,255,0.78)] px-4 py-4">
+                <input
+                  type="range"
+                  min="16"
+                  max="24"
+                  step="1"
+                  value={settings.textSize}
+                  onChange={(event) =>
+                    setSettings((current) => ({
+                      ...current,
+                      textSize: Number(event.target.value),
+                    }))
+                  }
+                  className="accessibility-slider w-full"
+                  style={
+                    {
+                      "--slider-progress": `${textSizeProgress}%`,
+                    } as CSSProperties
+                  }
+                  aria-label={isSpanish ? "Tamano del texto" : "Text size"}
+                  aria-valuemin={16}
+                  aria-valuemax={24}
+                  aria-valuenow={settings.textSize}
+                  aria-valuetext={
+                    isSpanish
+                      ? `${settings.textSize} pixeles`
+                      : `${settings.textSize} pixels`
+                  }
+                />
+                <div className="mt-3 flex items-center justify-between text-[var(--color-muted)]">
+                  <span className="text-base font-semibold text-[var(--color-ink)]">A</span>
+                  <span className="text-xl font-semibold text-[var(--color-ink)]">A</span>
+                </div>
               </div>
             </section>
           </div>
