@@ -61,7 +61,7 @@ export function StorySimulator({
   const completionRef = useRef<string | null>(null);
 
   const currentNode = nodeMap.get(currentNodeId) as DialogueNode;
-  const emotion = currentNode.speaker === "safi" ? currentNode.emotion ?? "neutral" : "neutral";
+  const emotion = currentNode.emotion ?? "neutral";
   const hasChoices = Boolean(currentNode.choices?.length);
   const isTextDone = completedTypingNodeId === currentNodeId;
   const isEffectComplete = !currentNode.effect || completedEffectNodeId === currentNodeId;

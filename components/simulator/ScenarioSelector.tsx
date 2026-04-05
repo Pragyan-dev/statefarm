@@ -52,7 +52,7 @@ export function ScenarioSelector({
               onClick={() => onSelect(scenario)}
               className="flex min-h-20 w-full items-center gap-4 rounded-[1.4rem] border-[2px] border-black bg-white px-4 py-4 text-left shadow-[0_14px_36px_rgba(17,24,39,0.08)] transition active:scale-[0.98]"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#FFF1E2] text-2xl">
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-2xl">
                 {scenario.icon}
               </span>
               <span className="min-w-0 flex-1">

@@ -95,21 +95,6 @@ export function getStateCosts(state: string) {
   }>)["AZ"];
 }
 
-export function affordabilityCopy(
-  monthlyIncome: number,
-  monthlyPremium: number,
-  language: Language,
-) {
-  const safeIncome = monthlyIncome || 2800;
-  const percent = ((monthlyPremium / safeIncome) * 100).toFixed(1);
-
-  if (language === "es") {
-    return `Eso es ${percent}% de tu ingreso mensual. Es pequeno comparado con una emergencia sin cobertura.`;
-  }
-
-  return `That is ${percent}% of your monthly income. Small compared with an uncovered emergency.`;
-}
-
 export function getProfileHeadline(profile: UserProfile, language: Language) {
   if (language === "es") {
     return `${profile.visaStatus}, ${profile.city}. Tu plan de proteccion para los proximos 30 dias.`;

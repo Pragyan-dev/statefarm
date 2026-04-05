@@ -11,7 +11,6 @@ import {
   Settings2,
   Shield,
   Sparkles,
-  WalletCards,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -60,7 +59,6 @@ export function AppShell({
     { href: "/coverage", label: t("coverage"), icon: Shield },
     { href: "/decode", label: t("policyDecoder"), icon: ScanSearch },
     { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
-    { href: "/afford", label: t("dashboardBudgetTitle"), icon: WalletCards },
   ];
 
   useEffect(() => {
@@ -100,7 +98,7 @@ export function AppShell({
           {t("skipToContent")}
         </a>
         <div className="min-h-dvh bg-[var(--color-background)]">
-          <header className="sticky top-0 z-40 border-b border-black/8 bg-[rgb(251_246_239_/_0.9)] backdrop-blur-xl">
+          <header className="sticky top-0 z-40 border-b border-[var(--color-accent-wash)] bg-[linear-gradient(180deg,rgba(255,251,250,0.96),rgba(251,246,239,0.9))] backdrop-blur-xl">
             <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="min-w-0">
@@ -119,7 +117,7 @@ export function AppShell({
                     type="button"
                     onClick={() => setMenuOpen(true)}
                     aria-label={t("accessibility")}
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white px-4 text-sm font-semibold text-[var(--color-ink)] shadow-sm"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white px-4 text-sm font-semibold text-[var(--color-ink)] shadow-sm transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
                   >
                     <Settings2 className="size-4" />
                     <span className="hidden sm:inline">{t("accessibility")}</span>
@@ -144,7 +142,7 @@ export function AppShell({
                         className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition ${
                           active
                             ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)]"
-                            : "border-[var(--color-border)] bg-white/60 text-[var(--color-ink)] hover:bg-white"
+                            : "border-[var(--color-border)] bg-white/60 text-[var(--color-ink)] hover:border-[var(--color-accent)] hover:bg-white hover:text-[var(--color-accent)]"
                         }`}
                       >
                         <Icon className="size-4" />

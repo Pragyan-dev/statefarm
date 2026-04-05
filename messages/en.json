@@ -11,7 +11,6 @@
   "claimCoach": "Claim coach",
   "policyDecoder": "Policy decoder",
   "newcomerGuide": "Newcomer guide",
-  "affordability": "Affordability",
   "readAloud": "Read aloud",
   "stopReading": "Stop",
   "highContrast": "High contrast",
@@ -82,7 +81,7 @@
   "homeClaimCopy": "Speak an incident out loud and get the step-by-step response plan.",
   "homePitch": "The pitch",
   "homePitchTitle": "44 million immigrants in America. Most never get a plain-language insurance walkthrough.",
-  "homePitchCopy": "ArriveSafe is a field guide for the first two years in the US: onboarding, shock scenarios, policy decoding, claim coaching, and affordability checks.",
+  "homePitchCopy": "ArriveSafe is a field guide for the first two years in the US: onboarding, shock scenarios, policy decoding, and claim coaching.",
   "dashboardEyebrow": "Personal dashboard",
   "dashboardHeroCopy": "Built for your first 24 months in the US. Start with the highest-risk gap first, then move through the checklist.",
   "dashboardRunSimulator": "Run the simulator",
@@ -95,8 +94,6 @@
   "dashboardCoverageCopy": "Match your ZIP code to renter's pricing, state rules, and disaster risk.",
   "dashboardDecodeTitle": "Policy decoder",
   "dashboardDecodeCopy": "Upload a policy photo or PDF and translate it into plain English or Spanish.",
-  "dashboardBudgetTitle": "Budget check",
-  "dashboardBudgetCopy": "Pressure-test the monthly cost of staying protected.",
   "dashboardGuideTitle": "Newcomers guide",
   "dashboardGuideCopy": "See the steps most people miss in the first 30 days."
 }

@@ -11,7 +11,6 @@
   "claimCoach": "Guia de reclamo",
   "policyDecoder": "Decodificador de poliza",
   "newcomerGuide": "Guía para recién llegados",
-  "affordability": "Asequibilidad",
   "readAloud": "Escuchar",
   "stopReading": "Detener",
   "highContrast": "Alto contraste",
@@ -82,7 +81,7 @@
   "homeClaimCopy": "Describe un incidente en voz alta y recibe el plan paso a paso.",
   "homePitch": "La idea",
   "homePitchTitle": "44 millones de inmigrantes en Estados Unidos. La mayoria nunca recibe una explicacion simple sobre seguros.",
-  "homePitchCopy": "ArriveSafe es una guia para los primeros dos anos en Estados Unidos: orientacion, escenarios de impacto, decodificacion de polizas, ayuda para reclamos y asequibilidad.",
+  "homePitchCopy": "ArriveSafe es una guia para los primeros dos anos en Estados Unidos: orientacion, escenarios de impacto, decodificacion de polizas y ayuda para reclamos.",
   "dashboardEyebrow": "Panel personal",
   "dashboardHeroCopy": "Hecho para tus primeros 24 meses en Estados Unidos. Empieza con la mayor brecha de riesgo y luego sigue la lista.",
   "dashboardRunSimulator": "Abrir simulador",
@@ -95,8 +94,6 @@
   "dashboardCoverageCopy": "Relaciona tu ZIP con precios de inquilino, reglas estatales y riesgo de desastres.",
   "dashboardDecodeTitle": "Decodificador de poliza",
   "dashboardDecodeCopy": "Sube una foto o PDF y traducelo a ingles simple o espanol.",
-  "dashboardBudgetTitle": "Chequeo de presupuesto",
-  "dashboardBudgetCopy": "Pon a prueba el costo mensual de mantenerte protegido.",
   "dashboardGuideTitle": "Guia para recien llegados",
   "dashboardGuideCopy": "Mira los pasos que la mayoria pierde en los primeros 30 dias."
 }
