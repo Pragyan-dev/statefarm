@@ -5,8 +5,10 @@ import { useTranslations } from "next-intl";
 
 export function AccessibilityMenuButton({
   onClick,
+  className = "",
 }: {
   onClick: () => void;
+  className?: string;
 }) {
   const t = useTranslations();
 
@@ -15,7 +17,7 @@ export function AccessibilityMenuButton({
       type="button"
       onClick={onClick}
       aria-label={t("accessibility")}
-      className="fixed bottom-24 right-4 z-40 flex min-h-14 min-w-14 items-center justify-center rounded-full border border-white/20 bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_16px_30px_rgba(0,0,0,0.3)]"
+      className={`fixed bottom-24 right-4 z-40 flex min-h-14 min-w-14 items-center justify-center rounded-full border border-white/20 bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_16px_30px_rgba(0,0,0,0.3)] ${className}`}
     >
       <Settings2 className="size-5" />
     </button>

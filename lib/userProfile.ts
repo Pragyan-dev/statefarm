@@ -1,6 +1,7 @@
 import type { UserProfile } from "@/lib/types";
 
 export const PROFILE_STORAGE_KEY = "arrivesafe-profile";
+export const LEGACY_PROFILE_STORAGE_KEY = "arrivesafe_profile";
 
 export const defaultUserProfile: UserProfile = {
   visaStatus: "F1",
@@ -19,7 +20,10 @@ export function getStoredProfile() {
     return defaultUserProfile;
   }
 
-  const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+  const raw =
+    window.localStorage.getItem(PROFILE_STORAGE_KEY) ??
+    window.localStorage.getItem(LEGACY_PROFILE_STORAGE_KEY);
+
   if (!raw) {
     return defaultUserProfile;
   }

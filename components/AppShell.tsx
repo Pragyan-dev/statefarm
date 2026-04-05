@@ -17,6 +17,7 @@ export function AppShell({
   const pathname = usePathname();
   const t = useTranslations();
   const isLanding = pathname === "/";
+  const isSimulator = pathname.startsWith("/simulate");
 
   return (
     <>
@@ -27,11 +28,19 @@ export function AppShell({
         {t("skipToContent")}
       </a>
       <div className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col bg-[var(--color-background)]">
-        <main id="main-content" className={`relative flex-1 px-4 ${isLanding ? "pb-12" : "pb-28"}`}>
+        <main
+          id="main-content"
+          className={`relative flex-1 ${
+            isSimulator ? "overflow-hidden px-0 pb-0" : isLanding ? "px-4 pb-12" : "px-4 pb-28"
+          }`}
+        >
           {children}
         </main>
-        {!isLanding ? <BottomNav /> : null}
-        <AccessibilityMenuButton onClick={() => setMenuOpen(true)} />
+        {!isLanding && !isSimulator ? <BottomNav /> : null}
+        <AccessibilityMenuButton
+          onClick={() => setMenuOpen(true)}
+          className={isSimulator ? "right-3 top-3 bottom-auto min-h-12 min-w-12" : ""}
+        />
         <AccessibilityMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
       </div>
     </>
