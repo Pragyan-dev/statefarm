@@ -70,6 +70,13 @@ export function deriveProfileLocation(zip: string) {
   };
 }
 
+export function buildGoogleMapsSearchUrl(service: string, zip: string) {
+  const normalizedZip = zip.trim() || DEFAULT_APARTMENT_ZIP;
+  const query = `${service} near ${normalizedZip}`;
+
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 export function getStateCosts(state: string) {
   return (insuranceCosts as Record<string, {
     rentersMonthly: number;

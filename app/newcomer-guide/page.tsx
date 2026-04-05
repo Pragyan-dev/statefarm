@@ -36,7 +36,7 @@ export default function NewcomerGuidePage() {
           </p>
         </section>
 
-        <NewcomerGuide guides={guides} activeVisa={profile.visaStatus} />
+        <NewcomerGuide guides={guides} activeVisa={profile.visaStatus} zipCode={profile.zip} />
       </section>
     </div>
   );
