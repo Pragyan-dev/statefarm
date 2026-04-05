@@ -18,6 +18,7 @@ export function EvidenceCard({
 }) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
+  const Icon = item.icon;
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
@@ -40,7 +41,9 @@ export function EvidenceCard({
           </>
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-3 text-center">
-            <span className="text-[2rem] leading-none">{item.icon}</span>
+            <span className="inline-flex size-10 items-center justify-center rounded-full bg-[rgba(17,24,39,0.06)] text-[var(--color-ink)]">
+              <Icon className="size-5" strokeWidth={1.9} />
+            </span>
             <span className="inline-flex size-9 items-center justify-center rounded-full bg-[rgba(17,24,39,0.08)] text-[var(--color-ink)]">
               <Camera className="size-4" />
             </span>

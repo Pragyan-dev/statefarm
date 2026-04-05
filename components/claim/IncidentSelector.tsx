@@ -54,6 +54,7 @@ export function IncidentSelector({
       >
         {categories.map((category) => {
           const selected = category.type === selectedType;
+          const Icon = category.icon;
 
           return (
             <button
@@ -79,9 +80,13 @@ export function IncidentSelector({
               ) : null}
 
               <div className="flex h-full flex-col justify-between">
-                <div className={`${compact ? "text-[2rem]" : "text-[2.25rem]"} leading-none`}>
-                  {category.icon}
-                </div>
+                <span
+                  className={`inline-flex items-center justify-center rounded-full bg-white/70 text-[var(--color-ink)] shadow-sm ${
+                    compact ? "size-12" : "size-14"
+                  }`}
+                >
+                  <Icon className={compact ? "size-6" : "size-7"} strokeWidth={1.8} />
+                </span>
                 <div className={compact ? "space-y-0.5" : "space-y-1"}>
                   <p
                     className={`font-semibold text-[var(--color-ink)] ${

@@ -19,6 +19,7 @@ export function TimelineStep({
 }) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
+  const StepIcon = step.icon;
   const [expanded, setExpanded] = useState(false);
   const [burst, setBurst] = useState(false);
   const isExpanded = expanded || isActive || step.completed;
@@ -61,7 +62,7 @@ export function TimelineStep({
               : "border-[rgba(17,24,39,0.18)] bg-white text-[var(--color-muted)]"
         }`}
       >
-        {step.completed ? <Check className="size-3.5" /> : <span>{step.icon}</span>}
+        {step.completed ? <Check className="size-3.5" /> : <StepIcon className="size-3.5" strokeWidth={2} />}
       </span>
 
       <div

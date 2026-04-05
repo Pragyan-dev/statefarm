@@ -3,6 +3,7 @@ export type TextSize = number;
 export type ColorBlindMode = "none" | "protanopia" | "deuteranopia" | "tritanopia";
 export type VisaType = "F1" | "H1B" | "J1" | "O1";
 export type ViewMode = "website" | "app";
+export type NewcomerGuidePhase = "now" | "week" | "month";
 
 export interface LocalizedText {
   en: string;
@@ -114,6 +115,7 @@ export interface ClaimGuideResult {
 
 export interface NewcomerGuideStep {
   week: number;
+  phase: NewcomerGuidePhase;
   step: LocalizedText;
   timing?: LocalizedText;
   details: LocalizedText;
