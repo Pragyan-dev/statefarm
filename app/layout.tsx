@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Archivo, Source_Sans_3 } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 
 import { AppProviders } from "@/components/AppProviders";
 import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const archivo = Archivo({
   variable: "--font-display",
   subsets: ["latin"],
 });
 
-const manrope = Manrope({
+const sourceSans3 = Source_Sans_3({
   variable: "--font-body",
   subsets: ["latin"],
 });
@@ -30,7 +30,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${manrope.variable} h-full antialiased`}
+      className={`${archivo.variable} ${sourceSans3.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         <AppProviders>

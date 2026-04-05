@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useDashboardAccess } from "@/hooks/useDashboardAccess";
 import { useAccessibility } from "@/hooks/useAccessibility";
@@ -11,24 +11,52 @@ import { deriveProfileLocation } from "@/lib/content";
 import { saveStoredDashboardAccess } from "@/lib/dashboardAccess";
 import { defaultUserProfile, saveStoredProfile } from "@/lib/userProfile";
 import type { UserProfile, VisaType } from "@/lib/types";
+import { WebsiteRailCard, WebsiteSectionHeader, WebsiteSectionPanel, WebsiteStatRow } from "@/components/website/WebsitePrimitives";
 
 const visaOptions: VisaType[] = ["F1", "H1B", "J1", "O1"];
 
+function getPrefilledProfile(searchParams: ReturnType<typeof useSearchParams>): UserProfile {
+  const requestedProduct = searchParams.get("product");
+  const requestedZip = searchParams.get("zip");
+  const nextProfile = { ...defaultUserProfile };
+
+  if (requestedProduct === "auto") {
+    nextProfile.drives = true;
+    nextProfile.rents = false;
+  } else if (requestedProduct === "renters") {
+    nextProfile.drives = false;
+    nextProfile.rents = true;
+  } else if (requestedProduct === "auto-renters") {
+    nextProfile.drives = true;
+    nextProfile.rents = true;
+  }
+
+  if (requestedZip) {
+    const cleanZip = requestedZip.replace(/\D/g, "").slice(0, 5);
+    if (cleanZip) {
+      nextProfile.zip = cleanZip;
+    }
+  }
+
+  return nextProfile;
+}
+
 export default function IntakePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [, setIsDashboardBuilt] = useDashboardAccess();
   const { settings } = useAccessibility();
   const { resolvedMode } = useViewMode();
   const isSpanish = settings.language === "es";
   const [step, setStep] = useState(0);
-  const [profile, setProfile] = useState<UserProfile>(defaultUserProfile);
+  const [profile, setProfile] = useState<UserProfile>(() => getPrefilledProfile(searchParams));
   const locationPreview = deriveProfileLocation(profile.zip);
   const copy = {
     backHome: isSpanish ? "← Volver al inicio" : "← Back home",
     intake: isSpanish ? "Ingreso" : "Intake",
     websiteTitle: isSpanish
-      ? "Construye tu plan de proteccion para los primeros 30 dias en una sola pasada."
-      : "Build your first 30-day protection plan in one pass.",
+      ? "Completa tu plan de proteccion de 30 dias con una experiencia mas guiada."
+      : "Complete your 30-day protection plan with a more guided intake.",
     mobileTitle: isSpanish
       ? "Cuatro preguntas rapidas. Luego tu plan de proteccion de 30 dias."
       : "Four fast questions. Then your first 30-day protection plan.",
@@ -50,10 +78,10 @@ export default function IntakePage() {
     zipCode: isSpanish ? "Codigo ZIP" : "ZIP code",
     income: isSpanish ? "Ingreso mensual" : "Monthly income",
     buildDashboard: isSpanish ? "Crear mi panel" : "Build my dashboard",
-    preview: isSpanish ? "Vista previa" : "Preview",
+    preview: isSpanish ? "Resumen del perfil" : "Profile summary",
     previewTitle: isSpanish
-      ? "Tu perfil ya esta dando forma a la herramienta."
-      : "Your profile is shaping the toolkit already.",
+      ? "Tu informacion ya esta moldeando la herramienta."
+      : "Your information is already shaping the toolkit.",
     visaTrack: isSpanish ? "Ruta de visa" : "Visa track",
     ssnStatus: isSpanish ? "Estado del SSN" : "SSN status",
     hasSsn: isSpanish ? "Ya tienes uno" : "Already have one",
@@ -73,6 +101,12 @@ export default function IntakePage() {
       : `${profile.visaStatus} checklist and first-30-day tasks`,
     back: isSpanish ? "Atras" : "Back",
     next: isSpanish ? "Siguiente" : "Next",
+    desktopLead: isSpanish
+      ? "Usa esta forma guiada para preparar el panel, los escenarios y la cobertura que veras despues."
+      : "Use this guided form to prepare the dashboard, scenarios, and coverage tools you will see next.",
+    desktopNote: isSpanish
+      ? "Puedes ajustar esta informacion mas tarde desde tu panel."
+      : "You can adjust this information later from your dashboard.",
   };
 
   function completeIntake() {
@@ -101,39 +135,42 @@ export default function IntakePage() {
 
   if (resolvedMode === "website") {
     return (
-      <div className="py-6 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="py-2 lg:py-4">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_22rem]">
           <div className="grid gap-6">
             <Link href="/" className="text-sm font-semibold text-[var(--color-muted)]">
               {copy.backHome}
             </Link>
 
-            <section className="panel-card hero-ambient overflow-hidden">
-              <p className="eyebrow">{copy.intake}</p>
-              <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[12ch]">
-                {copy.websiteTitle}
-              </h1>
-              <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">
-                {copy.introCopy}
-              </p>
-            </section>
+            <WebsiteSectionHeader
+              eyebrow={copy.intake}
+              title={copy.websiteTitle}
+              description={copy.desktopLead}
+              actions={
+                <div className="web-feature-chip">
+                  {copy.desktopNote}
+                </div>
+              }
+            />
 
             <form
               onSubmit={(event) => {
                 event.preventDefault();
                 completeIntake();
               }}
-              className="grid gap-6"
+              className="grid gap-5"
             >
-              <fieldset className="panel-card">
-                <legend className="font-display text-2xl text-[var(--color-ink)]">
-                  {copy.visaQuestion}
-                </legend>
-                <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3 md:grid-cols-2">
+              <WebsiteSectionPanel
+                eyebrow={isSpanish ? "Paso 1" : "Step 1"}
+                title={copy.visaQuestion}
+              >
+                <div role="radiogroup" aria-required="true" className="grid gap-3 md:grid-cols-2">
                   {visaOptions.map((visa) => (
                     <label
                       key={visa}
-                      className="flex cursor-pointer items-center gap-3 rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 focus-within:ring-2 focus-within:ring-blue-500"
+                      className={`web-choice-card flex cursor-pointer items-center gap-3 ${
+                        profile.visaStatus === visa ? "web-choice-card-active" : ""
+                      }`}
                     >
                       <input
                         type="radio"
@@ -151,17 +188,19 @@ export default function IntakePage() {
                     </label>
                   ))}
                 </div>
-              </fieldset>
+              </WebsiteSectionPanel>
 
-              <fieldset className="panel-card">
-                <legend className="font-display text-2xl text-[var(--color-ink)]">
-                  {copy.ssnQuestion}
-                </legend>
-                <div role="radiogroup" aria-required="true" className="mt-5 grid gap-3 md:grid-cols-2">
+              <WebsiteSectionPanel
+                eyebrow={isSpanish ? "Paso 2" : "Step 2"}
+                title={copy.ssnQuestion}
+              >
+                <div role="radiogroup" aria-required="true" className="grid gap-3 md:grid-cols-2">
                   {[true, false].map((value) => (
                     <label
                       key={String(value)}
-                      className="flex cursor-pointer items-center gap-3 rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 focus-within:ring-2 focus-within:ring-blue-500"
+                      className={`web-choice-card flex cursor-pointer items-center gap-3 ${
+                        profile.hasSsn === value ? "web-choice-card-active" : ""
+                      }`}
                     >
                       <input
                         type="radio"
@@ -175,21 +214,23 @@ export default function IntakePage() {
                         }
                         className="h-5 w-5 accent-[var(--color-accent)]"
                       />
-                      <span className="font-semibold text-[var(--color-ink)]">{value ? copy.yes : copy.no}</span>
+                      <span className="font-semibold text-[var(--color-ink)]">
+                        {value ? copy.yes : copy.no}
+                      </span>
                     </label>
                   ))}
                 </div>
-              </fieldset>
+              </WebsiteSectionPanel>
 
-              <fieldset className="panel-card">
-                <legend className="font-display text-2xl text-[var(--color-ink)]">
-                  {copy.coverageQuestion}
-                </legend>
-                <div className="mt-5 grid gap-3 md:grid-cols-2">
-                  <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+              <WebsiteSectionPanel
+                eyebrow={isSpanish ? "Paso 3" : "Step 3"}
+                title={copy.coverageQuestion}
+              >
+                <div className="grid gap-3 md:grid-cols-2">
+                  <label className={`web-choice-card flex cursor-pointer items-center justify-between gap-3 ${profile.drives ? "web-choice-card-active" : ""}`}>
                     <div>
                       <p className="font-semibold text-[var(--color-ink)]">{copy.driveLabel}</p>
-                      <p className="text-sm text-[var(--color-muted)]">{copy.driveDetail}</p>
+                      <p className="text-sm leading-6 text-[var(--color-muted)]">{copy.driveDetail}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -204,10 +245,10 @@ export default function IntakePage() {
                     />
                   </label>
 
-                  <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
+                  <label className={`web-choice-card flex cursor-pointer items-center justify-between gap-3 ${profile.rents ? "web-choice-card-active" : ""}`}>
                     <div>
                       <p className="font-semibold text-[var(--color-ink)]">{copy.rentLabel}</p>
-                      <p className="text-sm text-[var(--color-muted)]">{copy.rentDetail}</p>
+                      <p className="text-sm leading-6 text-[var(--color-muted)]">{copy.rentDetail}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -222,13 +263,15 @@ export default function IntakePage() {
                     />
                   </label>
                 </div>
-              </fieldset>
+              </WebsiteSectionPanel>
 
-              <section className="panel-card">
-                <h2 className="font-display text-2xl text-[var(--color-ink)]">{copy.locationQuestion}</h2>
-                <div className="mt-5 grid gap-4 md:grid-cols-2">
+              <WebsiteSectionPanel
+                eyebrow={isSpanish ? "Paso 4" : "Step 4"}
+                title={copy.locationQuestion}
+              >
+                <div className="grid gap-4 md:grid-cols-2">
                   <label>
-                    <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">{copy.zipCode}</span>
+                    <span className="web-field-label">{copy.zipCode}</span>
                     <input
                       value={profile.zip}
                       onChange={(event) =>
@@ -237,15 +280,13 @@ export default function IntakePage() {
                           zip: event.target.value.slice(0, 5),
                         }))
                       }
-                      className="w-full rounded-[1.5rem] border border-[var(--color-border)] bg-transparent px-4 py-3 text-[var(--color-ink)]"
+                      className="web-input"
                       inputMode="numeric"
                     />
                   </label>
 
                   <label>
-                    <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
-                      {copy.income}
-                    </span>
+                    <span className="web-field-label">{copy.income}</span>
                     <input
                       type="number"
                       value={profile.monthlyIncome}
@@ -255,51 +296,79 @@ export default function IntakePage() {
                           monthlyIncome: Number(event.target.value) || 0,
                         }))
                       }
-                      className="w-full rounded-[1.5rem] border border-[var(--color-border)] bg-transparent px-4 py-3 text-[var(--color-ink)]"
+                      className="web-input"
                     />
                   </label>
                 </div>
-              </section>
+              </WebsiteSectionPanel>
 
-              <div className="flex flex-wrap gap-3 pb-6">
-                <button
-                  type="submit"
-                  className="min-h-12 rounded-full bg-[var(--color-ink)] px-6 text-sm font-semibold text-[var(--color-paper)]"
-                >
+              <div className="flex flex-wrap gap-3">
+                <button type="submit" className="web-primary-button">
                   {copy.buildDashboard}
                 </button>
+                <Link href="/" className="web-secondary-button">
+                  {copy.backHome}
+                </Link>
               </div>
             </form>
           </div>
 
-          <aside className="grid gap-6 lg:sticky lg:top-28 lg:self-start">
-            <section className="panel-card">
-              <p className="eyebrow">{copy.preview}</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                {copy.previewTitle}
-              </h2>
-              <ul className="mt-4 grid gap-3 text-sm text-[var(--color-muted)]">
-                <li>{copy.visaTrack}: {profile.visaStatus}</li>
-                <li>{copy.ssnStatus}: {profile.hasSsn ? copy.hasSsn : copy.noSsn}</li>
-                <li>{copy.locationPreview}: {locationPreview.city}, {locationPreview.state} {profile.zip}</li>
-                <li>{copy.monthlyIncome}: ${profile.monthlyIncome || 0}</li>
-              </ul>
-            </section>
+          <aside className="grid gap-4 xl:sticky xl:top-32 xl:self-start">
+            <WebsiteRailCard
+              eyebrow={copy.preview}
+              title={copy.previewTitle}
+              description={copy.introCopy}
+            >
+              <div className="grid gap-4">
+                <WebsiteStatRow label={copy.visaTrack} value={profile.visaStatus} />
+                <WebsiteStatRow
+                  label={copy.ssnStatus}
+                  value={profile.hasSsn ? copy.hasSsn : copy.noSsn}
+                />
+                <WebsiteStatRow
+                  label={copy.locationPreview}
+                  value={`${locationPreview.city}, ${locationPreview.state} ${profile.zip}`}
+                />
+                <WebsiteStatRow
+                  label={copy.monthlyIncome}
+                  value={`$${profile.monthlyIncome || 0}`}
+                />
+              </div>
+            </WebsiteRailCard>
 
-            <section className="panel-card">
-              <p className="eyebrow">{copy.unlocks}</p>
-              <div className="mt-4 grid gap-3 text-sm text-[var(--color-muted)]">
-                <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
-                  {copy.simulator}: {profile.drives || profile.rents ? copy.simulatorReady : copy.simulatorFallback}
+            <WebsiteRailCard
+              eyebrow={copy.unlocks}
+              title={isSpanish ? "Tu panel se prepara con esto." : "This prepares your dashboard."}
+            >
+              <div className="grid gap-3">
+                <div className="web-action-row">
+                  <div>
+                    <p className="font-semibold text-[var(--color-ink)]">
+                      {copy.simulator}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">
+                      {profile.drives || profile.rents ? copy.simulatorReady : copy.simulatorFallback}
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
-                  {copy.coverageFinder}: {profile.rents ? copy.coverageReady : copy.coverageRules}
+                <div className="web-action-row">
+                  <div>
+                    <p className="font-semibold text-[var(--color-ink)]">{copy.coverageFinder}</p>
+                    <p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">
+                      {profile.rents ? copy.coverageReady : copy.coverageRules}
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded-[1.25rem] border border-[var(--color-border)] px-4 py-4">
-                  {copy.visaGuide}: {copy.visaGuideReady}
+                <div className="web-action-row">
+                  <div>
+                    <p className="font-semibold text-[var(--color-ink)]">{copy.visaGuide}</p>
+                    <p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">
+                      {copy.visaGuideReady}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </section>
+            </WebsiteRailCard>
           </aside>
         </div>
       </div>
