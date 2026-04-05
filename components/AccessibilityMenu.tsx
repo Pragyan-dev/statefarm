@@ -59,7 +59,7 @@ export function AccessibilityMenu({
           <div className="relative flex items-start justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">
-                ArriveSafe
+                FirstCover
               </p>
               <h2 className="font-display text-2xl leading-tight text-[var(--color-ink)] sm:text-3xl">
                 {t("accessibility")}

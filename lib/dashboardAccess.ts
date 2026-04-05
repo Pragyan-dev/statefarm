@@ -1,7 +1,8 @@
 export const DASHBOARD_ACCESS_STORAGE_KEY = "arrivesafe-dashboard-built";
 
-const PUBLIC_ROUTES = ["/", "/intake"] as const;
+const PUBLIC_ROUTES = ["/"] as const;
 const PROTECTED_ROUTES = [
+  "/intake",
   "/dashboard",
   "/simulate",
   "/coverage",
@@ -33,7 +34,7 @@ export function canAccessRoute(pathname: string, isDashboardBuilt: boolean) {
     return isDashboardBuilt;
   }
 
-  return true;
+  return false;
 }
 
 export function getStoredDashboardAccess() {

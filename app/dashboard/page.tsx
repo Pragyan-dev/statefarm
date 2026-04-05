@@ -17,6 +17,7 @@ import { useTranslations } from "next-intl";
 import { type NewcomerGuideData } from "@/components/NewcomerGuide";
 import { ReadAloud } from "@/components/ReadAloud";
 import { ClearDataButton } from "@/components/ClearDataButton";
+import { WebsiteActionLink, WebsiteRailCard, WebsiteSectionHeader, WebsiteSectionPanel, WebsiteStatRow } from "@/components/website/WebsitePrimitives";
 import f1Guide from "@/data/newcomer-guides/f1.json";
 import h1bGuide from "@/data/newcomer-guides/h1b.json";
 import j1Guide from "@/data/newcomer-guides/j1.json";
@@ -53,9 +54,7 @@ export default function DashboardPage() {
       ? "Auto + inquilino"
       : "Auto + renters"
     : profile.drives
-      ? isSpanish
-        ? "Auto"
-        : "Auto"
+      ? "Auto"
       : profile.rents
         ? isSpanish
           ? "Inquilino"
@@ -183,154 +182,199 @@ export default function DashboardPage() {
   }>;
 
   return (
-    <div className="py-6 lg:py-10">
-      <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <section className="panel-card hero-ambient overflow-hidden">
-          <p className="eyebrow">{t("dashboardEyebrow")}</p>
-          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch] lg:text-5xl">
-            {headline}
-          </h1>
-          <p className="mt-4 max-w-[38ch] text-base text-[var(--color-muted)]">
-            {t("dashboardHeroCopy")}
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              href="/simulate"
-              className="button-ink px-5 py-3 text-sm font-semibold"
-            >
-              {t("dashboardRunSimulator")}
-            </Link>
-            <ReadAloud text={`${headline} ${ssnMessage}`} />
-            <div className="ml-auto relative z-10">
-              <ClearDataButton />
-            </div>
-          </div>
-        </section>
+    <div className="py-2 lg:py-4">
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_22rem]">
+        <div className="grid gap-6">
+          <WebsiteSectionHeader
+            eyebrow={t("dashboardEyebrow")}
+            title={headline}
+            description={t("dashboardHeroCopy")}
+            actions={
+              <>
+                <Link href="/simulate" className="web-primary-button">
+                  {t("dashboardRunSimulator")}
+                </Link>
+                <ReadAloud text={`${headline} ${ssnMessage}`} className="bg-white" />
+              </>
+            }
+          />
 
-        <section className="panel-card bg-[linear-gradient(180deg,rgba(255,250,249,0.96),rgba(251,246,239,0.96))]">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="eyebrow">{t("dashboardFastFact")}</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                {t("dashboardFastFactTitle")}
-              </h2>
-            </div>
-            <BadgeAlert className="mt-1 size-6 text-[var(--color-accent)]" />
-          </div>
-          <p className="mt-4 text-base text-[var(--color-muted)]">{ssnMessage}</p>
-        </section>
-      </section>
+          <WebsiteSectionPanel
+            eyebrow={isSpanish ? "Resumen" : "Snapshot"}
+            title={isSpanish ? "Lo importante ahora mismo" : "What matters right now"}
+            description={
+              isSpanish
+                ? "Tu panel combina tu visa, estado de SSN, ZIP y necesidades de cobertura para priorizar los siguientes pasos."
+                : "Your dashboard combines visa, SSN status, ZIP code, and coverage needs to prioritize the next best steps."
+            }
+          >
+            <div className="grid gap-4 md:grid-cols-2">
+              {snapshotItems.map((item) => {
+                const Icon = item.icon;
 
-      <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_1fr] xl:grid-cols-[1.05fr_0.95fr]">
-        <section className="panel-card">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="eyebrow">{isSpanish ? "Instantanea de llegada" : "Arrival snapshot"}</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                {isSpanish ? "Lo importante para ti ahora" : "What matters for you right now"}
-              </h2>
-            </div>
-            <div className="rounded-full bg-[var(--color-accent-soft)] px-3 py-2 text-sm font-semibold text-[var(--color-accent)]">
-              {newcomerTaskCount}
-              {isSpanish ? " tareas hechas" : " tasks done"}
-            </div>
-          </div>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {snapshotItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.label}
-                  className="rounded-[1.5rem] border border-[var(--color-border)] bg-white/75 px-4 py-4"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
-                      <Icon className="size-4" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)]">
-                        {item.label}
-                      </p>
-                      <p className="mt-2 font-semibold text-[var(--color-ink)]">{item.value}</p>
+                return (
+                  <div key={item.label} className="web-grid-card">
+                    <div className="flex items-start gap-3">
+                      <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                        <Icon className="size-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+                          {item.label}
+                        </p>
+                        <p className="mt-2 text-lg font-semibold text-[var(--color-ink)]">{item.value}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
 
-          <div className="mt-5 rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)]">
-              {isSpanish ? "Siguientes mejores movimientos" : "Best next moves"}
-            </p>
-            <div className="mt-4 grid gap-3">
+            <div className="mt-6 rounded-[1.35rem] border border-[var(--color-border)] bg-white px-5 py-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="web-kicker">{t("dashboardFastFact")}</p>
+                  <p className="mt-2 text-lg font-semibold text-[var(--color-ink)]">
+                    {t("dashboardFastFactTitle")}
+                  </p>
+                </div>
+                <BadgeAlert className="mt-1 size-5 shrink-0 text-[var(--color-accent)]" />
+              </div>
+              <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">{ssnMessage}</p>
+            </div>
+          </WebsiteSectionPanel>
+
+          <WebsiteSectionPanel
+            eyebrow={isSpanish ? "Siguientes pasos" : "Next actions"}
+            title={isSpanish ? "Elige el siguiente mejor movimiento." : "Choose the next best move."}
+          >
+            <div className="grid gap-3">
               {nextMoves.map((item) => {
                 const Icon = item.icon;
+
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-[1.35rem] border border-[var(--color-border)] bg-white/80 px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"
-                  >
-                    <div className="flex items-start justify-between gap-3">
+                  <Link key={item.href} href={item.href} className="web-action-row">
+                    <div className="flex items-start gap-3">
+                      <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                        <Icon className="size-4" />
+                      </span>
                       <div>
                         <p className="font-semibold text-[var(--color-ink)]">{item.title}</p>
-                        <p className="mt-1 text-sm text-[var(--color-muted)]">{item.description}</p>
+                        <p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">{item.description}</p>
                       </div>
-                      <Icon className="mt-0.5 size-5 text-[var(--color-accent)]" />
                     </div>
                   </Link>
                 );
               })}
             </div>
-          </div>
-        </section>
+          </WebsiteSectionPanel>
 
-        <section className="panel-card">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="eyebrow">{isSpanish ? "Fechas proximas" : "Deadlines coming up"}</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                {isSpanish ? "Lo que no deberias dejar pasar" : "What you should not let slip"}
-              </h2>
-            </div>
-            <Clock3 className="mt-1 size-6 text-[var(--color-accent)]" />
-          </div>
-          <p className="mt-4 max-w-[48ch] text-sm text-[var(--color-muted)]">
-            {isSpanish
-              ? "Esta lista cambia segun tu visa, ZIP, SSN y las opciones que marcaste en el perfil."
-              : "This list changes based on your visa, ZIP code, SSN status, and the options you chose in your profile."}
-          </p>
+          <WebsiteSectionPanel
+            eyebrow={isSpanish ? "Fechas proximas" : "Deadlines"}
+            title={isSpanish ? "Lo que no deberias dejar pasar" : "What you should not let slip"}
+            description={
+              isSpanish
+                ? "Esta lista cambia segun tu visa, ZIP, SSN y las opciones que marcaste en el perfil."
+                : "This list changes based on your visa, ZIP code, SSN status, and the options you chose in your profile."
+            }
+          >
+            <div className="grid gap-3">
+              {deadlineCards.map((card) => {
+                const Icon = card.icon;
 
-          <div className="mt-5 grid gap-3">
-            {deadlineCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <Link
-                  key={card.id}
-                  href={card.href}
-                  className="rounded-[1.5rem] border border-[var(--color-border)] bg-white/75 px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
-                      <Icon className="size-4" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-semibold text-[var(--color-ink)]">{card.title}</p>
-                        <span className="rounded-full bg-[var(--color-paper)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-accent)]">
-                          {card.timing}
-                        </span>
+                return (
+                  <Link key={card.id} href={card.href} className="web-action-row">
+                    <div className="flex items-start gap-3">
+                      <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                        <Icon className="size-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-semibold text-[var(--color-ink)]">{card.title}</p>
+                          <span className="rounded-full bg-[var(--color-accent-soft)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-accent)]">
+                            {card.timing}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">{card.detail}</p>
                       </div>
-                      <p className="mt-2 text-sm text-[var(--color-muted)]">{card.detail}</p>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
+                  </Link>
+                );
+              })}
+            </div>
+          </WebsiteSectionPanel>
+        </div>
+
+        <aside className="grid gap-4 lg:sticky lg:top-32 lg:self-start">
+          <WebsiteRailCard
+            eyebrow={isSpanish ? "Panel listo" : "Dashboard ready"}
+            title={isSpanish ? "Tu llegada en una vista." : "Your arrival plan in one view."}
+            description={ssnMessage}
+          >
+            <div className="grid gap-4">
+              <WebsiteStatRow
+                label={isSpanish ? "Tareas de recien llegado" : "Newcomer tasks done"}
+                value={newcomerTaskCount}
+              />
+              <WebsiteStatRow
+                label={isSpanish ? "Enfoque de cobertura" : "Coverage focus"}
+                value={protectionFocus}
+              />
+              <WebsiteStatRow
+                label={isSpanish ? "Ubicacion" : "Location"}
+                value={`${profile.city}, ${profile.state}`}
+              />
+            </div>
+          </WebsiteRailCard>
+
+          <WebsiteRailCard
+            eyebrow={isSpanish ? "Acciones rapidas" : "Quick actions"}
+            title={isSpanish ? "Abre las herramientas principales." : "Open the main tools."}
+          >
+            <div className="grid gap-3">
+              <WebsiteActionLink
+                href="/coverage"
+                title={t("dashboardCoverageTitle")}
+                description={t("dashboardCoverageCopy")}
+              />
+              <WebsiteActionLink
+                href="/decode"
+                title={t("dashboardDecodeTitle")}
+                description={t("dashboardDecodeCopy")}
+              />
+              <WebsiteActionLink
+                href="/newcomer-guide"
+                title={t("dashboardGuideTitle")}
+                description={t("dashboardGuideCopy")}
+              />
+            </div>
+          </WebsiteRailCard>
+
+          <WebsiteRailCard
+            eyebrow={isSpanish ? "Mantenimiento" : "Profile reset"}
+            title={isSpanish ? "Empieza de nuevo si lo necesitas." : "Start fresh if you need to."}
+            description={
+              isSpanish
+                ? "Borra el perfil guardado, quita el acceso al panel y vuelve al resumen web para empezar de nuevo."
+                : "Clear the saved profile, remove dashboard access, and return to the website overview to start over."
+            }
+          >
+            <div className="flex flex-wrap gap-3">
+              <ClearDataButton />
+            </div>
+          </WebsiteRailCard>
+
+          <div className="web-grid-card">
+            <div className="flex items-start gap-3">
+              <Clock3 className="mt-1 size-5 shrink-0 text-[var(--color-accent)]" />
+              <p className="text-sm leading-6 text-[var(--color-muted)]">
+                {isSpanish
+                  ? "Tus prioridades cambian segun el progreso de la guia y los documentos que revises."
+                  : "Your priorities update as you make progress through the guide and review documents."}
+              </p>
+            </div>
           </div>
-        </section>
+        </aside>
       </section>
     </div>
   );

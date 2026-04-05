@@ -46,11 +46,14 @@ export function AppShell({
   const [isDashboardBuilt, , accessReady] = useDashboardAccess();
   const routeAccessible = canAccessRoute(pathname, isDashboardBuilt);
   const shouldRedirectHome = accessReady && !routeAccessible;
+  const shouldRedirectLandingToDashboard = accessReady && isDashboardBuilt && isLanding;
   const waitingOnProtectedAccess = !accessReady && isProtectedRoute(pathname);
-  const shouldRenderFallbackChildren = !waitingOnProtectedAccess && !shouldRedirectHome;
+  const shouldRenderFallbackChildren =
+    !waitingOnProtectedAccess && !shouldRedirectHome && !shouldRedirectLandingToDashboard;
   const hasActiveSimulatorStory = isSimulator && Boolean(storySession?.scenarioId);
   const shouldUseWebsiteShell =
     (isSimulator && !hasActiveSimulatorStory) || (!isSimulator && resolvedMode === "website");
+  const showWebsiteChrome = accessReady && isDashboardBuilt;
 
   const websiteNav = [
     { href: "/dashboard", label: t("dashboard"), icon: Home },
@@ -60,16 +63,23 @@ export function AppShell({
     { href: "/decode", label: t("policyDecoder"), icon: ScanSearch },
     { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
   ];
+  const shellNav = showWebsiteChrome ? websiteNav : [{ href: "/", label: t("websiteOverview") }];
 
   useEffect(() => {
-    if (!shouldRedirectHome) {
+    if (!shouldRedirectHome && !shouldRedirectLandingToDashboard) {
       return;
     }
 
-    router.replace("/");
-  }, [router, shouldRedirectHome]);
+    router.replace(shouldRedirectLandingToDashboard ? "/dashboard" : "/");
+  }, [router, shouldRedirectHome, shouldRedirectLandingToDashboard]);
 
-  if (!isReady || !isStorySessionReady || waitingOnProtectedAccess || shouldRedirectHome) {
+  if (
+    !isReady ||
+    !isStorySessionReady ||
+    waitingOnProtectedAccess ||
+    shouldRedirectHome ||
+    shouldRedirectLandingToDashboard
+  ) {
     return (
       <>
         <a
@@ -97,67 +107,89 @@ export function AppShell({
         >
           {t("skipToContent")}
         </a>
-        <div className="min-h-dvh bg-[var(--color-background)]">
-          <header className="sticky top-0 z-40 border-b border-[var(--color-accent-wash)] bg-[linear-gradient(180deg,rgba(255,251,250,0.96),rgba(251,246,239,0.9))] backdrop-blur-xl">
-            <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="min-w-0">
-                  <Link href="/" className="font-display text-3xl leading-none text-[var(--color-ink)]">
-                    ArriveSafe
-                  </Link>
-                  <p className="mt-1 max-w-[46ch] text-sm text-[var(--color-muted)]">
-                    {t("tagline")}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2 lg:justify-end">
-                  <LanguageToggle tone="light" />
-                  <ViewModeToggle tone="light" compact />
+        <div className="website-shell min-h-dvh">
+          <header className="z-40">
+            <div className="website-topbar">
+              <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6 lg:px-8">
+                <Link href={showWebsiteChrome ? "/dashboard" : "/"} className="font-display text-3xl leading-none text-white">
+                  FirstCover
+                </Link>
+                <div className="flex flex-wrap items-center justify-end gap-2 lg:gap-3">
+                  <LanguageToggle tone="light" className="website-topbar-toggle" />
+                  <ViewModeToggle tone="light" compact className="website-topbar-toggle" />
                   <button
                     type="button"
                     onClick={() => setMenuOpen(true)}
                     aria-label={t("accessibility")}
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white px-4 text-sm font-semibold text-[var(--color-ink)] shadow-sm transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                    className="website-topbar-action"
                   >
                     <Settings2 className="size-4" />
-                    <span className="hidden sm:inline">{t("accessibility")}</span>
+                    <span>{t("accessibility")}</span>
                   </button>
                 </div>
               </div>
-
-              {accessReady && isDashboardBuilt ? (
-                <nav
-                  aria-label="Main navigation"
-                  className="mt-4 flex gap-2 overflow-x-auto pb-1"
-                >
-                  {websiteNav.map((item) => {
-                    const active = pathname.startsWith(item.href);
-                    const Icon = item.icon;
-
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        aria-current={active ? "page" : undefined}
-                        className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition ${
-                          active
-                            ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)]"
-                            : "border-[var(--color-border)] bg-white/60 text-[var(--color-ink)] hover:border-[var(--color-accent)] hover:bg-white hover:text-[var(--color-accent)]"
-                        }`}
-                      >
-                        <Icon className="size-4" />
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-              ) : null}
             </div>
+
+            {showWebsiteChrome ? (
+              <div className="website-header backdrop-blur-xl">
+                <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+                  <div className="min-w-0">
+                    <p className="web-kicker">{t("appName")}</p>
+                    <p className="mt-2 max-w-[56ch] text-sm leading-6 text-[var(--color-muted)]">
+                      {t("tagline")}
+                    </p>
+                  </div>
+
+                  <nav aria-label="Main navigation" className="mt-5 flex flex-wrap gap-2">
+                    {shellNav.map((item) => {
+                      const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                      const Icon = "icon" in item ? item.icon : null;
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          aria-current={active ? "page" : undefined}
+                          className={`website-navlink whitespace-nowrap ${
+                            active ? "website-navlink-active" : ""
+                          }`}
+                        >
+                          {Icon ? <Icon className="size-4" /> : null}
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+              </div>
+            ) : null}
           </header>
 
-          <main id="main-content" className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+          <main
+            id="main-content"
+            className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${
+              showWebsiteChrome ? "py-8 lg:py-10" : "py-4 lg:py-5"
+            }`}
+          >
             {children}
           </main>
+          {showWebsiteChrome ? (
+            <footer className="website-footer-band">
+              <div className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
+                <div>
+                  <p className="web-kicker">{t("websiteOverview")}</p>
+                  <p className="mt-2 max-w-[56ch] text-base leading-7 text-[var(--color-muted)]">
+                    {t("homePitchCopy")}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link href="/dashboard" className="web-primary-button">
+                    {t("dashboard")}
+                  </Link>
+                </div>
+              </div>
+            </footer>
+          ) : null}
           <AccessibilityMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
         </div>
       </>

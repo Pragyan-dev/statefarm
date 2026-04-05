@@ -40,11 +40,11 @@ export function SimulatorResult({
 
   const shareText = isGood
     ? isSpanish
-      ? `Juge el escenario ${scenario.title} de ArriveSafe y vi como el seguro podia ahorrar ${titleAmount}.`
-      : `I played ArriveSafe's ${scenario.title} scenario and saw how insurance could save ${titleAmount}.`
+      ? `Juge el escenario ${scenario.title} de FirstCover y vi como el seguro podia ahorrar ${titleAmount}.`
+      : `I played FirstCover's ${scenario.title} scenario and saw how insurance could save ${titleAmount}.`
     : isSpanish
-      ? `Juge el escenario ${scenario.title} de ArriveSafe y vi que tan rapido la vida puede convertirse en un problema de ${titleAmount} sin seguro.`
-      : `I played ArriveSafe's ${scenario.title} scenario and saw how fast life can turn into a ${titleAmount} problem without insurance.`;
+      ? `Juge el escenario ${scenario.title} de FirstCover y vi que tan rapido la vida puede convertirse en un problema de ${titleAmount} sin seguro.`
+      : `I played FirstCover's ${scenario.title} scenario and saw how fast life can turn into a ${titleAmount} problem without insurance.`;
 
   async function handleShare() {
     try {
