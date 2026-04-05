@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { fetchDisasterHistory } from "@/lib/fema";
+import { buildFallbackDisasterHistory, fetchDisasterHistory } from "@/lib/fema";
 import type { Language } from "@/lib/types";
 
 export async function GET(request: NextRequest) {
@@ -8,9 +8,8 @@ export async function GET(request: NextRequest) {
   const language = (request.nextUrl.searchParams.get("language") ?? "en") as Language;
 
   try {
-    const items = await fetchDisasterHistory(state, language);
-    return NextResponse.json({ items });
+    return NextResponse.json(await fetchDisasterHistory(state, language));
   } catch {
-    return NextResponse.json({ items: [] });
+    return NextResponse.json(buildFallbackDisasterHistory(state, language, "fetch-failed"));
   }
 }

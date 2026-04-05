@@ -1,5 +1,6 @@
 "use client";
 
+import { AiSourceNotice } from "@/components/AiSourceNotice";
 import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import type { ClaimGuideResult } from "@/lib/types";
@@ -21,12 +22,16 @@ export function ClaimGuide({
     <section className="panel-card" aria-live="polite" aria-atomic="true">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="eyebrow">Claim guide</p>
+          <p className="eyebrow">{settings.language === "es" ? "Guia de reclamo" : "Claim guide"}</p>
           <h2 className="font-display text-2xl text-[var(--color-ink)]">
             {settings.language === "es" ? "Que hacer ahora" : "What to do now"}
           </h2>
         </div>
         <ReadAloud text={narration} />
+      </div>
+
+      <div className="mt-4">
+        <AiSourceNotice aiSource={guide.aiSource} fallbackReason={guide.fallbackReason} />
       </div>
 
       <div className="mt-5 space-y-5">

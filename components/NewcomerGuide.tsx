@@ -32,15 +32,16 @@ export function NewcomerGuide({
     () => guides.find((guide) => guide.visa === selectedVisa) ?? guides[0],
     [guides, selectedVisa],
   );
+  const isSpanish = settings.language === "es";
 
   return (
     <section className="panel-card">
-      <p className="eyebrow">First 30 days</p>
+      <p className="eyebrow">{isSpanish ? "Primeros 30 dias" : "First 30 days"}</p>
       <h2 className="font-display text-2xl text-[var(--color-ink)]">
         {pickText(activeGuide.title, settings.language)}
       </h2>
 
-      <div role="tablist" aria-label="Newcomer guides" className="mt-5 grid grid-cols-4 gap-2">
+      <div role="tablist" aria-label={isSpanish ? "Guias de visa" : "Visa guides"} className="mt-5 grid grid-cols-4 gap-2">
         {guides.map((guide) => {
           const active = guide.visa === selectedVisa;
           return (
@@ -95,7 +96,7 @@ export function NewcomerGuide({
                 >
                   <div>
                     <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-                      Week {step.week}
+                      {isSpanish ? "Semana" : "Week"} {step.week}
                     </p>
                     <h3 className="mt-1 font-semibold text-[var(--color-ink)]">
                       {pickText(step.step, settings.language)}
@@ -128,7 +129,7 @@ export function NewcomerGuide({
                         rel="noreferrer"
                         className="inline-flex text-sm font-semibold text-[var(--color-accent)]"
                       >
-                        Open resource
+                        {isSpanish ? "Abrir recurso" : "Open resource"}
                       </a>
                     ) : null}
                     <ReadAloud text={narration} />

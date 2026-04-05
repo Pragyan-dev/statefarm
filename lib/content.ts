@@ -7,6 +7,8 @@ import type {
   UserProfile,
 } from "@/lib/types";
 
+export const DEFAULT_APARTMENT_ZIP = "85281";
+
 export function pickText(value: string | LocalizedText, language: Language) {
   if (typeof value === "string") {
     return value;
@@ -36,8 +38,26 @@ export function formatDate(value: string, language: Language) {
   }).format(date);
 }
 
+export function isSupportedApartmentZip(zip: string) {
+  return zip in (apartments as Record<string, ApartmentZipData>);
+}
+
+export function resolveApartmentZip(zip: string) {
+  const normalizedZip = zip.trim();
+  const resolvedZip = isSupportedApartmentZip(normalizedZip)
+    ? normalizedZip
+    : DEFAULT_APARTMENT_ZIP;
+
+  return {
+    normalizedZip,
+    resolvedZip,
+    isExactMatch: normalizedZip === resolvedZip,
+    zipData: (apartments as Record<string, ApartmentZipData>)[resolvedZip],
+  };
+}
+
 export function getZipData(zip: string) {
-  return (apartments as Record<string, ApartmentZipData>)[zip] ?? (apartments as Record<string, ApartmentZipData>)["85281"];
+  return resolveApartmentZip(zip).zipData;
 }
 
 export function deriveProfileLocation(zip: string) {

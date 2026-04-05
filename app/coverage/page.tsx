@@ -1,47 +1,98 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import ssnRequirements from "@/data/ssn-requirements.json";
 
+import { ApartmentCoverageCard } from "@/components/ApartmentCoverageCard";
 import { ApartmentSelector } from "@/components/ApartmentSelector";
+import { FemaTimeline } from "@/components/FemaTimeline";
 import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { formatCurrency, getStateCosts } from "@/lib/content";
-import type { ApartmentListing, ApartmentZipData } from "@/lib/types";
+import { useViewMode } from "@/hooks/useViewMode";
+import {
+  DEFAULT_APARTMENT_ZIP,
+  deriveProfileLocation,
+  formatCurrency,
+  getStateCosts,
+  isSupportedApartmentZip,
+  resolveApartmentZip,
+} from "@/lib/content";
+import { buildFallbackDisasterHistory, type DisasterHistoryPayload } from "@/lib/fema";
 
-interface DisasterSummary {
-  title: string;
-  date: string;
-  incidentType?: string;
+function CoverageMapLoading() {
+  const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
+
+  return (
+    <div className="grid h-[280px] place-items-center rounded-[1.8rem] border border-[var(--color-border)] bg-[var(--color-paper)] text-sm text-[var(--color-muted)]">
+      {isSpanish ? "Cargando mapa..." : "Loading map..."}
+    </div>
+  );
 }
 
-function getLowerRentAmount(range: string) {
-  const match = range.replaceAll(",", "").match(/\$([0-9]+)/);
-  return match ? Number(match[1]) : 1200;
-}
+const CoverageMap = dynamic(
+  () => import("@/components/CoverageMap").then((module) => module.CoverageMap),
+  {
+    ssr: false,
+    loading: () => <CoverageMapLoading />,
+  },
+);
+
+type Requirements = {
+  autoNeedsSsn: boolean;
+  acceptsItin: boolean;
+  undocumentedLicense: boolean;
+};
 
 export default function CoveragePage() {
+  const t = useTranslations();
   const [profile, setProfile, isReady] = useUserProfile();
   const { settings } = useAccessibility();
-  const [selectedApartment, setSelectedApartment] = useState<ApartmentListing | null>(null);
-  const [selectedZipData, setSelectedZipData] = useState<ApartmentZipData | null>(null);
-  const [disasters, setDisasters] = useState<DisasterSummary[]>([]);
-  const [loadingDisasters, setLoadingDisasters] = useState(false);
-
-  const requirements = useMemo(
-    () =>
-      (ssnRequirements as Record<string, {
-        autoNeedsSsn: boolean;
-        acceptsItin: boolean;
-        undocumentedLicense: boolean;
-      }>)[profile.state] ?? (ssnRequirements as Record<string, {
-        autoNeedsSsn: boolean;
-        acceptsItin: boolean;
-        undocumentedLicense: boolean;
-      }>)["AZ"],
-    [profile.state],
+  const { resolvedMode } = useViewMode();
+  const isSpanish = settings.language === "es";
+  const [zipInput, setZipInput] = useState(DEFAULT_APARTMENT_ZIP);
+  const [activeZip, setActiveZip] = useState(DEFAULT_APARTMENT_ZIP);
+  const [selectedApartmentAddress, setSelectedApartmentAddress] = useState<string | null>(null);
+  const [disasterData, setDisasterData] = useState<DisasterHistoryPayload>(
+    buildFallbackDisasterHistory("AZ", "en", "fetch-failed"),
   );
+  const [loadingDisasters, setLoadingDisasters] = useState(false);
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isReady || initializedRef.current) {
+      return;
+    }
+
+    const initialZip = profile.zip || DEFAULT_APARTMENT_ZIP;
+    const resolved = resolveApartmentZip(initialZip);
+    setZipInput(initialZip);
+    setActiveZip(resolved.resolvedZip);
+    initializedRef.current = true;
+  }, [isReady, profile.zip]);
+
+  const { zipData } = useMemo(() => resolveApartmentZip(activeZip), [activeZip]);
+  const isWebsite = resolvedMode === "website";
+  const unsupportedZip = zipInput.trim().length === 5 && !isSupportedApartmentZip(zipInput.trim());
+  const coverageState = zipData.state;
+
+  useEffect(() => {
+    if (!zipData.apartments.length) {
+      setSelectedApartmentAddress(null);
+      return;
+    }
+
+    const currentExists = zipData.apartments.some(
+      (apartment) => apartment.address === selectedApartmentAddress,
+    );
+
+    if (!currentExists) {
+      setSelectedApartmentAddress(zipData.apartments[0]?.address ?? null);
+    }
+  }, [selectedApartmentAddress, zipData.apartments]);
 
   useEffect(() => {
     if (!isReady) {
@@ -50,62 +101,127 @@ export default function CoveragePage() {
 
     async function loadDisasters() {
       setLoadingDisasters(true);
+
       try {
-        const response = await fetch(`/api/fema?state=${profile.state}&language=${settings.language}`);
-        const payload = (await response.json()) as { items: DisasterSummary[] };
-        setDisasters(payload.items);
+        const response = await fetch(`/api/fema?state=${coverageState}&language=${settings.language}`);
+        const payload = (await response.json()) as DisasterHistoryPayload;
+        setDisasterData(payload);
       } catch {
-        setDisasters([]);
+        setDisasterData(buildFallbackDisasterHistory(coverageState, settings.language, "fetch-failed"));
       } finally {
         setLoadingDisasters(false);
       }
     }
 
     void loadDisasters();
-  }, [isReady, profile.state, settings.language]);
+  }, [coverageState, isReady, settings.language]);
 
-  if (!isReady) {
-    return <div className="py-10 text-sm text-[var(--color-muted)]">Loading coverage...</div>;
+  const selectedApartment =
+    zipData.apartments.find((apartment) => apartment.address === selectedApartmentAddress) ??
+    zipData.apartments[0] ??
+    null;
+
+  const requirements = useMemo(
+    () =>
+      (ssnRequirements as Record<string, Requirements>)[coverageState] ??
+      (ssnRequirements as Record<string, Requirements>)["AZ"],
+    [coverageState],
+  );
+
+  if (!isReady || !selectedApartment) {
+    return (
+      <div className="py-10 text-sm text-[var(--color-muted)]">
+        {isSpanish ? "Cargando cobertura..." : "Loading coverage..."}
+      </div>
+    );
   }
 
-  const costs = getStateCosts(profile.state);
-  const selectedEstimate = selectedApartment?.estimate ?? costs.rentersMonthly;
-  const rentPercent = selectedApartment
-    ? ((selectedEstimate / getLowerRentAmount(selectedApartment.rentRange)) * 100).toFixed(1)
-    : null;
-  const stateCallout = `In ${profile.state}, auto insurance does ${
-    requirements.autoNeedsSsn ? "" : "not "
-  }require an SSN. ITIN accepted: ${requirements.acceptsItin ? "yes" : "no"}.`;
+  const costs = getStateCosts(coverageState);
+  const stateCallout = isSpanish
+    ? `En ${coverageState}, el seguro de auto ${requirements.autoNeedsSsn ? "puede requerir" : "no requiere"} SSN. ITIN aceptado: ${requirements.acceptsItin ? "si" : "no"}.`
+    : `In ${coverageState}, auto insurance does ${
+        requirements.autoNeedsSsn ? "" : "not "
+      }require an SSN. ITIN accepted: ${requirements.acceptsItin ? "yes" : "no"}.`;
+
+  const heroCopy = isWebsite
+    ? isSpanish
+      ? "Entra a un lugar real, toca un apartamento y mira lo que realmente protege el seguro de inquilino."
+      : "Drop into a real place, tap an apartment, and see what renter's coverage actually protects."
+    : isSpanish
+      ? "Toca un pin de apartamento cercano y mira al instante la brecha de proteccion del inquilino."
+      : "Tap a nearby apartment pin and see the renter's protection gap instantly.";
+
+  function updateSupportedZip(nextZip: string) {
+    const trimmedZip = nextZip.trim();
+    const resolved = resolveApartmentZip(trimmedZip);
+    const location = deriveProfileLocation(resolved.resolvedZip);
+
+    setActiveZip(resolved.resolvedZip);
+    setSelectedApartmentAddress(null);
+    setProfile((current) => ({
+      ...current,
+      zip: trimmedZip,
+      city: location.city,
+      state: location.state,
+      rents: true,
+    }));
+  }
+
+  function handleZipInputChange(nextValue: string) {
+    const sanitized = nextValue.replace(/\D/g, "").slice(0, 5);
+    setZipInput(sanitized);
+
+    if (sanitized.length === 5 && isSupportedApartmentZip(sanitized)) {
+      updateSupportedZip(sanitized);
+    }
+  }
+
+  async function handleLocate() {
+    setZipInput(DEFAULT_APARTMENT_ZIP);
+    updateSupportedZip(DEFAULT_APARTMENT_ZIP);
+  }
 
   return (
-    <div className="py-6 lg:py-10">
-      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="panel-card hero-ambient overflow-hidden">
-          <p className="eyebrow">Coverage finder</p>
-          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[10ch]">
-            Match your ZIP code to real first-month protection.
+    <div className="mx-auto max-w-[1380px] py-4 lg:py-6">
+      <section className={`grid gap-4 ${isWebsite ? "xl:grid-cols-[minmax(0,0.92fr)_minmax(360px,0.78fr)]" : ""}`}>
+        <section className="panel-card hero-ambient mt-0 overflow-hidden">
+          <p className="eyebrow">{isSpanish ? "Buscador de cobertura" : "Coverage finder"}</p>
+          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
+            {isSpanish
+              ? "El seguro se entiende mejor cuando puedes ver la cuadra, no solo la cuenta."
+              : "Insurance hits harder when you can see the block, not just the bill."}
           </h1>
-          <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">
-            Start with a renter&apos;s estimate, then stack on the state rules and disaster history
-            that change your risk.
-          </p>
-          <div className="mt-5">
-            <ReadAloud text={stateCallout} />
+          <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">{heroCopy}</p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <div className="rounded-full bg-[#FFF2E7] px-4 py-2 text-sm font-semibold text-[var(--color-accent)]">
+              {zipData.city}, {zipData.state} {activeZip}
+            </div>
+            <div className="rounded-full border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-muted)]">
+              {formatCurrency(selectedApartment.estimate, settings.language)}
+              {isSpanish ? "/mes promedio para tu apartamento seleccionado" : "/mo average for your selected apartment"}
+            </div>
           </div>
         </section>
 
-        <section className="panel-card">
-          <p className="eyebrow">State rules</p>
+        <section className="panel-card mt-0">
+          <p className="eyebrow">{t("stateRequirements")}</p>
           <h2 className="font-display text-2xl text-[var(--color-ink)]">
             {requirements.autoNeedsSsn
-              ? `You may need an SSN for some policies in ${profile.state}.`
-              : `You do NOT need an SSN for auto insurance in ${profile.state}.`}
+              ? isSpanish
+                ? `Algunas aseguradoras en ${coverageState} pueden pedir SSN.`
+                : `Some insurers in ${coverageState} may ask for an SSN.`
+              : isSpanish
+                ? `NO necesitas SSN para el seguro de auto en ${coverageState}.`
+                : `You do NOT need an SSN for auto insurance in ${coverageState}.`}
           </h2>
           <p className="mt-4 text-sm text-[var(--color-muted)]">{stateCallout}</p>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-5">
+            <ReadAloud text={stateCallout} />
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
             <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-                Auto liability
+                {isSpanish ? "Responsabilidad auto" : "Auto liability"}
               </p>
               <p className="mt-2 text-2xl font-bold text-[var(--color-ink)]">
                 {formatCurrency(costs.autoLiability, settings.language)}
@@ -113,15 +229,15 @@ export default function CoveragePage() {
             </div>
             <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-                Renter&apos;s insurance
+                {isSpanish ? "Base de inquilino por ZIP" : "ZIP renter baseline"}
               </p>
               <p className="mt-2 text-2xl font-bold text-[var(--color-ink)]">
-                {formatCurrency(selectedEstimate, settings.language)}
+                {formatCurrency(zipData.avgRenters, settings.language)}
               </p>
             </div>
             <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
               <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-                No-insurance fine
+                {isSpanish ? "Multa sin seguro" : "No-insurance fine"}
               </p>
               <p className="mt-2 text-2xl font-bold text-[var(--color-danger)]">
                 {formatCurrency(costs.noAutoFine, settings.language)}
@@ -131,81 +247,70 @@ export default function CoveragePage() {
         </section>
       </section>
 
-      <section className="mt-6 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="grid gap-6">
-          <ApartmentSelector
-            zip={profile.zip}
-            onZipChange={(zip) => {
-              setProfile((current) => ({
-                ...current,
-                zip,
-              }));
-            }}
-            onApartmentSelect={(apartment, zipData) => {
-              setSelectedApartment(apartment);
-              setSelectedZipData(zipData);
-              setProfile((current) => ({
-                ...current,
-                zip: current.zip,
-                city: zipData.city,
-                state: zipData.state,
-                rents: true,
-              }));
-            }}
-          />
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {isSpanish
+          ? `Apartamento seleccionado: ${selectedApartment.name} en ${zipData.city}`
+          : `Selected apartment: ${selectedApartment.name} in ${zipData.city}`}
+      </div>
 
-          {selectedApartment && selectedZipData ? (
-            <section className="panel-card">
-              <p className="eyebrow">Selected apartment</p>
-              <h2 className="font-display text-2xl text-[var(--color-ink)]">
-                {selectedApartment.name}
-              </h2>
-              <p className="mt-2 text-sm text-[var(--color-muted)]">{selectedApartment.address}</p>
-              <div className="mt-5 rounded-[1.5rem] bg-[var(--color-paper)] p-4 shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)]">
-                <p className="text-3xl font-bold text-[var(--color-ink)]">
-                  {formatCurrency(selectedApartment.estimate, settings.language)} / month
-                </p>
-                <p className="mt-2 text-sm text-[var(--color-muted)]">
-                  Covers the belongings you are rebuilding your life with in {selectedZipData.city}.
-                </p>
-                {rentPercent ? (
-                  <p className="mt-2 text-sm text-[var(--color-muted)]">
-                    That is {rentPercent}% of the low end of your rent.
-                  </p>
-                ) : null}
+      <section className={`mt-6 grid items-start gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,1.18fr)_minmax(360px,0.82fr)]" : ""}`}>
+        <div className="grid gap-6 min-w-0">
+          <section className="panel-card mt-0 overflow-hidden">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-[40rem]">
+                <p className="eyebrow">{isSpanish ? "Mapa + apartamentos" : "Map + apartments"}</p>
+                <h2 className="font-display text-3xl leading-tight text-[var(--color-ink)]">
+                  {isSpanish
+                    ? "Explora la zona primero. Luego elige el apartamento que encaja con tu presupuesto."
+                    : "Explore the block first. Then choose the apartment that matches your budget."}
+                </h2>
               </div>
-            </section>
-          ) : null}
+              <p className="max-w-[30ch] text-sm text-[var(--color-muted)]">
+                {isSpanish
+                  ? "Los pines, el cambio de ZIP y las tarjetas se mantienen sincronizados para que el panel de cobertura siempre refleje el lugar que elegiste."
+                  : "Pins, ZIP changes, and apartment cards stay synchronized so the coverage panel on the right always reflects the place you picked."}
+              </p>
+            </div>
+
+            <div className="mt-5 grid gap-5">
+              <CoverageMap
+                center={zipData.center}
+                apartments={zipData.apartments}
+                selectedApartmentAddress={selectedApartment.address}
+                language={settings.language}
+                onApartmentSelect={(apartment) => setSelectedApartmentAddress(apartment.address)}
+              />
+
+              <ApartmentSelector
+                zipInput={zipInput}
+                activeZip={activeZip}
+                zipData={zipData}
+                selectedApartmentAddress={selectedApartment.address}
+                unsupportedZip={unsupportedZip}
+                layout={isWebsite ? "website" : "app"}
+                onZipInputChange={handleZipInputChange}
+                onLocate={handleLocate}
+                onApartmentSelect={(apartment) => setSelectedApartmentAddress(apartment.address)}
+              />
+            </div>
+          </section>
         </div>
 
-        <section className="panel-card">
-          <p className="eyebrow">Recent disaster history</p>
-          <h2 className="font-display text-2xl text-[var(--color-ink)]">
-            FEMA declarations in {profile.state}
-          </h2>
-          {loadingDisasters ? (
-            <p className="mt-4 text-sm text-[var(--color-muted)]">Loading FEMA data...</p>
-          ) : (
-            <ul className="mt-5 grid gap-3">
-              {disasters.map((item) => (
-                <li
-                  key={`${item.title}-${item.date}`}
-                  className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4"
-                >
-                  <p className="font-semibold text-[var(--color-ink)]">{item.title}</p>
-                  <p className="mt-1 text-sm text-[var(--color-muted)]">
-                    {item.date} {item.incidentType ? `· ${item.incidentType}` : ""}
-                  </p>
-                </li>
-              ))}
-              {!disasters.length ? (
-                <li className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 text-sm text-[var(--color-muted)]">
-                  No FEMA history available right now.
-                </li>
-              ) : null}
-            </ul>
-          )}
-        </section>
+        <div className={`grid gap-6 ${isWebsite ? "xl:sticky xl:top-28" : ""}`}>
+          <ApartmentCoverageCard
+            apartment={selectedApartment}
+            zipData={zipData}
+            language={settings.language}
+          />
+
+          <FemaTimeline
+            state={coverageState}
+            language={settings.language}
+            data={disasterData}
+            topRisks={zipData.topRisks}
+            loading={loadingDisasters}
+          />
+        </div>
       </section>
     </div>
   );

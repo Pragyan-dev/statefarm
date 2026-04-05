@@ -55,11 +55,25 @@ export interface ApartmentListing {
   rentRange: string;
   beds: string;
   estimate: number;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  coverage: {
+    personalProperty: number;
+    liability: number;
+    lossOfUse: number;
+    deductible: number;
+  };
 }
 
 export interface ApartmentZipData {
   city: string;
   state: string;
+  center: {
+    lat: number;
+    lng: number;
+  };
   topRisks: LocalizedText[];
   avgRenters: number;
   apartments: ApartmentListing[];
@@ -81,6 +95,8 @@ export interface PolicySummaryResult {
   summary: string;
   sourceText?: string;
   demoMode?: boolean;
+  aiSource?: "openrouter" | "local";
+  fallbackReason?: string;
 }
 
 export interface ClaimGuideResult {
@@ -91,6 +107,8 @@ export interface ClaimGuideResult {
   followUpSteps: string[];
   claimType: "auto_accident" | "renters_claim" | "theft";
   demoMode?: boolean;
+  aiSource?: "openrouter" | "local";
+  fallbackReason?: string;
 }
 
 export type ScamFlag = "SCAM" | "PREDATORY" | "WARNING" | "SAFE";
@@ -101,6 +119,8 @@ export interface ScamVerdictResult {
   reasons: string[];
   matchedPattern?: string;
   demoMode?: boolean;
+  aiSource?: "openrouter" | "local";
+  fallbackReason?: string;
 }
 
 export interface NewcomerGuideStep {

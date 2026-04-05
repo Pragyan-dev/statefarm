@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useAccessibility } from "@/hooks/useAccessibility";
 import type { Emotion } from "@/types/simulator";
 
@@ -84,8 +86,10 @@ function FaceLayer({
 }
 
 export function SafiCharacter({ emotion, className = "" }: SafiCharacterProps) {
+  const t = useTranslations();
   const { settings } = useAccessibility();
   const allEmotions: Emotion[] = ["neutral", "happy", "worried", "shocked", "celebrating"];
+  const isSpanish = settings.language === "es";
 
   const wingPath =
     emotion === "celebrating"
@@ -101,7 +105,11 @@ export function SafiCharacter({ emotion, className = "" }: SafiCharacterProps) {
       <svg
         viewBox="0 0 120 160"
         role="img"
-        aria-label={`Safi looking ${emotion}`}
+        aria-label={
+          isSpanish
+            ? `${t("simulatorSafi")} mirando ${emotion}`
+            : `${t("simulatorSafi")} looking ${emotion}`
+        }
         className="h-full w-full"
       >
         <g fill="none" stroke="#2C2C2A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

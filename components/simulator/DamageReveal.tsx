@@ -13,6 +13,7 @@ export interface EffectRevealProps {
 
 export function EffectRevealBase({ effect, onComplete }: EffectRevealProps) {
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
   const instantReveal = settings.reducedMotion;
   const [visibleItems, setVisibleItems] = useState(() => (instantReveal ? effect.items.length : 0));
   const [showLine, setShowLine] = useState(() => instantReveal);
@@ -84,7 +85,13 @@ export function EffectRevealBase({ effect, onComplete }: EffectRevealProps) {
               <span
                 className={`rounded-full border px-2 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${tone.neutralPill}`}
               >
-                {effect.type === "damage" ? "impact" : "included"}
+                {effect.type === "damage"
+                  ? isSpanish
+                    ? "impacto"
+                    : "impact"
+                  : isSpanish
+                    ? "incluido"
+                    : "included"}
               </span>
             )}
           </div>

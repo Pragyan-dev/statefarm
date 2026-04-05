@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
+import "leaflet/dist/leaflet.css";
 
 import { AppProviders } from "@/components/AppProviders";
 import { AppShell } from "@/components/AppShell";
