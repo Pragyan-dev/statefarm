@@ -1,4 +1,3 @@
-import scamPatterns from "@/data/scam-patterns.json";
 import {
   getOpenRouterHeaders,
   getOpenRouterModel,
@@ -8,8 +7,6 @@ import type {
   ClaimGuideResult,
   Language,
   PolicySummaryResult,
-  ScamFlag,
-  ScamVerdictResult,
 } from "@/lib/types";
 
 function getErrorMessage(error: unknown) {
@@ -203,63 +200,5 @@ export async function coachClaim({
       aiSource: "local",
       fallbackReason,
     } satisfies ClaimGuideResult;
-  }
-}
-
-export async function analyzeScam({
-  description,
-  language,
-}: {
-  description: string;
-  language: Language;
-}) {
-  const matched = scamPatterns.find((pattern) =>
-    description.toLowerCase().includes(pattern.pattern.toLowerCase()),
-  );
-
-  if (matched) {
-    logAiEvent("info", "scam", `Using local scam pattern match for "${matched.pattern}"`);
-    return {
-      verdict: matched.flag as ScamFlag,
-      explanation: matched.explanation[language],
-      reasons: [matched.explanation[language]],
-      matchedPattern: matched.pattern,
-      demoMode: true,
-      aiSource: "local",
-      fallbackReason: "Matched a local scam pattern",
-    } satisfies ScamVerdictResult;
-  }
-
-  try {
-    const result = await requestOpenRouterJson<ScamVerdictResult>({
-      feature: "scam",
-      system:
-        "You evaluate suspicious insurance offers for immigrants. Return JSON with verdict, explanation, reasons, matchedPattern. Verdict must be one of SCAM, PREDATORY, WARNING, SAFE.",
-      user: `Language: ${language}. Offer: ${description}`,
-    });
-
-    return {
-      ...result,
-      demoMode: false,
-      aiSource: "openrouter",
-    };
-  } catch (error) {
-    const fallbackReason = getErrorMessage(error);
-    logAiEvent("warn", "scam", `Using local fallback. ${fallbackReason}`);
-    return {
-      verdict: "SAFE",
-      explanation:
-        language === "es"
-          ? "No encontramos una senal fuerte de fraude, pero verifica licencias, documentos y formas de pago antes de continuar."
-          : "We did not find a strong fraud signal, but verify licenses, documents, and payment methods before moving forward.",
-      reasons: [
-        language === "es"
-          ? "No coincide con un patron de estafa conocido."
-          : "It does not match a known scam pattern.",
-      ],
-      demoMode: true,
-      aiSource: "local",
-      fallbackReason,
-    } satisfies ScamVerdictResult;
   }
 }

@@ -117,12 +117,6 @@ export default function DashboardPage() {
       description: t("dashboardGuideCopy"),
       icon: ArrowRight,
     },
-    {
-      href: "/scam",
-      title: t("dashboardScamTitle"),
-      description: t("dashboardScamCopy"),
-      icon: BadgeAlert,
-    },
   ];
 
   return (
