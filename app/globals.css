@@ -129,10 +129,8 @@ a {
 }
 
 .hero-grid {
-  background-image:
-    linear-gradient(to right, rgba(17, 24, 39, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(17, 24, 39, 0.06) 1px, transparent 1px);
-  background-size: 36px 36px;
+  background-image: none;
+  background-color: rgba(17, 24, 39, 0.04);
 }
 
 .hero-surface-dark {
@@ -142,9 +140,8 @@ a {
 }
 
 .hero-surface-dark.hero-grid {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-image: none;
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 .button-ink {
@@ -202,14 +199,7 @@ a {
 }
 
 .bar-without {
-  background:
-    repeating-linear-gradient(
-      -45deg,
-      rgba(182, 70, 59, 0.95),
-      rgba(182, 70, 59, 0.95) 10px,
-      rgba(246, 196, 190, 0.85) 10px,
-      rgba(246, 196, 190, 0.85) 20px
-    );
+  background: rgba(182, 70, 59, 0.95);
 }
 
 .bar-with {
@@ -217,14 +207,7 @@ a {
 }
 
 .pattern-chip {
-  background:
-    repeating-linear-gradient(
-      45deg,
-      rgba(182, 70, 59, 0.16),
-      rgba(182, 70, 59, 0.16) 2px,
-      transparent 2px,
-      transparent 5px
-    );
+  background: rgba(182, 70, 59, 0.16);
 }
 
 .glass-line {
@@ -239,8 +222,8 @@ a {
   height: 12rem;
   width: 12rem;
   border-radius: 9999px;
-  background: var(--color-accent-glow);
-  filter: blur(40px);
+  background: rgba(198, 61, 54, 0.12);
+  filter: none;
 }
 
 .hero-ambient::after {
@@ -251,8 +234,8 @@ a {
   height: 10rem;
   width: 10rem;
   border-radius: 9999px;
-  background: rgba(236, 170, 160, 0.18);
-  filter: blur(34px);
+  background: rgba(236, 170, 160, 0.24);
+  filter: none;
 }
 
 .coverage-map {
