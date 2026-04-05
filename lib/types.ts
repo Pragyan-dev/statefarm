@@ -55,11 +55,25 @@ export interface ApartmentListing {
   rentRange: string;
   beds: string;
   estimate: number;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  coverage: {
+    personalProperty: number;
+    liability: number;
+    lossOfUse: number;
+    deductible: number;
+  };
 }
 
 export interface ApartmentZipData {
   city: string;
   state: string;
+  center: {
+    lat: number;
+    lng: number;
+  };
   topRisks: LocalizedText[];
   avgRenters: number;
   apartments: ApartmentListing[];
