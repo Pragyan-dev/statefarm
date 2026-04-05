@@ -200,6 +200,9 @@ export default function DecodePage() {
     window.location.assign(STATE_FARM_COVERAGE_URL);
   }
 
+  const websiteResultsLayout = phase === "results" && analysis && isWebsite;
+  const appResultsLayout = phase === "results" && analysis && !isWebsite;
+
   return (
     <div
       className={`py-3 lg:py-4 ${isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""} ${
@@ -284,7 +287,88 @@ export default function DecodePage() {
         </div>
       ) : null}
 
-      {phase === "results" && analysis ? (
+      {websiteResultsLayout ? (
+        <div className="mt-6 grid gap-6">
+          <div className="grid gap-6 xl:grid-cols-[minmax(280px,0.76fr)_minmax(0,1.24fr)]">
+            <StaggeredFadeIn delay={0} immediate={settings.reducedMotion}>
+              <PolicyHealthGauge score={analysis.healthScore} layout="website" />
+            </StaggeredFadeIn>
+
+            <StaggeredFadeIn delay={180} immediate={settings.reducedMotion}>
+              <PolicySummaryHeader analysis={analysis} layout="website" />
+            </StaggeredFadeIn>
+          </div>
+
+          <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.72fr)]">
+            <div className="grid min-w-0 gap-6">
+              <StaggeredFadeIn delay={360} immediate={settings.reducedMotion}>
+                <CoverageShield
+                  analysis={analysis}
+                  onFixGap={goToStateFarmCoverage}
+                  layout="website"
+                />
+              </StaggeredFadeIn>
+
+              <StaggeredFadeIn delay={540} immediate={settings.reducedMotion}>
+                <DeductibleReality
+                  amount={analysis.deductible.amount}
+                  comparisons={analysis.deductible.comparisons}
+                  layout="website"
+                />
+              </StaggeredFadeIn>
+            </div>
+
+            <div className="grid gap-4 xl:sticky xl:top-28">
+              {analysis.gaps.map((gap, index) => (
+                <StaggeredFadeIn
+                  key={`${gap.title}-${index}`}
+                  delay={720 + index * 160}
+                  immediate={settings.reducedMotion}
+                >
+                  <GapWarningCard
+                    gap={gap}
+                    onFixGap={goToStateFarmCoverage}
+                  />
+                </StaggeredFadeIn>
+              ))}
+
+              <StaggeredFadeIn
+                delay={720 + analysis.gaps.length * 160}
+                immediate={settings.reducedMotion}
+              >
+                <section className="panel-card w-full">
+                  <p className="eyebrow">{isSpanish ? "Siguiente movimiento" : "Next move"}</p>
+                  <h2 className="mt-2 font-display text-[2rem] leading-tight text-[var(--color-ink)]">
+                    {isSpanish ? "Compara esta poliza con una cobertura mejor." : "Compare this policy against better coverage."}
+                  </h2>
+                  <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">
+                    {isSpanish
+                      ? "Sube otra poliza o salta directo a State Farm para revisar una opcion mas fuerte."
+                      : "Upload another policy or jump straight to State Farm to review a stronger option."}
+                  </p>
+
+                  <div className="mt-5 grid gap-3">
+                    <button
+                      type="button"
+                      onClick={resetDecoder}
+                      className={secondaryActionClass}
+                    >
+                      <RefreshCcw className="size-4" />
+                      {isSpanish ? "Subir otra poliza" : "Upload another policy"}
+                    </button>
+                    <Link href={STATE_FARM_COVERAGE_URL} className={primaryActionClass}>
+                      {isSpanish ? "Conseguir mejor cobertura" : "Get better coverage"}
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
+                </section>
+              </StaggeredFadeIn>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {appResultsLayout ? (
         <div className="mt-6 grid gap-5">
           <StaggeredFadeIn delay={0} immediate={settings.reducedMotion}>
             <PolicyHealthGauge score={analysis.healthScore} />

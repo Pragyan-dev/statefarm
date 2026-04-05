@@ -45,9 +45,11 @@ type SegmentStatus = "covered" | "partial" | "uncovered";
 export function CoverageShield({
   analysis,
   onFixGap,
+  layout = "app",
 }: {
   analysis: PolicyAnalysis;
   onFixGap: () => void;
+  layout?: "app" | "website";
 }) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
@@ -89,9 +91,13 @@ export function CoverageShield({
       ? selectedKey
       : defaultSegment?.key ?? null;
   const selectedSegment = segments.find((segment) => segment.key === activeKey) ?? null;
+  const containerClass =
+    layout === "website" ? "panel-card w-full px-6 py-6 xl:px-7 xl:py-7" : "panel-card mx-auto w-full max-w-[36rem]";
+  const visualClass =
+    layout === "website" ? "relative mx-auto mt-6 w-full max-w-[23rem] xl:max-w-[25rem]" : "relative mx-auto mt-6 w-full max-w-[20rem]";
 
   return (
-    <section className="panel-card mx-auto w-full max-w-[36rem]">
+    <section className={containerClass}>
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="eyebrow">{isSpanish ? "Escudo de cobertura" : "Coverage shield"}</p>
@@ -104,7 +110,7 @@ export function CoverageShield({
         </div>
       </div>
 
-      <div className="relative mx-auto mt-6 w-full max-w-[20rem]">
+      <div className={visualClass}>
         <svg
           viewBox="0 0 400 400"
           className="w-full drop-shadow-[0_26px_44px_rgba(17,24,39,0.18)]"
