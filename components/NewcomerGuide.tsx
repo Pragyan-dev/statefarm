@@ -202,7 +202,7 @@ export function NewcomerGuide({
             <p className="mt-4 max-w-[60ch] text-base leading-7 text-[var(--color-muted)] lg:text-lg">
               {isSpanish
                 ? "Organiza lo urgente, lo que toca esta semana y lo que conviene cerrar este mes sin perder documentos ni enlaces clave."
-                : "Organize what matters now, what belongs this week, and what is worth closing out this month without losing key documents or links."}
+                : "Keep track of what to do now, what to handle this week, and what to finish this month without losing important documents or links."}
             </p>
 
             <div className="mt-5 flex flex-wrap gap-3">
@@ -239,7 +239,7 @@ export function NewcomerGuide({
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="dashboard-mini-kicker">
-                  {isPreview ? (isSpanish ? "Guia en vista previa" : "Preview track") : (isSpanish ? "Siguiente mejor paso" : "Best next step")}
+                  {isPreview ? (isSpanish ? "Guia en vista previa" : "Preview guide") : (isSpanish ? "Siguiente mejor paso" : "Next step")}
                 </p>
                 <p className="mt-3 text-xl font-semibold leading-tight text-[var(--color-ink)]">
                   {nextTask
@@ -281,7 +281,7 @@ export function NewcomerGuide({
               <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
                 {isSpanish
                   ? "Tu visa guardada sigue siendo la principal. Puedes comparar otras guias en modo vista previa."
-                  : "Your saved visa stays as the working track. You can compare other guides in preview mode."}
+                  : "Your saved visa stays as your main guide. You can compare other guides in preview mode."}
               </p>
             </div>
             <div
@@ -311,7 +311,7 @@ export function NewcomerGuide({
                       {isSaved
                         ? isSpanish
                           ? "Guia principal"
-                          : "Working track"
+                          : "Main guide"
                         : isSpanish
                           ? "Vista previa"
                           : "Preview"}
