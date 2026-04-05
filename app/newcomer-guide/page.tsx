@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useAccessibility } from "@/hooks/useAccessibility";
 import f1Guide from "@/data/newcomer-guides/f1.json";
 import h1bGuide from "@/data/newcomer-guides/h1b.json";
@@ -8,13 +10,15 @@ import o1Guide from "@/data/newcomer-guides/o1.json";
 
 import { NewcomerGuide, type NewcomerGuideData } from "@/components/NewcomerGuide";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import type { VisaType } from "@/lib/types";
 
 export default function NewcomerGuidePage() {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
   const [profile, setProfile, isReady] = useUserProfile();
+  const [selectedVisaOverride, setSelectedVisaOverride] = useState<VisaType | null>(null);
   const guides = [f1Guide, h1bGuide, j1Guide, o1Guide] as NewcomerGuideData[];
-  const selectedGuide = guides.find((guide) => guide.visa === profile.visaStatus) ?? guides[0];
+  const selectedVisa = selectedVisaOverride ?? profile.visaStatus;
 
   function toggleGuideTask(taskId: string) {
     setProfile((current) => ({
@@ -30,29 +34,20 @@ export default function NewcomerGuidePage() {
   }
 
   return (
-    <div className="py-6 lg:py-10">
-      <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <section className="panel-card hero-ambient overflow-hidden">
-          <p className="eyebrow">{isSpanish ? "Guia para recien llegados" : "Newcomer guide"}</p>
-          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
-            {isSpanish
-              ? "Instalarte en Estados Unidos implica papeleo y logistica. Mantenlos organizados."
-              : "Settling into the United States means paperwork and logistics. Keep them organized."}
-          </h1>
-          <p className="mt-4 text-base text-[var(--color-muted)]">
-            {isSpanish
-              ? "Tus primeros pasos para instalarte en Estados Unidos, mantenerte al dia y evitar retrasos comunes."
-              : "Your first steps to settle into the United States, stay on track, and avoid common delays."}
-          </p>
-        </section>
-
+    <div className="py-4 lg:py-6">
+      <section className="grid gap-6">
         <NewcomerGuide
-          key={selectedGuide.visa}
-          guides={[selectedGuide]}
-          activeVisa={selectedGuide.visa}
+          guides={guides}
+          profileVisa={profile.visaStatus}
+          selectedVisa={selectedVisa}
+          onSelectVisa={(visa) => setSelectedVisaOverride(visa === profile.visaStatus ? null : visa)}
           zipCode={profile.zip}
+          city={profile.city}
+          state={profile.state}
+          hasSsn={profile.hasSsn}
           completedTaskIds={profile.checklist}
           onToggleTask={toggleGuideTask}
+          isPreview={selectedVisa !== profile.visaStatus}
         />
       </section>
     </div>

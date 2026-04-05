@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+
 export type IncidentType =
   | "car_accident"
   | "apartment_flood"
@@ -9,7 +11,7 @@ export type IncidentType =
 
 export interface IncidentCategory {
   type: IncidentType;
-  icon: string;
+  icon: LucideIcon;
   label: string;
   sublabel: string;
   color: string;
@@ -21,7 +23,7 @@ export interface ClaimStep {
   order: number;
   title: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
   urgency: "now" | "soon" | "later";
   timeframe: string;
   details: string[];
@@ -33,7 +35,7 @@ export interface EvidenceItem {
   id: string;
   label: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
   required: boolean;
   captured: boolean;
   imageUrl?: string;
@@ -43,7 +45,7 @@ export interface EvidenceItem {
 export interface DoDontItem {
   text: string;
   explanation: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
 export interface DocumentItem {

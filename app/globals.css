@@ -624,6 +624,7 @@ a {
 }
 
 .website-shell {
+  --website-topbar-height: 0px;
   --color-background: #ffffff;
   --color-surface: #ffffff;
   --color-paper: #fffdf9;
@@ -636,6 +637,20 @@ a {
   --color-accent-wash: rgba(211, 60, 39, 0.08);
   --color-accent-glow: rgba(211, 60, 39, 0.12);
   background: #ffffff;
+}
+
+.website-shell-frame {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.website-main {
+  min-height: calc(100vh - var(--website-topbar-height));
+  min-height: calc(100dvh - var(--website-topbar-height));
+  display: flex;
+  flex-direction: column;
 }
 
 .website-shell .panel-card {
