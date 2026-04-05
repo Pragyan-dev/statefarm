@@ -14,7 +14,7 @@ interface AnimatedRewardValueProps {
 export function AnimatedRewardValue({ amount, positive }: AnimatedRewardValueProps) {
   const { settings } = useAccessibility();
   const prefersReducedMotion = useReducedMotion();
-  const reduceMotion = settings.reducedMotion || Boolean(prefersReducedMotion);
+  const reduceMotion = Boolean(settings.reducedMotion || prefersReducedMotion);
   const motionValue = useMotionValue(reduceMotion ? amount : 0);
   const [animatedValue, setAnimatedValue] = useState(reduceMotion ? amount : 0);
 

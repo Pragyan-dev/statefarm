@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 
+import { Mascot } from "@/components/simulator/Mascot";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import type { Emotion } from "@/types/simulator";
 
@@ -44,26 +44,29 @@ const emotionAssetMap: Record<Emotion, { src: string; width: number; height: num
   },
 };
 
+export function getSafiMascotAsset(emotion: Emotion) {
+  return emotionAssetMap[emotion] ?? emotionAssetMap.neutral;
+}
+
 export function SafiCharacter({ emotion, className = "" }: SafiCharacterProps) {
   const t = useTranslations();
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
-  const asset = emotionAssetMap[emotion];
+  const asset = getSafiMascotAsset(emotion);
 
   return (
-    <div className={`relative ${settings.reducedMotion ? "" : "sim-safi-idle"} ${className}`}>
-      <Image
-        src={asset.src}
-        alt={
-          isSpanish
-            ? `${t("simulatorSafi")} mirando ${emotion}`
-            : `${t("simulatorSafi")} looking ${emotion}`
-        }
-        width={asset.width}
-        height={asset.height}
-        className="h-full w-full object-contain drop-shadow-[0_18px_30px_rgba(17,24,39,0.14)]"
-        priority
-      />
-    </div>
+    <Mascot
+      mascotImage={asset.src}
+      alt={
+        isSpanish
+          ? `${t("simulatorSafi")} con expresion ${emotion}`
+          : `${t("simulatorSafi")} with a ${emotion} expression`
+      }
+      width={asset.width}
+      height={asset.height}
+      mood={emotion}
+      className={className}
+      priority
+    />
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -75,7 +76,12 @@ export function SimulatorResult({
             {t("simulatorExit")}
           </button>
         </div>
-        <div className="rounded-[2rem] border-[2px] border-black bg-white px-5 py-5 shadow-[0_24px_70px_rgba(17,24,39,0.14)]">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: settings.reducedMotion ? 0 : 0.24, ease: "easeOut" }}
+          className="rounded-[2rem] border-[2px] border-black bg-white px-5 py-5 shadow-[0_24px_70px_rgba(17,24,39,0.14)]"
+        >
           <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-black/55">
             {scenario.title}
           </p>
@@ -143,7 +149,8 @@ export function SimulatorResult({
             {endingNode.actionCTA ? (
               <Link
                 href={endingNode.actionCTA.href}
-                className="rounded-full bg-black px-5 py-3 text-center text-sm font-bold text-white"
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-black px-5 py-3 text-center text-sm font-bold shadow-[0_12px_24px_rgba(17,24,39,0.16)] transition hover:bg-[#111827]"
+                style={{ color: "#FFF7E8" }}
               >
                 {endingNode.actionCTA.label}
               </Link>
@@ -163,7 +170,7 @@ export function SimulatorResult({
               {copied ? t("simulatorCopied") : t("simulatorShare")}
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

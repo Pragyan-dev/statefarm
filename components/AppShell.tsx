@@ -46,6 +46,7 @@ export function AppShell({
   const shouldUseWebsiteShell =
     (isSimulator && !hasActiveSimulatorStory) || (!isSimulator && resolvedMode === "website");
   const showWebsiteChrome = accessReady && isDashboardBuilt;
+  const shouldUseFullBleedSimulatorShell = isSimulator && hasActiveSimulatorStory;
   const topbarRef = useRef<HTMLElement | null>(null);
   const [topbarHeight, setTopbarHeight] = useState(0);
 
@@ -287,7 +288,11 @@ export function AppShell({
         <ViewModeToggle tone="dark" compact className="pointer-events-auto shadow-[0_14px_40px_rgba(0,0,0,0.25)]" />
       </div>
 
-      <div className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col bg-[var(--color-background)]">
+      <div
+        className={`flex min-h-dvh w-full flex-col bg-[var(--color-background)] ${
+          shouldUseFullBleedSimulatorShell ? "" : "mx-auto max-w-[430px]"
+        }`}
+      >
         <main
           id="main-content"
           className={`relative flex-1 ${
