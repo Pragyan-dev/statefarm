@@ -1,36 +1,163 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { startTransition, useEffect, useMemo, useState, type ReactNode } from "react";
+import { ArrowRight, RefreshCcw } from "lucide-react";
 
-import { PolicySummary } from "@/components/PolicySummary";
+import { CoverageShield } from "@/components/decoder/CoverageShield";
+import { DeductibleReality } from "@/components/decoder/DeductibleReality";
+import { GapWarningCard } from "@/components/decoder/GapWarningCard";
+import { PolicyHealthGauge } from "@/components/decoder/PolicyHealthGauge";
+import { PolicySummaryHeader } from "@/components/decoder/PolicySummaryHeader";
+import {
+  formatDocumentSize,
+  type DecoderSelectedDocument,
+  UploadZone,
+} from "@/components/decoder/UploadZone";
+import { ScanningAnimation } from "@/components/decoder/ScanningAnimation";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useAutoRead } from "@/hooks/useAutoRead";
-import type { PolicySummaryResult } from "@/lib/types";
+import { useViewMode } from "@/hooks/useViewMode";
+import type { DecoderAnalysisResponse } from "@/types/policy";
+
+type DecodePhase = "upload" | "scanning" | "results";
+const STATE_FARM_COVERAGE_URL = "https://www.statefarm.com/insurance";
 
 export default function DecodePage() {
   const { settings } = useAccessibility();
+  const { resolvedMode } = useViewMode();
   const isSpanish = settings.language === "es";
-  const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [phase, setPhase] = useState<DecodePhase>("upload");
+  const [selectedDocument, setSelectedDocument] = useState<DecoderSelectedDocument | null>(null);
+  const [analysis, setAnalysis] = useState<DecoderAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [summary, setSummary] = useState<PolicySummaryResult | null>(null);
-  useAutoRead(summary?.summary ?? "");
+  const [progress, setProgress] = useState(0);
+  const [scanVisualComplete, setScanVisualComplete] = useState(false);
+  const isWebsite = resolvedMode === "website";
+  const primaryActionClass =
+    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
+  const secondaryActionClass =
+    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/80 px-5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px hover:bg-white";
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
+  const narration = useMemo(() => {
+    if (!analysis) {
+      return "";
+    }
+
+    const firstGap = analysis.gaps[0]?.scenario ?? "";
+
+    return [
+      analysis.provider,
+      isSpanish
+        ? `Puntaje de salud ${analysis.healthScore} de 100.`
+        : `Policy health score ${analysis.healthScore} out of 100.`,
+      firstGap,
+    ].join(" ");
+  }, [analysis, isSpanish]);
+
+  useAutoRead(narration);
+
+  useEffect(() => {
+    return () => {
+      if (selectedDocument?.file && selectedDocument.previewSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(selectedDocument.previewSrc);
+      }
+    };
+  }, [selectedDocument]);
+
+  useEffect(() => {
+    if (phase === "scanning" && analysis && scanVisualComplete) {
+      setPhase("results");
+    }
+  }, [analysis, phase, scanVisualComplete]);
+
+  function resetDecoder() {
+    setPhase("upload");
+    setAnalysis(null);
     setError(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("language", settings.language);
-
-      if (file) {
-        formData.append("file", file);
-      } else {
-        formData.append("demo", "true");
+    setProgress(0);
+    setScanVisualComplete(false);
+    setSelectedDocument((current) => {
+      if (current?.file && current.previewSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(current.previewSrc);
       }
 
+      return null;
+    });
+  }
+
+  function handleResetKeepSelection() {
+    setPhase("upload");
+    setAnalysis(null);
+    setError(null);
+    setProgress(0);
+    setScanVisualComplete(false);
+  }
+
+  function handleFileSelected(file: File) {
+    setSelectedDocument((current) => {
+      if (current?.file && current.previewSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(current.previewSrc);
+      }
+
+      return {
+        file,
+        kind: file.type.startsWith("image/") ? "image" : "pdf",
+        name: file.name,
+        sizeLabel: formatDocumentSize(file.size, settings.language),
+        previewSrc: URL.createObjectURL(file),
+      };
+    });
+    handleResetKeepSelection();
+  }
+
+  function handleUseSample() {
+    setSelectedDocument((current) => {
+      if (current?.file && current.previewSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(current.previewSrc);
+      }
+
+      return {
+        file: null,
+        kind: "pdf",
+        name: "sample-policy.pdf",
+        sizeLabel: isSpanish ? "Documento demo" : "Demo document",
+        previewSrc: "/sample-policy.pdf",
+        isSample: true,
+      };
+    });
+    handleResetKeepSelection();
+  }
+
+  async function handleAnalyze() {
+    if (!selectedDocument) {
+      return;
+    }
+
+    setPhase("scanning");
+    setProgress(settings.reducedMotion ? 100 : 4);
+    setScanVisualComplete(false);
+    setError(null);
+    setAnalysis(null);
+
+    const formData = new FormData();
+    formData.append("language", settings.language);
+
+    if (selectedDocument.file) {
+      formData.append("file", selectedDocument.file);
+    } else {
+      formData.append("demo", "true");
+    }
+
+    let progressTimer: number | null = null;
+
+    if (!settings.reducedMotion) {
+      progressTimer = window.setInterval(() => {
+        setProgress((current) => (current >= 94 ? current : current + Math.max(1, (96 - current) / 10)));
+      }, 120);
+    }
+
+    try {
       const response = await fetch("/api/decode", {
         method: "POST",
         body: formData,
@@ -40,104 +167,175 @@ export default function DecodePage() {
         throw new Error(isSpanish ? "La decodificacion fallo" : "Decode failed");
       }
 
-      const payload = (await response.json()) as PolicySummaryResult;
-      setSummary(payload);
+      const payload = (await response.json()) as DecoderAnalysisResponse;
+      setAnalysis(payload);
+      setProgress(100);
+
+      if (settings.reducedMotion) {
+        setScanVisualComplete(true);
+      }
     } catch (submissionError) {
+      setPhase("upload");
+      setProgress(0);
+      setScanVisualComplete(false);
       setError(
         submissionError instanceof Error
           ? submissionError.message
           : isSpanish
-            ? "La carga fallo"
-            : "Upload failed",
+            ? "No pudimos analizar la poliza."
+            : "We could not analyze the policy.",
       );
     } finally {
-      setLoading(false);
+      if (progressTimer) {
+        window.clearInterval(progressTimer);
+      }
     }
   }
 
+  function goToStateFarmCoverage() {
+    window.location.assign(STATE_FARM_COVERAGE_URL);
+  }
+
   return (
-    <div className="py-6 lg:py-10">
-      <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
-        <div className="grid gap-6">
-          <section className="panel-card hero-ambient overflow-hidden">
-            <p className="eyebrow">{isSpanish ? "Decodificador de poliza" : "Policy decoder"}</p>
-            <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[10ch]">
-              {isSpanish
-                ? "Traduce una poliza a algo que realmente puedas usar."
-                : "Translate a policy into something you can actually use."}
-            </h1>
-            <p className="mt-4 text-base text-[var(--color-muted)]">
-              {isSpanish
-                ? "Sube una foto, captura o PDF. Extraemos la cobertura, las protecciones faltantes y el deducible en lenguaje claro."
-                : "Upload a photo, a screenshot, or a PDF. We pull out the covered items, missing protections, and deductible in plain language."}
-            </p>
-          </section>
+    <div className={`py-6 lg:py-10 ${isWebsite ? "mx-auto max-w-[68rem]" : ""}`}>
+      <section className="panel-card hero-ambient overflow-hidden">
+        <p className="eyebrow">{isSpanish ? "Decodificador visual de polizas" : "Visual policy decoder"}</p>
+        <h1 className="mt-2 font-display text-4xl leading-[0.96] text-[var(--color-ink)] sm:text-5xl lg:text-6xl">
+          {isSpanish
+            ? "Sube una poliza. Mira la salud real de esa cobertura."
+            : "Upload a policy. See the real health of that coverage."}
+        </h1>
+        <p className="mt-4 max-w-[38rem] text-base text-[var(--color-muted)]">
+          {isSpanish
+            ? "La pagina convierte PDFs y fotos en un puntaje, un escudo de cobertura, comparaciones del deducible y alertas concretas de riesgo."
+            : "This page turns PDFs and photos into a policy score, a coverage shield, deductible comparisons, and concrete gap alerts."}
+        </p>
+      </section>
 
-          <form onSubmit={handleSubmit} className="panel-card">
-            <label htmlFor="policy-upload" className="block">
-              <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
-                {isSpanish ? "Sube una foto o PDF de la poliza" : "Upload policy photo or PDF"}
-              </span>
-              <input
-                id="policy-upload"
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                capture="environment"
-                aria-describedby="upload-help"
-                onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-                className="w-full rounded-[1.5rem] border border-[var(--color-border)] bg-transparent px-4 py-3 text-[var(--color-ink)]"
-              />
-            </label>
-            <p id="upload-help" className="mt-2 text-sm text-[var(--color-muted)]">
-              {isSpanish
-                ? "La foto con camara suele ser la opcion mas rapida para la demo. Dejalo vacio para usar la poliza de ejemplo."
-                : "Camera photo is usually the fastest input for the demo. Leave this blank to use the sample policy."}
+      {phase === "upload" ? (
+        <div className="mt-6">
+          <UploadZone
+            selectedDocument={selectedDocument}
+            onFileSelected={handleFileSelected}
+            onAnalyze={handleAnalyze}
+            onReset={resetDecoder}
+            onUseSample={handleUseSample}
+          />
+          {error ? (
+            <p className="mx-auto mt-4 max-w-[34rem] text-center text-sm text-[var(--color-danger)]">
+              {error}
             </p>
-            <div className="mt-5 flex gap-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="min-h-12 flex-1 rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)]"
-              >
-                {loading
-                  ? isSpanish
-                    ? "Decodificando..."
-                    : "Decoding..."
-                  : file
-                    ? isSpanish
-                      ? "Decodificar archivo"
-                      : "Decode upload"
-                    : isSpanish
-                      ? "Usar poliza demo"
-                      : "Use demo policy"}
-              </button>
-            </div>
-            {error ? <p className="mt-3 text-sm text-[var(--color-danger)]">{error}</p> : null}
-          </form>
+          ) : null}
         </div>
+      ) : null}
 
-        <div className="grid gap-6">
-          {summary ? (
-            <PolicySummary summary={summary} />
-          ) : (
-            <section className="panel-card flex min-h-[320px] items-center justify-center text-center">
-              <div className="max-w-[28ch]">
-                <p className="eyebrow">{isSpanish ? "Vista previa" : "Preview"}</p>
-                <h2 className="font-display text-3xl text-[var(--color-ink)]">
-                  {isSpanish
-                    ? "Tu resumen decodificado aparecera aqui."
-                    : "Your decoded summary will appear here."}
-                </h2>
-                <p className="mt-4 text-sm text-[var(--color-muted)]">
-                  {isSpanish
-                    ? "Los elementos cubiertos, exclusiones, deducible, costo mensual y la explicacion simple apareceran en esta columna."
-                    : "Covered items, exclusions, deductible, monthly cost, and the plain-language explanation all render in this column."}
-                </p>
+      {phase === "scanning" && selectedDocument ? (
+        <div className="mt-6">
+          <ScanningAnimation
+            documentSrc={selectedDocument.previewSrc}
+            documentKind={selectedDocument.kind}
+            documentName={selectedDocument.name}
+            isScanning
+            progress={Math.round(progress)}
+            onComplete={() => {
+              startTransition(() => {
+                setScanVisualComplete(true);
+              });
+            }}
+          />
+        </div>
+      ) : null}
+
+      {phase === "results" && analysis ? (
+        <div className="mt-6 grid gap-5">
+          <StaggeredFadeIn delay={0} immediate={settings.reducedMotion}>
+            <PolicyHealthGauge score={analysis.healthScore} />
+          </StaggeredFadeIn>
+
+          <StaggeredFadeIn delay={300} immediate={settings.reducedMotion}>
+            <PolicySummaryHeader analysis={analysis} />
+          </StaggeredFadeIn>
+
+          <StaggeredFadeIn delay={600} immediate={settings.reducedMotion}>
+            <CoverageShield
+              analysis={analysis}
+              onFixGap={goToStateFarmCoverage}
+            />
+          </StaggeredFadeIn>
+
+          <StaggeredFadeIn delay={900} immediate={settings.reducedMotion}>
+            <DeductibleReality
+              amount={analysis.deductible.amount}
+              comparisons={analysis.deductible.comparisons}
+            />
+          </StaggeredFadeIn>
+
+          <div className="grid gap-4">
+            {analysis.gaps.map((gap, index) => (
+              <StaggeredFadeIn
+                key={`${gap.title}-${index}`}
+                delay={1200 + index * 200}
+                immediate={settings.reducedMotion}
+              >
+                <GapWarningCard
+                  gap={gap}
+                  onFixGap={goToStateFarmCoverage}
+                />
+              </StaggeredFadeIn>
+            ))}
+          </div>
+
+          <StaggeredFadeIn delay={1600} immediate={settings.reducedMotion}>
+            <section className="panel-card mx-auto w-full max-w-[36rem]">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={resetDecoder}
+                  className={secondaryActionClass}
+                >
+                  <RefreshCcw className="size-4" />
+                  {isSpanish ? "Subir otra poliza" : "Upload another policy"}
+                </button>
+                <Link href={STATE_FARM_COVERAGE_URL} className={primaryActionClass}>
+                  {isSpanish ? "Conseguir mejor cobertura" : "Get better coverage"}
+                  <ArrowRight className="size-4" />
+                </Link>
               </div>
             </section>
-          )}
+          </StaggeredFadeIn>
         </div>
-      </section>
+      ) : null}
+    </div>
+  );
+}
+
+function StaggeredFadeIn({
+  delay,
+  immediate = false,
+  children,
+}: {
+  delay: number;
+  immediate?: boolean;
+  children: ReactNode;
+}) {
+  const [visible, setVisible] = useState(immediate);
+
+  useEffect(() => {
+    if (immediate) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => setVisible(true), delay);
+    return () => window.clearTimeout(timer);
+  }, [delay, immediate]);
+
+  return (
+    <div
+      className={`transition-all duration-500 ${
+        immediate || visible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+      }`}
+    >
+      {children}
     </div>
   );
 }
