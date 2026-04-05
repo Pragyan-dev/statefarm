@@ -57,77 +57,83 @@ export default function ClaimPage() {
   const matchedVideos = guide ? videos[guide.claimType] ?? [] : [];
 
   return (
-    <div className="py-6">
-      <section className="panel-card hero-ambient overflow-hidden">
-        <p className="eyebrow">Claim coach</p>
-        <h1 className="font-display text-4xl text-[var(--color-ink)]">
-          Speak the incident out loud. Get the next steps in plain language.
-        </h1>
-        <p className="mt-4 text-base text-[var(--color-muted)]">
-          This works for car accidents, apartment damage, theft, and the awkward claims moments
-          when English is not your first language.
-        </p>
-      </section>
+    <div className="py-6 lg:py-10">
+      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="grid gap-6">
+          <section className="panel-card hero-ambient overflow-hidden">
+            <p className="eyebrow">Claim coach</p>
+            <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
+              Speak the incident out loud. Get the next steps in plain language.
+            </h1>
+            <p className="mt-4 text-base text-[var(--color-muted)]">
+              This works for car accidents, apartment damage, theft, and the awkward claims moments
+              when English is not your first language.
+            </p>
+          </section>
 
-      <VoiceInput value={description} onChange={setDescription} />
+          <VoiceInput value={description} onChange={setDescription} />
 
-      <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={!description || loading}
-        className="mt-4 min-h-12 w-full rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)] disabled:opacity-50"
-      >
-        {loading ? "Generating claim guide..." : "Generate claim guide"}
-      </button>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!description || loading}
+            className="min-h-12 w-full rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)] disabled:opacity-50"
+          >
+            {loading ? "Generating claim guide..." : "Generate claim guide"}
+          </button>
 
-      {guide ? <ClaimGuide guide={guide} /> : null}
+          {guide ? <ClaimGuide guide={guide} /> : null}
+        </div>
 
-      {matchedVideos.length ? (
-        <section className="panel-card">
-          <p className="eyebrow">Learn by video</p>
-          <h2 className="font-display text-2xl text-[var(--color-ink)]">
-            Watch the exact claim flow once before you call.
-          </h2>
-          <div className="mt-5 grid gap-4">
-            {matchedVideos.map((video) => (
-              <div key={video.youtubeId} className="grid gap-3">
-                <YouTubeEmbed title={video.title} videoId={video.youtubeId} />
-                <p className="text-sm text-[var(--color-muted)]">{video.title}</p>
+        <div className="grid gap-6">
+          <section className="panel-card">
+            <p className="eyebrow">State Farm actions</p>
+            <div className="mt-4 grid gap-3">
+              <a
+                href={`tel:${videos.statefarmLinks.phone}`}
+                className="rounded-full bg-[var(--color-ink)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-paper)]"
+              >
+                Call claims: {videos.statefarmLinks.phone}
+              </a>
+              <a
+                href={videos.statefarmLinks.fileClaim}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-[var(--color-border)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-ink)]"
+              >
+                File online
+              </a>
+              <a
+                href={videos.statefarmLinks.appIos}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-[var(--color-border)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-ink)]"
+              >
+                Open mobile app
+              </a>
+            </div>
+          </section>
+
+          {matchedVideos.length ? (
+            <section className="panel-card">
+              <p className="eyebrow">Learn by video</p>
+              <h2 className="font-display text-2xl text-[var(--color-ink)]">
+                Watch the exact claim flow once before you call.
+              </h2>
+              <div className="mt-5 grid gap-4">
+                {matchedVideos.map((video) => (
+                  <div key={video.youtubeId} className="grid gap-3">
+                    <YouTubeEmbed title={video.title} videoId={video.youtubeId} />
+                    <p className="text-sm text-[var(--color-muted)]">{video.title}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
+            </section>
+          ) : null}
 
-      <section className="panel-card">
-        <p className="eyebrow">State Farm actions</p>
-        <div className="mt-4 grid gap-3">
-          <a
-            href={`tel:${videos.statefarmLinks.phone}`}
-            className="rounded-full bg-[var(--color-ink)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-paper)]"
-          >
-            Call claims: {videos.statefarmLinks.phone}
-          </a>
-          <a
-            href={videos.statefarmLinks.fileClaim}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full border border-[var(--color-border)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-ink)]"
-          >
-            File online
-          </a>
-          <a
-            href={videos.statefarmLinks.appIos}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full border border-[var(--color-border)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-ink)]"
-          >
-            Open mobile app
-          </a>
+          {isReady ? <EmergencyCard profile={profile} /> : null}
         </div>
       </section>
-
-      {isReady ? <EmergencyCard profile={profile} /> : null}
     </div>
   );
 }

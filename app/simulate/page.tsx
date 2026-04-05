@@ -1,26 +1,66 @@
 "use client";
 
-import { startTransition, useState } from "react";
+import Link from "next/link";
+import { startTransition, useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
+import scenarios from "@/data/scenarios.json";
 
+import { ScenarioCard } from "@/components/ScenarioCard";
 import { ScenarioSelector } from "@/components/simulator/ScenarioSelector";
 import { StorySimulator } from "@/components/simulator/StorySimulator";
+import { useAccessibility } from "@/hooks/useAccessibility";
 import { getRelevantScenarios } from "@/data/scenarios/index";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useViewMode } from "@/hooks/useViewMode";
+import { affordabilityCopy, formatCurrency, getStateCosts } from "@/lib/content";
+import type { ScenarioData } from "@/lib/types";
 import type { CompletionSummary } from "@/types/simulator";
 
 const SIMULATOR_PROGRESS_KEY = "arrivesafe-simulator-progress";
 const emptyProgress: Record<string, CompletionSummary> = {};
 
 export default function SimulatePage() {
+  const t = useTranslations();
+  const { settings } = useAccessibility();
+  const { resolvedMode, setMode } = useViewMode();
   const [profile, , isProfileReady] = useUserProfile();
   const [progress, setProgress, isProgressReady] = useLocalStorage<
     Record<string, CompletionSummary>
   >(SIMULATOR_PROGRESS_KEY, emptyProgress);
   const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
 
-  const scenarios = getRelevantScenarios(profile);
-  const activeScenario = scenarios.find((scenario) => scenario.id === activeScenarioId) ?? null;
+  const storyScenarios = getRelevantScenarios(profile);
+  const activeScenario = storyScenarios.find((scenario) => scenario.id === activeScenarioId) ?? null;
+  const chartScenarios = useMemo(
+    () =>
+      (scenarios as ScenarioData[]).filter((scenario) => {
+        if (scenario.appliesIf === "always") {
+          return true;
+        }
+
+        if (scenario.appliesIf === "drives") {
+          return profile.drives;
+        }
+
+        return profile.rents;
+      }),
+    [profile.drives, profile.rents],
+  );
+
+  useEffect(() => {
+    if (resolvedMode !== "website" || activeScenarioId === null) {
+      return;
+    }
+
+    const reset = window.setTimeout(() => {
+      setActiveScenarioId(null);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(reset);
+    };
+  }, [activeScenarioId, resolvedMode]);
 
   function handleScenarioSelect(scenarioId: string | null) {
     startTransition(() => {
@@ -48,6 +88,84 @@ export default function SimulatePage() {
     );
   }
 
+  if (resolvedMode === "website") {
+    const costs = getStateCosts(profile.state);
+    const monthlyAnchor = profile.drives ? costs.autoLiability : costs.rentersMonthly;
+
+    return (
+      <div className="py-6 lg:py-10">
+        <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <section className="panel-card hero-ambient overflow-hidden">
+            <p className="eyebrow">{`${t("websiteOverview")} · ${profile.city}, ${profile.state}`}</p>
+            <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
+              See the cost gap first, then switch into story mode when you want the immersive walkthrough.
+            </h1>
+            <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">
+              Website view keeps the simulator scannable. App view turns the same risk into a
+              step-by-step story with Safi and branching outcomes.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => setMode("app")}
+                className="min-h-12 rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)]"
+              >
+                {t("openStoryMode")}
+              </button>
+              <Link
+                href="/afford"
+                className="inline-flex min-h-12 items-center rounded-full border border-[var(--color-border)] px-5 text-sm font-semibold text-[var(--color-ink)]"
+              >
+                Check affordability
+              </Link>
+            </div>
+          </section>
+
+          <section className="grid gap-6">
+            <section className="panel-card">
+              <p className="eyebrow">Coverage anchor</p>
+              <h2 className="font-display text-2xl text-[var(--color-ink)]">
+                {formatCurrency(monthlyAnchor, settings.language)} / month is the baseline decision you
+                are making.
+              </h2>
+              <p className="mt-4 text-sm text-[var(--color-muted)]">
+                {affordabilityCopy(profile.monthlyIncome, monthlyAnchor, settings.language)}
+              </p>
+            </section>
+
+            <section className="panel-card">
+              <p className="eyebrow">{t("storyMode")}</p>
+              <h2 className="font-display text-2xl text-[var(--color-ink)]">
+                Use App view when you want the full branching experience.
+              </h2>
+              <ul className="mt-4 grid gap-2 text-sm text-[var(--color-muted)]">
+                <li>Character-driven walkthrough with Safi</li>
+                <li>Choice-based good and bad endings</li>
+                <li>Animated loss and savings reveal</li>
+              </ul>
+            </section>
+          </section>
+        </section>
+
+        <section className="mt-6">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="eyebrow">Scenario overview</p>
+              <h2 className="font-display text-3xl text-[var(--color-ink)]">
+                Compare the damage before you step into the story.
+              </h2>
+            </div>
+          </div>
+          <div className="grid gap-6 xl:grid-cols-2">
+            {chartScenarios.map((scenario) => (
+              <ScenarioCard key={scenario.id} scenario={scenario} />
+            ))}
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   if (activeScenario) {
     return (
       <StorySimulator
@@ -60,7 +178,7 @@ export default function SimulatePage() {
 
   return (
     <ScenarioSelector
-      scenarios={scenarios}
+      scenarios={storyScenarios}
       progress={progress}
       onSelect={(scenario) => handleScenarioSelect(scenario.id)}
     />

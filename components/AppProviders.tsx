@@ -4,20 +4,24 @@ import { NextIntlClientProvider } from "next-intl";
 import { useEffect } from "react";
 
 import { AccessibilityProvider } from "@/components/AccessibilityProvider";
+import { ViewModeProvider } from "@/components/ViewModeProvider";
 import { useAccessibility } from "@/hooks/useAccessibility";
+import { useViewMode } from "@/hooks/useViewMode";
 import enMessages from "@/messages/en.json";
 import esMessages from "@/messages/es.json";
 
-function AccessibilityClassBridge({
+function AppClassBridge({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const { settings } = useAccessibility();
+  const { resolvedMode, isReady } = useViewMode();
 
   useEffect(() => {
     const root = document.documentElement;
     root.lang = settings.language;
+    root.dataset.viewMode = isReady ? resolvedMode : "website";
     root.classList.remove(
       "text-size-normal",
       "text-size-large",
@@ -47,7 +51,7 @@ function AccessibilityClassBridge({
     if (settings.screenReaderOptimized) {
       root.classList.add("screen-reader-optimized");
     }
-  }, [settings]);
+  }, [isReady, resolvedMode, settings]);
 
   return (
     <NextIntlClientProvider
@@ -89,8 +93,10 @@ export function AppProviders({
   children: React.ReactNode;
 }>) {
   return (
-    <AccessibilityProvider>
-      <AccessibilityClassBridge>{children}</AccessibilityClassBridge>
-    </AccessibilityProvider>
+    <ViewModeProvider>
+      <AccessibilityProvider>
+        <AppClassBridge>{children}</AppClassBridge>
+      </AccessibilityProvider>
+    </ViewModeProvider>
   );
 }

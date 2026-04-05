@@ -57,5 +57,11 @@
   "simulatorInsuranceTip": "Tip de seguro",
   "simulatorTapToContinue": "Toca para continuar",
   "simulatorChooseAnother": "Elige otro escenario",
-  "simulatorSafi": "Safi"
+  "simulatorSafi": "Safi",
+  "viewMode": "Modo de vista",
+  "websiteView": "Sitio web",
+  "appView": "App",
+  "openStoryMode": "Abrir modo historia",
+  "storyMode": "Modo historia",
+  "websiteOverview": "Resumen web"
 }

@@ -17,19 +17,21 @@ export default function GuidePage() {
   }
 
   return (
-    <div className="py-6">
-      <section className="panel-card hero-ambient overflow-hidden">
-        <p className="eyebrow">Visa guide</p>
-        <h1 className="font-display text-4xl text-[var(--color-ink)]">
-          The first 30 days are paperwork and logistics. Keep them organized.
-        </h1>
-        <p className="mt-4 text-base text-[var(--color-muted)]">
-          Start with your visa track, then jump across the tabs when you need to compare how the
-          rules change.
-        </p>
-      </section>
+    <div className="py-6 lg:py-10">
+      <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <section className="panel-card hero-ambient overflow-hidden">
+          <p className="eyebrow">Visa guide</p>
+          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
+            The first 30 days are paperwork and logistics. Keep them organized.
+          </h1>
+          <p className="mt-4 text-base text-[var(--color-muted)]">
+            Start with your visa track, then jump across the tabs when you need to compare how the
+            rules change.
+          </p>
+        </section>
 
-      <VisaGuide guides={guides} activeVisa={profile.visaStatus} />
+        <VisaGuide guides={guides} activeVisa={profile.visaStatus} />
+      </section>
     </div>
   );
 }

@@ -104,62 +104,68 @@ export default function DashboardPage() {
   const ssnMessage = `In ${profile.state}, you can usually buy auto insurance without an SSN.`;
 
   return (
-    <div className="py-6">
-      <section className="panel-card hero-ambient overflow-hidden">
-        <p className="eyebrow">Personal dashboard</p>
-        <h1 className="font-display text-4xl text-[var(--color-ink)]">{headline}</h1>
-        <p className="mt-4 max-w-[34ch] text-base text-[var(--color-muted)]">
-          Built for your first 24 months in the US. Start with the highest-risk gap first, then
-          move through the checklist.
-        </p>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Link
-            href="/simulate"
-            className="rounded-full bg-[var(--color-ink)] px-5 py-3 text-sm font-semibold text-[var(--color-paper)]"
-          >
-            Run the simulator
-          </Link>
-          <ReadAloud text={`${headline} ${ssnMessage}`} />
-        </div>
-      </section>
-
-      <section className="panel-card">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="eyebrow">Fast fact</p>
-            <h2 className="font-display text-2xl text-[var(--color-ink)]">
-              You do not need an SSN to start protecting yourself.
-            </h2>
+    <div className="py-6 lg:py-10">
+      <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <section className="panel-card hero-ambient overflow-hidden">
+          <p className="eyebrow">Personal dashboard</p>
+          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch] lg:text-5xl">
+            {headline}
+          </h1>
+          <p className="mt-4 max-w-[38ch] text-base text-[var(--color-muted)]">
+            Built for your first 24 months in the US. Start with the highest-risk gap first, then
+            move through the checklist.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link
+              href="/simulate"
+              className="rounded-full bg-[var(--color-ink)] px-5 py-3 text-sm font-semibold text-[var(--color-paper)]"
+            >
+              Run the simulator
+            </Link>
+            <ReadAloud text={`${headline} ${ssnMessage}`} />
           </div>
-          <BadgeAlert className="mt-1 size-6 text-[var(--color-accent)]" />
-        </div>
-        <p className="mt-4 text-base text-[var(--color-muted)]">{ssnMessage}</p>
+        </section>
+
+        <section className="panel-card">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="eyebrow">Fast fact</p>
+              <h2 className="font-display text-2xl text-[var(--color-ink)]">
+                You do not need an SSN to start protecting yourself.
+              </h2>
+            </div>
+            <BadgeAlert className="mt-1 size-6 text-[var(--color-accent)]" />
+          </div>
+          <p className="mt-4 text-base text-[var(--color-muted)]">{ssnMessage}</p>
+        </section>
       </section>
 
-      <ProgressChecklist items={checklistItems} profile={profile} onProfileChange={setProfile} />
+      <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_1fr] xl:grid-cols-[1.05fr_0.95fr]">
+        <ProgressChecklist items={checklistItems} profile={profile} onProfileChange={setProfile} />
 
-      <section className="panel-card">
-        <p className="eyebrow">Explore the toolkit</p>
-        <div className="mt-5 grid gap-3">
-          {cards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <Link
-                key={card.href}
-                href={card.href}
-                className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-paper)]"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-semibold text-[var(--color-ink)]">{card.title}</h3>
-                    <p className="mt-2 text-sm text-[var(--color-muted)]">{card.description}</p>
+        <section className="panel-card">
+          <p className="eyebrow">Explore the toolkit</p>
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-2">
+            {cards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <Link
+                  key={card.href}
+                  href={card.href}
+                  className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4 transition hover:border-[var(--color-accent)] hover:bg-[var(--color-paper)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="font-semibold text-[var(--color-ink)]">{card.title}</h3>
+                      <p className="mt-2 text-sm text-[var(--color-muted)]">{card.description}</p>
+                    </div>
+                    <Icon className="size-5 text-[var(--color-accent)]" />
                   </div>
-                  <Icon className="size-5 text-[var(--color-accent)]" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
       </section>
     </div>
   );

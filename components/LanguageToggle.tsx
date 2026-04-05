@@ -4,13 +4,21 @@ import { useTranslations } from "next-intl";
 
 import { useAccessibility } from "@/hooks/useAccessibility";
 
-export function LanguageToggle() {
+export function LanguageToggle({
+  tone = "dark",
+}: {
+  tone?: "dark" | "light";
+}) {
   const t = useTranslations();
   const { settings, setSettings } = useAccessibility();
 
   return (
     <div
-      className="inline-flex rounded-full border border-white/20 bg-white/10 p-1 backdrop-blur"
+      className={`inline-flex rounded-full border p-1 ${
+        tone === "light"
+          ? "border-[var(--color-border)] bg-white/80"
+          : "border-white/20 bg-white/10 backdrop-blur"
+      }`}
       role="group"
       aria-label={t("language")}
     >
@@ -29,7 +37,9 @@ export function LanguageToggle() {
             className={`min-h-11 rounded-full px-4 text-sm font-semibold transition ${
               active
                 ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
-                : "text-[var(--color-paper)]/75"
+                : tone === "light"
+                  ? "text-[var(--color-muted)]"
+                  : "text-[var(--color-paper)]/75"
             }`}
             aria-pressed={active}
           >

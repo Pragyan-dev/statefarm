@@ -2,6 +2,7 @@ export type Language = "en" | "es";
 export type TextSize = "normal" | "large" | "xl";
 export type ColorBlindMode = "none" | "protanopia" | "deuteranopia" | "tritanopia";
 export type VisaType = "F1" | "H1B" | "J1" | "O1";
+export type ViewMode = "website" | "app";
 
 export interface LocalizedText {
   en: string;
