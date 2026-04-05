@@ -61,7 +61,7 @@ export function FemaTimeline({
           ))}
         </ul>
       ) : (
-        <div className="mt-5 rounded-[1.7rem] border border-[var(--color-border)] bg-[#FFF7EE] px-5 py-5">
+        <div className="mt-5 rounded-[1.7rem] border border-[var(--color-border)] bg-[var(--color-accent-soft)] px-5 py-5">
           <div className="flex items-start gap-3">
             <AlertCircle className="mt-0.5 size-5 text-[var(--color-warning)]" />
             <div>
@@ -115,7 +115,7 @@ function TimelineItem({
       />
       <span
         aria-hidden="true"
-        className="absolute left-0 top-4 size-4 rounded-full border-2 border-[var(--color-paper)] bg-[var(--color-accent)] shadow-[0_0_0_3px_rgba(212,96,58,0.14)]"
+        className="absolute left-0 top-4 size-4 rounded-full border-2 border-[var(--color-paper)] bg-[var(--color-accent)] shadow-[0_0_0_3px_var(--color-accent-glow)]"
       />
       <div className="rounded-[1.5rem] border border-[var(--color-border)] bg-white/85 px-4 py-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">

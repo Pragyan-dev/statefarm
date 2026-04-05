@@ -14,7 +14,7 @@ import { getRelevantScenarios } from "@/data/scenarios/index";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useViewMode } from "@/hooks/useViewMode";
-import { affordabilityCopy, formatCurrency, getStateCosts } from "@/lib/content";
+import { formatCurrency, getStateCosts } from "@/lib/content";
 import type { ScenarioData } from "@/lib/types";
 import type { CompletionSummary, StorySessionState } from "@/types/simulator";
 
@@ -128,6 +128,10 @@ export default function SimulatePage() {
   if (resolvedMode === "website") {
     const costs = getStateCosts(profile.state);
     const monthlyAnchor = profile.drives ? costs.autoLiability : costs.rentersMonthly;
+    const anchorPercent = (((monthlyAnchor / (profile.monthlyIncome || 2800)) * 100) || 0).toFixed(1);
+    const anchorCopy = isSpanish
+      ? `Eso es ${anchorPercent}% de tu ingreso mensual. Pequeno comparado con una emergencia sin cobertura.`
+      : `That is ${anchorPercent}% of your monthly income. Small compared with an uncovered emergency.`;
 
     return (
       <div className="py-6 lg:py-10">
@@ -152,12 +156,6 @@ export default function SimulatePage() {
               >
                 {t("openStoryMode")}
               </button>
-              <Link
-                href="/afford"
-                className="inline-flex min-h-12 items-center rounded-full border border-[var(--color-border)] px-5 text-sm font-semibold text-[var(--color-ink)]"
-              >
-                {isSpanish ? "Revisar asequibilidad" : "Check affordability"}
-              </Link>
             </div>
           </section>
 
@@ -169,9 +167,7 @@ export default function SimulatePage() {
                   ? `${formatCurrency(monthlyAnchor, settings.language)} / mes es la decision base que estas tomando.`
                   : `${formatCurrency(monthlyAnchor, settings.language)} / month is the baseline decision you are making.`}
               </h2>
-              <p className="mt-4 text-sm text-[var(--color-muted)]">
-                {affordabilityCopy(profile.monthlyIncome, monthlyAnchor, settings.language)}
-              </p>
+              <p className="mt-4 text-sm text-[var(--color-muted)]">{anchorCopy}</p>
             </section>
 
             <section className="panel-card">

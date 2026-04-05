@@ -45,7 +45,7 @@ export const theftScenario: Scenario = {
     {
       id: "no_1",
       speaker: "safi",
-      emotion: "worried",
+      emotion: "hurt",
       text: "Then every missing item lands on you. Theft hurts twice: once emotionally, then again when you price out replacements.",
       next: "no_damage",
     },
@@ -70,7 +70,7 @@ export const theftScenario: Scenario = {
     {
       id: "no_aftermath",
       speaker: "safi",
-      emotion: "worried",
+      emotion: "hurt",
       text: "And there is the invisible cost. Without your laptop, you miss assignments, fall behind at work, and scramble to prove what was stolen after the fact.",
       next: "ending_bad",
     },

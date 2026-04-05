@@ -10,7 +10,7 @@ export const erVisitScenario: Scenario = {
     {
       id: "intro",
       speaker: "narrator",
-      emotion: "worried",
+      emotion: "hurt",
       text: "You wake up at 3:12 AM with stabbing stomach pain. It is bad enough that your roommate drives you straight to the ER in {city}.",
       next: "scene1",
     },
@@ -105,7 +105,7 @@ export const erVisitScenario: Scenario = {
     {
       id: "yes_2",
       speaker: "safi",
-      emotion: "neutral",
+      emotion: "happy",
       text: "This is the hidden gift of health coverage. In the middle of a crisis, your energy stays on treatment and recovery instead of bargaining with a billing office.",
       next: "yes_savings",
     },

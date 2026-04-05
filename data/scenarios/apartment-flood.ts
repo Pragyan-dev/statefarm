@@ -52,7 +52,7 @@ export const apartmentFloodScenario: Scenario = {
     {
       id: "no_1",
       speaker: "safi",
-      emotion: "worried",
+      emotion: "hurt",
       text: "This is the painful misunderstanding. The landlord's insurance covers the building, not your things. Your stuff is your responsibility.",
       next: "no_damage",
     },
@@ -77,7 +77,7 @@ export const apartmentFloodScenario: Scenario = {
     {
       id: "no_aftermath",
       speaker: "safi",
-      emotion: "worried",
+      emotion: "hurt",
       text: "Replacing immigration documents is more than a fee. It means appointments, certified copies, embassy emails, and stress about deadlines you cannot afford to miss.",
       next: "ending_bad",
     },
