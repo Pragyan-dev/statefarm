@@ -13,22 +13,35 @@ export function PolicySummary({
   summary: PolicySummaryResult;
 }) {
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
   const narration = [
     summary.summary,
-    `Covered: ${summary.covered.join(", ")}`,
-    `Not covered: ${summary.notCovered.join(", ")}`,
+    `${isSpanish ? "Cubierto" : "Covered"}: ${summary.covered.join(", ")}`,
+    `${isSpanish ? "No cubierto" : "Not covered"}: ${summary.notCovered.join(", ")}`,
   ].join(" ");
+  const scoreLabel =
+    summary.score === "basic"
+      ? isSpanish
+        ? "basico"
+        : "basic"
+      : summary.score === "good"
+        ? isSpanish
+          ? "bueno"
+          : "good"
+        : isSpanish
+          ? "excelente"
+          : "great";
 
   return (
     <section className="panel-card">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="eyebrow">Policy translator</p>
+          <p className="eyebrow">{isSpanish ? "Traductor de polizas" : "Policy translator"}</p>
           <h2 className="font-display text-2xl text-[var(--color-ink)]">
             {summary.provider}
           </h2>
           <p className="mt-1 text-sm text-[var(--color-muted)]">
-            {summary.type} policy · {formatDate(summary.expires, settings.language)}
+            {summary.type} {isSpanish ? "poliza" : "policy"} · {formatDate(summary.expires, settings.language)}
           </p>
         </div>
         <ReadAloud text={narration} />
@@ -39,7 +52,7 @@ export function PolicySummary({
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         <div className="rounded-[1.5rem] bg-[var(--color-paper)] p-4 shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)]">
           <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-            Covered
+            {isSpanish ? "Cubierto" : "Covered"}
           </p>
           <ul className="mt-3 grid gap-2 text-sm text-[var(--color-ink)]">
             {summary.covered.map((item) => (
@@ -53,7 +66,7 @@ export function PolicySummary({
 
         <div className="rounded-[1.5rem] bg-[var(--color-paper)] p-4 shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)]">
           <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-            Not covered
+            {isSpanish ? "No cubierto" : "Not covered"}
           </p>
           <ul className="mt-3 grid gap-2 text-sm text-[var(--color-ink)]">
             {summary.notCovered.map((item) => (
@@ -81,7 +94,7 @@ export function PolicySummary({
         </p>
         <p className="text-sm text-[var(--color-muted)]">
           {settings.language === "es" ? "Puntaje" : "Coverage score"}:{" "}
-          <span className="font-semibold text-[var(--color-ink)]">{summary.score}</span>
+          <span className="font-semibold text-[var(--color-ink)]">{scoreLabel}</span>
         </p>
       </div>
 

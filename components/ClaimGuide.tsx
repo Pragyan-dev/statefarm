@@ -21,7 +21,7 @@ export function ClaimGuide({
     <section className="panel-card" aria-live="polite" aria-atomic="true">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="eyebrow">Claim guide</p>
+          <p className="eyebrow">{settings.language === "es" ? "Guia de reclamo" : "Claim guide"}</p>
           <h2 className="font-display text-2xl text-[var(--color-ink)]">
             {settings.language === "es" ? "Que hacer ahora" : "What to do now"}
           </h2>

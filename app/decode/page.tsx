@@ -9,6 +9,7 @@ import type { PolicySummaryResult } from "@/lib/types";
 
 export default function DecodePage() {
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,13 +37,19 @@ export default function DecodePage() {
       });
 
       if (!response.ok) {
-        throw new Error("Decode failed");
+        throw new Error(isSpanish ? "La decodificacion fallo" : "Decode failed");
       }
 
       const payload = (await response.json()) as PolicySummaryResult;
       setSummary(payload);
     } catch (submissionError) {
-      setError(submissionError instanceof Error ? submissionError.message : "Upload failed");
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : isSpanish
+            ? "La carga fallo"
+            : "Upload failed",
+      );
     } finally {
       setLoading(false);
     }
@@ -53,20 +60,23 @@ export default function DecodePage() {
       <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="grid gap-6">
           <section className="panel-card hero-ambient overflow-hidden">
-            <p className="eyebrow">Policy decoder</p>
+            <p className="eyebrow">{isSpanish ? "Decodificador de poliza" : "Policy decoder"}</p>
             <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[10ch]">
-              Translate a policy into something you can actually use.
+              {isSpanish
+                ? "Traduce una poliza a algo que realmente puedas usar."
+                : "Translate a policy into something you can actually use."}
             </h1>
             <p className="mt-4 text-base text-[var(--color-muted)]">
-              Upload a photo, a screenshot, or a PDF. We pull out the covered items, missing
-              protections, and deductible in plain language.
+              {isSpanish
+                ? "Sube una foto, captura o PDF. Extraemos la cobertura, las protecciones faltantes y el deducible en lenguaje claro."
+                : "Upload a photo, a screenshot, or a PDF. We pull out the covered items, missing protections, and deductible in plain language."}
             </p>
           </section>
 
           <form onSubmit={handleSubmit} className="panel-card">
             <label htmlFor="policy-upload" className="block">
               <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
-                Upload policy photo or PDF
+                {isSpanish ? "Sube una foto o PDF de la poliza" : "Upload policy photo or PDF"}
               </span>
               <input
                 id="policy-upload"
@@ -79,8 +89,9 @@ export default function DecodePage() {
               />
             </label>
             <p id="upload-help" className="mt-2 text-sm text-[var(--color-muted)]">
-              Camera photo is usually the fastest input for the demo. Leave this blank to use the
-              sample policy.
+              {isSpanish
+                ? "La foto con camara suele ser la opcion mas rapida para la demo. Dejalo vacio para usar la poliza de ejemplo."
+                : "Camera photo is usually the fastest input for the demo. Leave this blank to use the sample policy."}
             </p>
             <div className="mt-5 flex gap-3">
               <button
@@ -88,7 +99,17 @@ export default function DecodePage() {
                 disabled={loading}
                 className="min-h-12 flex-1 rounded-full bg-[var(--color-ink)] px-5 text-sm font-semibold text-[var(--color-paper)]"
               >
-                {loading ? "Decoding..." : file ? "Decode upload" : "Use demo policy"}
+                {loading
+                  ? isSpanish
+                    ? "Decodificando..."
+                    : "Decoding..."
+                  : file
+                    ? isSpanish
+                      ? "Decodificar archivo"
+                      : "Decode upload"
+                    : isSpanish
+                      ? "Usar poliza demo"
+                      : "Use demo policy"}
               </button>
             </div>
             {error ? <p className="mt-3 text-sm text-[var(--color-danger)]">{error}</p> : null}
@@ -101,13 +122,16 @@ export default function DecodePage() {
           ) : (
             <section className="panel-card flex min-h-[320px] items-center justify-center text-center">
               <div className="max-w-[28ch]">
-                <p className="eyebrow">Preview</p>
+                <p className="eyebrow">{isSpanish ? "Vista previa" : "Preview"}</p>
                 <h2 className="font-display text-3xl text-[var(--color-ink)]">
-                  Your decoded summary will appear here.
+                  {isSpanish
+                    ? "Tu resumen decodificado aparecera aqui."
+                    : "Your decoded summary will appear here."}
                 </h2>
                 <p className="mt-4 text-sm text-[var(--color-muted)]">
-                  Covered items, exclusions, deductible, monthly cost, and the plain-language
-                  explanation all render in this column.
+                  {isSpanish
+                    ? "Los elementos cubiertos, exclusiones, deducible, costo mensual y la explicacion simple apareceran en esta columna."
+                    : "Covered items, exclusions, deductible, monthly cost, and the plain-language explanation all render in this column."}
                 </p>
               </div>
             </section>

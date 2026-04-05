@@ -21,6 +21,7 @@ export function ProgressChecklist({
   onProfileChange: (next: UserProfile) => void;
 }) {
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
 
   function toggleItem(id: string) {
     const nextChecklist = profile.checklist.includes(id)
@@ -37,9 +38,9 @@ export function ProgressChecklist({
     <section className="panel-card">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="eyebrow">30-day plan</p>
+          <p className="eyebrow">{isSpanish ? "Plan de 30 dias" : "30-day plan"}</p>
           <h2 className="font-display text-2xl text-[var(--color-ink)]">
-            {settings.language === "es" ? "Lista de progreso" : "Progress checklist"}
+            {isSpanish ? "Lista de progreso" : "Progress checklist"}
           </h2>
         </div>
         <div
@@ -47,7 +48,11 @@ export function ProgressChecklist({
           aria-valuenow={Math.round((profile.checklist.length / items.length) * 100)}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={`Guide completion ${Math.round((profile.checklist.length / items.length) * 100)} percent`}
+          aria-label={
+            isSpanish
+              ? `Progreso de la guia ${Math.round((profile.checklist.length / items.length) * 100)} por ciento`
+              : `Guide completion ${Math.round((profile.checklist.length / items.length) * 100)} percent`
+          }
           className="rounded-full bg-[var(--color-paper)] px-3 py-2 text-sm font-semibold text-[var(--color-ink)]"
         >
           {profile.checklist.length}/{items.length}

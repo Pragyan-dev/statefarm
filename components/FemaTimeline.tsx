@@ -20,16 +20,19 @@ export function FemaTimeline({
   loading: boolean;
 }) {
   const riskLabel = language === "es" ? "Riesgos principales en este ZIP" : "Top risks in this ZIP";
+  const isSpanish = language === "es";
 
   return (
     <section className="panel-card mt-0">
-      <p className="eyebrow">Recent disaster history</p>
+      <p className="eyebrow">{isSpanish ? "Historial reciente de desastres" : "Recent disaster history"}</p>
       <div className="mt-3 flex items-start justify-between gap-4">
         <div>
-          <h2 className="font-display text-3xl text-[var(--color-ink)]">FEMA + local risk context</h2>
+          <h2 className="font-display text-3xl text-[var(--color-ink)]">
+            {isSpanish ? "FEMA + contexto de riesgo local" : "FEMA + local risk context"}
+          </h2>
           <p className="mt-2 text-sm text-[var(--color-muted)]">
             {loading
-              ? language === "es"
+              ? isSpanish
                 ? "Cargando declaraciones recientes..."
                 : "Loading recent declarations..."
               : data.insight}
@@ -64,7 +67,7 @@ export function FemaTimeline({
             <div>
               <p className="font-semibold text-[var(--color-ink)]">
                 {data.source === "fallback"
-                  ? language === "es"
+                  ? isSpanish
                     ? "Sin declaraciones recientes para mostrar"
                     : "No recent declarations to show"
                   : `FEMA ${state}`}

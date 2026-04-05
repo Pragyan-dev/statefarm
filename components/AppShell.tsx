@@ -81,8 +81,7 @@ export function AppShell({
                     ArriveSafe
                   </Link>
                   <p className="mt-1 max-w-[46ch] text-sm text-[var(--color-muted)]">
-                    Insurance onboarding, claim help, and protection guidance for the first years
-                    in the US.
+                    {t("tagline")}
                   </p>
                 </div>
 

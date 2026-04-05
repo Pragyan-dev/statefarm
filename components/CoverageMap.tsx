@@ -92,7 +92,12 @@ export function CoverageMap({
                 <div className="grid gap-1 text-sm">
                   <p className="font-semibold">{apartment.name}</p>
                   <p>{apartment.address}</p>
-                  <p>{formatCurrency(apartment.estimate, language)}/mo renter&apos;s insurance</p>
+                  <p>
+                    {formatCurrency(apartment.estimate, language)}
+                    {language === "es"
+                      ? "/mes de seguro de inquilino"
+                      : "/mo renter&apos;s insurance"}
+                  </p>
                 </div>
               </Popup>
             </Marker>

@@ -15,6 +15,7 @@ export function AccessibilityMenu({
 }) {
   const t = useTranslations();
   const { settings, setSettings, resetSettings } = useAccessibility();
+  const isSpanish = settings.language === "es";
 
   useEffect(() => {
     if (!open) {
@@ -64,14 +65,16 @@ export function AccessibilityMenu({
                 {t("accessibility")}
               </h2>
               <p className="mt-2 max-w-[42ch] text-sm text-[var(--color-muted)]">
-                Tune the reading and contrast system without fighting the rest of the page.
+                {isSpanish
+                  ? "Ajusta lectura, contraste y movimiento sin pelear con el resto de la pagina."
+                  : "Tune the reading and contrast system without fighting the rest of the page."}
               </p>
             </div>
             <button
               type="button"
               onClick={onClose}
               className="min-h-11 min-w-11 rounded-full border border-[var(--color-border)] bg-white/70 text-[var(--color-ink)] shadow-sm"
-              aria-label="Close menu"
+              aria-label={isSpanish ? "Cerrar menu" : "Close menu"}
             >
               <X className="mx-auto size-4" />
             </button>
@@ -106,7 +109,9 @@ export function AccessibilityMenu({
             </section>
 
             <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
-              <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">Text size</p>
+              <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">
+                {isSpanish ? "Tamano del texto" : "Text size"}
+              </p>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: "A", value: "normal" },
@@ -139,28 +144,36 @@ export function AccessibilityMenu({
             {[
               {
                 label: t("highContrast"),
-                description: "Boost contrast across cards, buttons, and labels.",
+                description: isSpanish
+                  ? "Sube el contraste en tarjetas, botones y etiquetas."
+                  : "Boost contrast across cards, buttons, and labels.",
                 checked: settings.highContrast,
                 onChange: (value: boolean) =>
                   setSettings((current) => ({ ...current, highContrast: value })),
               },
               {
                 label: t("reducedMotion"),
-                description: "Remove most movement and speed up transitions.",
+                description: isSpanish
+                  ? "Reduce casi toda la animacion y acelera las transiciones."
+                  : "Remove most movement and speed up transitions.",
                 checked: settings.reducedMotion,
                 onChange: (value: boolean) =>
                   setSettings((current) => ({ ...current, reducedMotion: value })),
               },
               {
                 label: t("voiceOutput"),
-                description: "Read important sections aloud automatically.",
+                description: isSpanish
+                  ? "Lee automaticamente las secciones importantes."
+                  : "Read important sections aloud automatically.",
                 checked: settings.voiceOutput,
                 onChange: (value: boolean) =>
                   setSettings((current) => ({ ...current, voiceOutput: value })),
               },
               {
                 label: t("screenReaderMode"),
-                description: "Increase spacing and simplify visual labels.",
+                description: isSpanish
+                  ? "Aumenta el espaciado y simplifica las etiquetas visuales."
+                  : "Increase spacing and simplify visual labels.",
                 checked: settings.screenReaderOptimized,
                 onChange: (value: boolean) =>
                   setSettings((current) => ({
@@ -204,7 +217,7 @@ export function AccessibilityMenu({
           <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
             <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
               <div className="mb-3 flex items-center justify-between gap-3 text-sm font-semibold text-[var(--color-ink)]">
-                <span>Voice speed</span>
+                <span>{isSpanish ? "Velocidad de voz" : "Voice speed"}</span>
                 <span>{settings.voiceSpeed.toFixed(1)}x</span>
               </div>
               <input
@@ -220,17 +233,19 @@ export function AccessibilityMenu({
                   }))
                 }
                 className="w-full accent-[var(--color-accent)]"
-                aria-label="Voice speed"
+                aria-label={isSpanish ? "Velocidad de voz" : "Voice speed"}
               />
             </section>
 
             <section className="rounded-[1.6rem] border border-[var(--color-border)] bg-white/70 p-4 sm:p-5">
-              <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">Color blind mode</p>
+              <p className="mb-3 text-sm font-semibold text-[var(--color-ink)]">
+                {isSpanish ? "Modo daltonismo" : "Color blind mode"}
+              </p>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: "None", value: "none" },
-                  { label: "Red-green", value: "deuteranopia" },
-                  { label: "Blue-yellow", value: "tritanopia" },
+                  { label: isSpanish ? "Ninguno" : "None", value: "none" },
+                  { label: isSpanish ? "Rojo-verde" : "Red-green", value: "deuteranopia" },
+                  { label: isSpanish ? "Azul-amarillo" : "Blue-yellow", value: "tritanopia" },
                   { label: "Protanopia", value: "protanopia" },
                 ].map((item) => (
                   <button

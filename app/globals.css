@@ -129,6 +129,37 @@ a {
   background-size: 36px 36px;
 }
 
+.hero-surface-dark {
+  background-color: rgb(8 10 18 / 0.94);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(12, 16, 30, 0.24);
+}
+
+.hero-surface-dark.hero-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+}
+
+.button-ink {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--color-ink);
+  color: #fbf6ef;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.14);
+}
+
+.button-ink:hover {
+  background: color-mix(in srgb, var(--color-ink) 92%, white 8%);
+}
+
+.button-ink:focus-visible {
+  outline-color: #2563eb;
+}
+
 .bar-without {
   background:
     repeating-linear-gradient(

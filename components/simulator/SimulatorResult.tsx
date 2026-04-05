@@ -31,14 +31,19 @@ export function SimulatorResult({
   const { settings } = useAccessibility();
   const [copied, setCopied] = useState(false);
   const isGood = endingNode.endingType === "good";
+  const isSpanish = settings.language === "es";
 
   const titleAmount = isGood
     ? formatCurrency(savedAmount ?? 0, settings.language)
     : formatCurrency(lastEffect?.total ?? badTotal, settings.language);
 
   const shareText = isGood
-    ? `I played ArriveSafe's ${scenario.title} scenario and saw how insurance could save ${titleAmount}.`
-    : `I played ArriveSafe's ${scenario.title} scenario and saw how fast life can turn into a ${titleAmount} problem without insurance.`;
+    ? isSpanish
+      ? `Juge el escenario ${scenario.title} de ArriveSafe y vi como el seguro podia ahorrar ${titleAmount}.`
+      : `I played ArriveSafe's ${scenario.title} scenario and saw how insurance could save ${titleAmount}.`
+    : isSpanish
+      ? `Juge el escenario ${scenario.title} de ArriveSafe y vi que tan rapido la vida puede convertirse en un problema de ${titleAmount} sin seguro.`
+      : `I played ArriveSafe's ${scenario.title} scenario and saw how fast life can turn into a ${titleAmount} problem without insurance.`;
 
   async function handleShare() {
     try {
@@ -75,7 +80,9 @@ export function SimulatorResult({
               </p>
               <p className="mt-2 text-sm leading-6 text-black/70">
                 {lastEffect?.monthlyEquivalent ??
-                  "The covered version of this story keeps the emergency stressful, but affordable."}
+                  (isSpanish
+                    ? "La version con cobertura sigue siendo estresante, pero se vuelve manejable."
+                    : "The covered version of this story keeps the emergency stressful, but affordable.")}
               </p>
             </section>
           ) : (
@@ -101,7 +108,11 @@ export function SimulatorResult({
                     {item.label}
                   </span>
                   <span className="text-sm font-extrabold text-black">
-                    {item.amount > 0 ? formatCurrency(item.amount, settings.language) : "Included"}
+                    {item.amount > 0
+                      ? formatCurrency(item.amount, settings.language)
+                      : isSpanish
+                        ? "Incluido"
+                        : "Included"}
                   </span>
                 </div>
               ))}

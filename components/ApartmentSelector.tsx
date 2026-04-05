@@ -30,6 +30,7 @@ export function ApartmentSelector({
   onApartmentSelect,
 }: ApartmentSelectorProps) {
   const { settings } = useAccessibility();
+  const isSpanish = settings.language === "es";
 
   const isWebsite = layout === "website";
 
@@ -37,9 +38,10 @@ export function ApartmentSelector({
     <div className="grid gap-4">
       <div className="flex flex-col gap-3 rounded-[1.5rem] border border-[var(--color-border)] bg-white/55 px-4 py-4 md:flex-row md:items-center md:justify-between">
         <div className="min-w-0">
-          <p className="eyebrow">Demo location</p>
+          <p className="eyebrow">{isSpanish ? "Ubicacion demo" : "Demo location"}</p>
           <p className="mt-2 text-base font-semibold text-[var(--color-ink)]">
-            Apartment pins near {zipData.city}, {zipData.state}
+            {isSpanish ? "Pines de apartamentos cerca de" : "Apartment pins near"} {zipData.city},{" "}
+            {zipData.state}
           </p>
         </div>
         <button
@@ -48,13 +50,15 @@ export function ApartmentSelector({
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-ink)] px-4 text-sm font-semibold text-[var(--color-paper)]"
         >
           <Navigation className="size-4" />
-          <span>{settings.language === "es" ? "Usar ubicacion demo" : "Use demo location"}</span>
+          <span>{isSpanish ? "Usar ubicacion demo" : "Use demo location"}</span>
         </button>
       </div>
 
       <div className={`grid gap-3 ${isWebsite ? "md:grid-cols-[180px_minmax(0,1fr)] xl:grid-cols-[200px_minmax(0,1fr)]" : "md:grid-cols-[180px_minmax(0,1fr)]"} md:items-end`}>
         <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">ZIP code</span>
+          <span className="mb-2 block text-sm font-semibold text-[var(--color-ink)]">
+            {isSpanish ? "Codigo ZIP" : "ZIP code"}
+          </span>
           <input
             value={zipInput}
             onChange={(event) => onZipInputChange(event.target.value)}
@@ -68,20 +72,19 @@ export function ApartmentSelector({
           aria-live="polite"
           aria-atomic="true"
         >
-          {settings.language === "es" ? "Mostrando" : "Showing"} {zipData.city}, {zipData.state}{" "}
-          {activeZip}
+          {isSpanish ? "Mostrando" : "Showing"} {zipData.city}, {zipData.state} {activeZip}
         </div>
       </div>
 
       {unsupportedZip ? (
         <div className="rounded-[1.5rem] border border-[var(--color-warning)] bg-[#FFF7E8] px-4 py-4 text-sm text-[var(--color-ink)]">
           <p className="font-semibold">
-            {settings.language === "es"
+            {isSpanish
               ? "Ese ZIP no esta en la demo todavia."
               : "That ZIP is not in the demo yet."}
           </p>
           <p className="mt-2 text-[var(--color-muted)]">
-            {settings.language === "es"
+            {isSpanish
               ? `Seguimos mostrando ${zipData.city}, ${zipData.state} ${activeZip} para que el mapa y las estimaciones sigan funcionando.`
               : `We are keeping ${zipData.city}, ${zipData.state} ${activeZip} active so the map and renter estimates still show a complete demo flow.`}
           </p>
@@ -121,7 +124,8 @@ export function ApartmentSelector({
                     <p className="mt-1 text-sm text-[var(--color-muted)]">{apartment.address}</p>
                   </div>
                   <span className="shrink-0 rounded-full bg-[var(--color-highlight)] px-3 py-1 text-xs font-semibold text-[var(--color-ink)]">
-                    {formatCurrency(apartment.estimate, settings.language)}/mo
+                    {formatCurrency(apartment.estimate, settings.language)}
+                    {isSpanish ? "/mes" : "/mo"}
                   </span>
                 </div>
 

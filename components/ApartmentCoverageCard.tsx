@@ -22,6 +22,7 @@ export function ApartmentCoverageCard({
   const lowerRent = getLowerRentAmount(apartment.rentRange);
   const rentPercent = (apartment.estimate / lowerRent) * 100;
   const progressWidth = Math.min((rentPercent / 5) * 100, 100);
+  const isSpanish = language === "es";
 
   const coverageItems = [
     {
@@ -45,7 +46,7 @@ export function ApartmentCoverageCard({
     <section className="panel-card mt-0" aria-live="polite" aria-atomic="true">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
-          <p className="eyebrow">Selected apartment</p>
+          <p className="eyebrow">{isSpanish ? "Apartamento seleccionado" : "Selected apartment"}</p>
           <h2 className="font-display text-3xl leading-tight text-[var(--color-ink)]">
             {apartment.name}
           </h2>
@@ -57,7 +58,7 @@ export function ApartmentCoverageCard({
           rel="noreferrer"
           className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-ink)] px-4 text-sm font-semibold text-[var(--color-paper)]"
         >
-          Get covered
+          {isSpanish ? "Conseguir cobertura" : "Get covered"}
         </a>
       </div>
 
@@ -65,11 +66,13 @@ export function ApartmentCoverageCard({
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-muted)]">
-              Renter&apos;s estimate
+              {isSpanish ? "Estimado de inquilino" : "Renter&apos;s estimate"}
             </p>
             <p className="mt-2 text-4xl font-bold text-[var(--color-ink)]">
               {formatCurrency(apartment.estimate, language)}
-              <span className="text-base font-medium text-[var(--color-muted)]"> / month</span>
+              <span className="text-base font-medium text-[var(--color-muted)]">
+                {isSpanish ? " / mes" : " / month"}
+              </span>
             </p>
           </div>
           <div className="rounded-full bg-[#E8F2EC] px-3 py-2 text-xs font-semibold text-[var(--color-success)]">
@@ -79,13 +82,15 @@ export function ApartmentCoverageCard({
 
         <div>
           <div className="flex items-center justify-between gap-3 text-sm text-[var(--color-muted)]">
-            <span>{rentPercent.toFixed(1)}% of monthly rent</span>
+            <span>
+              {rentPercent.toFixed(1)}% {isSpanish ? "del alquiler mensual" : "of monthly rent"}
+            </span>
             <span>{apartment.beds}</span>
           </div>
           <div
             className="mt-2 h-3 rounded-full bg-[rgba(17,24,39,0.08)]"
             role="progressbar"
-            aria-label="Share of rent"
+            aria-label={isSpanish ? "Porcentaje del alquiler" : "Share of rent"}
             aria-valuemin={0}
             aria-valuemax={5}
             aria-valuenow={Number(rentPercent.toFixed(1))}
