@@ -32,7 +32,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${fraunces.variable} ${manrope.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
+      <body suppressHydrationWarning className="min-h-full">
         <AppProviders>
           <AppShell>{children}</AppShell>
         </AppProviders>

@@ -11,6 +11,7 @@ import {
 import { ArrowRight, RefreshCcw } from "lucide-react";
 
 import claimVideos from "@/data/claim-videos.json";
+import { ReadAloud } from "@/components/ReadAloud";
 import { ClaimStatusTracker } from "@/components/claim/ClaimStatusTracker";
 import { ClaimTimeline } from "@/components/claim/ClaimTimeline";
 import { ClaimVideoSection } from "@/components/claim/ClaimVideoSection";
@@ -163,7 +164,28 @@ export default function ClaimPage() {
     });
   }
 
+  function clearIncidentProgress(incidentType: IncidentType) {
+    setProgressStore((current) => ({
+      ...current,
+      [incidentType]: getInitialClaimProgressStore()[incidentType],
+    }));
+
+    setEvidencePreviews((current) => {
+      const incidentPreviews = current[incidentType];
+      Object.values(incidentPreviews ?? {}).forEach((url) => URL.revokeObjectURL(url));
+
+      return {
+        ...current,
+        [incidentType]: {},
+      };
+    });
+  }
+
   function resetGuideFlow() {
+    if (guideIncident) {
+      clearIncidentProgress(guideIncident);
+    }
+
     setPhase("select");
     setSelectedIncident(null);
     setGuideIncident(null);
@@ -256,6 +278,22 @@ export default function ClaimPage() {
           : "Other incident"
       : undefined) ??
     (isSpanish ? "Incidente" : "Incident");
+  const guideNarration = useMemo(() => {
+    if (!guide) {
+      return "";
+    }
+
+    const parts = [
+      selectedLabel,
+      guide.urgencyMessage,
+      guide.steps.slice(0, 4).map((step) => `${step.title}. ${step.description}`).join(" "),
+      personalization?.personalizedTips?.slice(0, 2).join(" ") ?? "",
+      guide.donts[0]?.text ?? "",
+      guide.donts[0]?.explanation ?? "",
+    ];
+
+    return parts.filter(Boolean).join(" ").trim();
+  }, [guide, personalization, selectedLabel]);
 
   return (
     <div className={`py-6 lg:py-10 ${phase === "guide" && isAppMode ? "pb-28" : ""}`}>
@@ -334,16 +372,21 @@ export default function ClaimPage() {
                     ? "Sigue este recorrido calmado y visual. Todo esta ordenado para ayudarte a actuar sin perder pasos."
                     : "Follow this calm, visual guide. Everything is ordered so you can act without missing steps."}
                 </p>
+                <div className="mt-4">
+                  <ReadAloud text={guideNarration} language={settings.language} />
+                </div>
               </div>
 
-              <button
-                type="button"
-                onClick={resetGuideFlow}
-                className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full border border-[var(--color-border)] bg-white/80 px-4 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px"
-              >
-                <RefreshCcw className="size-4" />
-                {isSpanish ? "Empezar de nuevo" : "Start over"}
-              </button>
+              <div className="flex shrink-0 flex-col gap-3 self-start">
+                <button
+                  type="button"
+                  onClick={resetGuideFlow}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/80 px-4 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px"
+                >
+                  <RefreshCcw className="size-4" />
+                  {isSpanish ? "Empezar de nuevo" : "Start over"}
+                </button>
+              </div>
             </div>
           </section>
 

@@ -57,7 +57,6 @@ export function ClaimStatusTracker({
         })}
       </div>
       <p className="mt-4 text-sm text-[var(--color-muted)]">
-        {isSpanish ? "Tiempo tipico: " : "Typical resolution: "}
         <span className="font-medium text-[var(--color-ink)]">{estimatedTimeline}</span>
       </p>
     </section>
