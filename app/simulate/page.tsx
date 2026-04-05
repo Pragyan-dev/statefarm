@@ -89,7 +89,7 @@ export default function SimulatePage() {
 
   if (!isProfileReady || !isProgressReady || !isSessionReady) {
     return (
-      <div className="simulator-root grid place-items-center bg-[linear-gradient(180deg,#F6F0E7_0%,#EFE4D8_100%)] px-6">
+      <div className="simulator-root grid place-items-center bg-[#f2e7da] px-6">
         <div className="rounded-[1.75rem] border-[2px] border-black bg-white/85 px-5 py-4 text-center shadow-[0_18px_50px_rgba(17,24,39,0.1)]">
           <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-black/45">
             FirstCover

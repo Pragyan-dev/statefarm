@@ -110,15 +110,9 @@ export function CoverageShield({
           className="w-full drop-shadow-[0_26px_44px_rgba(17,24,39,0.18)]"
           aria-hidden="true"
         >
-          <defs>
-            <linearGradient id="shield-fill" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFF8F0" />
-              <stop offset="100%" stopColor="#F3E5D1" />
-            </linearGradient>
-          </defs>
           <path
             d="M200 20 C200 20, 350 20, 380 40 C380 40, 390 60, 390 80 L390 220 C390 280, 340 340, 200 380 C60 340, 10 280, 10 220 L10 80 C10 60, 20 40, 20 40 C50 20, 200 20, 200 20 Z"
-            fill="url(#shield-fill)"
+            fill="#f6ecdf"
             stroke="rgba(17,24,39,0.14)"
             strokeWidth="2"
           />
@@ -188,7 +182,7 @@ function ShieldDetail({
   const isSpanish = language === "es";
   const tip = getSegmentTip(segment.key, language);
   const actionClass =
-    "inline-flex min-h-[3.1rem] items-center justify-center rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
+    "inline-flex min-h-[3.1rem] items-center justify-center rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
 
   return (
     <div className="grid gap-4">

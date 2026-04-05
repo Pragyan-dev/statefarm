@@ -9,8 +9,8 @@ import type { ViewMode } from "@/lib/types";
 function isActiveClass(active: boolean, tone: "light" | "dark") {
   if (tone === "light") {
     return active
-      ? "bg-[var(--color-ink)] text-[var(--color-paper)] shadow-sm"
-      : "text-[var(--color-muted)]";
+      ? "bg-white text-[var(--color-accent)] shadow-[0_10px_24px_rgba(131,36,21,0.18)]"
+      : "text-white/78 hover:text-white";
   }
 
   return active ? "bg-white text-[var(--color-ink)] shadow-sm" : "text-white/70";
@@ -37,7 +37,7 @@ export function ViewModeToggle({
     <div
       className={`inline-flex rounded-full border p-1 ${
         tone === "light"
-          ? "border-[var(--color-border)] bg-white/80"
+          ? "border-white/20 bg-transparent text-white"
           : "border-white/15 bg-black/35 backdrop-blur"
       } ${className}`}
       role="group"

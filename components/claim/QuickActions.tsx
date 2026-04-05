@@ -29,7 +29,7 @@ export function QuickActions({
         <div className="mt-4 grid gap-3">
           <a
             href={`tel:${phone.replace(/[^\d]/g, "")}`}
-            className="claim-quick-rise flex min-h-[5.25rem] items-center justify-between rounded-[1.4rem] border border-[rgba(212,96,58,0.2)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-4 py-3 text-left text-[#fff8f1] shadow-[0_18px_34px_rgba(212,96,58,0.24)] transition active:scale-[0.98]"
+            className="claim-quick-rise flex min-h-[5.25rem] items-center justify-between rounded-[1.4rem] border border-[rgba(212,96,58,0.2)] bg-[#d4603a] px-4 py-3 text-left text-[#fff8f1] shadow-[0_18px_34px_rgba(212,96,58,0.24)] transition active:scale-[0.98]"
           >
             <span className="flex items-center gap-3">
               <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-white/16 text-[#fff8f1] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">

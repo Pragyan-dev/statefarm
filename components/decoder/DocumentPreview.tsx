@@ -36,7 +36,7 @@ export function DocumentPreview({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.6rem] border border-[rgba(17,24,39,0.1)] bg-[linear-gradient(180deg,#FFFFFF_0%,#FBF6EF_100%)] shadow-[0_18px_38px_rgba(17,24,39,0.12)] ${className}`}
+      className={`relative overflow-hidden rounded-[1.6rem] border border-[rgba(17,24,39,0.1)] bg-[#fbf6ef] shadow-[0_18px_38px_rgba(17,24,39,0.12)] ${className}`}
     >
       <PdfFallback name={name} dimmed={dimmed} />
     </div>
@@ -52,7 +52,7 @@ function PdfFallback({
 }) {
   return (
     <div
-      className={`absolute inset-0 rounded-[1.6rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.88),rgba(251,246,239,0.98))] px-5 py-5 transition-opacity duration-500 ${
+      className={`absolute inset-0 rounded-[1.6rem] bg-[rgba(251,246,239,0.98)] px-5 py-5 transition-opacity duration-500 ${
         dimmed ? "opacity-35" : "opacity-100"
       }`}
     >

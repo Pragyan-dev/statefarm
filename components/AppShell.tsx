@@ -3,15 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  BookOpen,
-  Home,
-  PhoneCall,
-  ScanSearch,
-  Settings2,
-  Shield,
-  Sparkles,
-} from "lucide-react";
+import { Settings2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { AccessibilityMenu } from "@/components/AccessibilityMenu";
@@ -56,14 +48,19 @@ export function AppShell({
   const showWebsiteChrome = accessReady && isDashboardBuilt;
 
   const websiteNav = [
-    { href: "/dashboard", label: t("dashboard"), icon: Home },
-    { href: "/newcomer-guide", label: t("newcomerGuide"), icon: BookOpen },
-    { href: "/simulate", label: t("shockSimulator"), icon: Sparkles },
-    { href: "/coverage", label: t("coverage"), icon: Shield },
-    { href: "/decode", label: t("policyDecoder"), icon: ScanSearch },
-    { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
+    { href: "/dashboard", label: t("dashboard") },
+    { href: "/newcomer-guide", label: t("newcomerGuide") },
+    { href: "/simulate", label: t("shockSimulator") },
+    { href: "/coverage", label: t("coverage") },
+    { href: "/decode", label: t("policyDecoder") },
+    { href: "/claim", label: t("claimCoach") },
   ];
   const shellNav = showWebsiteChrome ? websiteNav : [{ href: "/", label: t("websiteOverview") }];
+  const footerTrustChips = [
+    t("footerTrustLanguages"),
+    t("footerTrustAccessibility"),
+    t("footerTrustVoice"),
+  ];
 
   useEffect(() => {
     if (!shouldRedirectHome && !shouldRedirectLandingToDashboard) {
@@ -108,13 +105,19 @@ export function AppShell({
           {t("skipToContent")}
         </a>
         <div className="website-shell min-h-dvh">
-          <header className="z-40">
-            <div className="website-topbar">
-              <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6 lg:px-8">
-                <Link href={showWebsiteChrome ? "/dashboard" : "/"} className="font-display text-3xl leading-none text-white">
+          <header className="website-topbar z-40">
+            <div className="website-topbar-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="website-topbar-row">
+                <Link
+                  href={showWebsiteChrome ? "/dashboard" : "/"}
+                  className="website-topbar-brand font-display text-white"
+                >
                   FirstCover
                 </Link>
-                <div className="flex flex-wrap items-center justify-end gap-2 lg:gap-3">
+                <div className="website-topbar-controls">
+                  <a href="tel:8007325246" className="website-topbar-pill">
+                    <span>800-732-5246</span>
+                  </a>
                   <LanguageToggle tone="light" className="website-topbar-toggle" />
                   <ViewModeToggle tone="light" compact className="website-topbar-toggle" />
                   <button
@@ -128,41 +131,29 @@ export function AppShell({
                   </button>
                 </div>
               </div>
+              <div className="website-topbar-divider" aria-hidden="true" />
+
+              {showWebsiteChrome ? (
+                <nav aria-label="Main navigation" className="website-topbar-nav">
+                  {shellNav.map((item) => {
+                    const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        aria-current={active ? "page" : undefined}
+                        className={`website-navlink whitespace-nowrap ${
+                          active ? "website-navlink-active" : ""
+                        }`}
+                      >
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              ) : null}
             </div>
-
-            {showWebsiteChrome ? (
-              <div className="website-header backdrop-blur-xl">
-                <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-                  <div className="min-w-0">
-                    <p className="web-kicker">{t("appName")}</p>
-                    <p className="mt-2 max-w-[56ch] text-sm leading-6 text-[var(--color-muted)]">
-                      {t("tagline")}
-                    </p>
-                  </div>
-
-                  <nav aria-label="Main navigation" className="mt-5 flex flex-wrap gap-2">
-                    {shellNav.map((item) => {
-                      const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-                      const Icon = "icon" in item ? item.icon : null;
-
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          aria-current={active ? "page" : undefined}
-                          className={`website-navlink whitespace-nowrap ${
-                            active ? "website-navlink-active" : ""
-                          }`}
-                        >
-                          {Icon ? <Icon className="size-4" /> : null}
-                          <span>{item.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </nav>
-                </div>
-              </div>
-            ) : null}
           </header>
 
           <main
@@ -175,17 +166,65 @@ export function AppShell({
           </main>
           {showWebsiteChrome ? (
             <footer className="website-footer-band">
-              <div className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
-                <div>
-                  <p className="web-kicker">{t("websiteOverview")}</p>
-                  <p className="mt-2 max-w-[56ch] text-base leading-7 text-[var(--color-muted)]">
-                    {t("homePitchCopy")}
-                  </p>
+              <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+                <div className="website-footer-grid">
+                  <section className="website-footer-column">
+                    <p className="web-kicker">{t("footerSupportEyebrow")}</p>
+                    <h2 className="mt-3 font-display text-3xl leading-tight text-[var(--color-ink)]">
+                      FirstCover
+                    </h2>
+                    <p className="website-footer-support-copy mt-3">
+                      {t("footerSupportCopy")}
+                    </p>
+                    <div className="website-footer-chip-row mt-5">
+                      {footerTrustChips.map((chip) => (
+                        <span key={chip} className="website-footer-chip">
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  </section>
+
+                  <nav className="website-footer-column" aria-label={t("footerExploreEyebrow")}>
+                    <p className="web-kicker">{t("footerExploreEyebrow")}</p>
+                    <div className="website-footer-link-list mt-4">
+                      {websiteNav.map((item) => (
+                        <Link key={item.href} href={item.href} className="website-footer-link">
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </nav>
+
+                  <section className="website-footer-column website-footer-help">
+                    <p className="web-kicker">{t("footerHelpEyebrow")}</p>
+                    <p className="mt-3 text-lg font-semibold leading-7 text-[var(--color-ink)]">
+                      {t("footerHelpTitle")}
+                    </p>
+                    <p className="website-footer-help-copy mt-3">
+                      {t("footerHelpCopy")}
+                    </p>
+                    <a href="tel:8007325246" className="website-footer-phone mt-5">
+                      <span>{t("footerCallLabel")}</span>
+                      <span>800-732-5246</span>
+                    </a>
+                    <div className="mt-5 flex flex-wrap items-center gap-3">
+                      <Link href="/dashboard" className="web-primary-button">
+                        {t("dashboard")}
+                      </Link>
+                      <Link href="/claim" className="web-secondary-button">
+                        {t("claimCoach")}
+                      </Link>
+                    </div>
+                  </section>
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Link href="/dashboard" className="web-primary-button">
-                    {t("dashboard")}
-                  </Link>
+
+                <div className="website-footer-meta mt-8">
+                  <p className="website-footer-disclaimer">{t("footerDisclaimer")}</p>
+                  <div className="website-footer-utility-list">
+                    <span>{t("language")}</span>
+                    <span>{t("accessibility")}</span>
+                  </div>
                 </div>
               </div>
             </footer>

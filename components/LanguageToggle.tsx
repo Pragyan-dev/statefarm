@@ -18,7 +18,7 @@ export function LanguageToggle({
     <div
       className={`inline-flex rounded-full border p-1 ${
         tone === "light"
-          ? "border-[var(--color-border)] bg-white/80"
+          ? "border-white/20 bg-transparent text-white"
           : "border-white/20 bg-white/10 backdrop-blur"
       } ${className}`}
       role="group"
@@ -38,9 +38,11 @@ export function LanguageToggle({
             }
             className={`min-h-11 rounded-full px-4 text-sm font-semibold transition ${
               active
-                ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
+                ? tone === "light"
+                  ? "bg-white text-[var(--color-accent)] shadow-[0_10px_24px_rgba(131,36,21,0.18)]"
+                  : "bg-[var(--color-ink)] text-[var(--color-paper)]"
                 : tone === "light"
-                  ? "text-[var(--color-muted)]"
+                  ? "text-white/78 hover:text-white"
                   : "text-[var(--color-paper)]/75"
             }`}
             aria-pressed={active}

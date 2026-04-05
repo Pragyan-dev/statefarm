@@ -36,7 +36,7 @@ export function UploadZone({
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const primaryActionClass =
-    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[linear-gradient(135deg,#d4603a_0%,#e67647_100%)] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-60";
+    "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)] disabled:cursor-not-allowed disabled:opacity-60";
   const secondaryActionClass =
     "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-white/80 px-5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_10px_22px_rgba(17,24,39,0.06)] transition hover:-translate-y-px hover:bg-white";
 
@@ -63,7 +63,7 @@ export function UploadZone({
     return (
       <section className="panel-card mx-auto w-full max-w-[34rem] overflow-hidden">
         <div className="grid gap-5">
-          <div className="rounded-[1.85rem] border border-[rgba(17,24,39,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.8),rgba(251,246,239,0.95))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+          <div className="rounded-[1.85rem] border border-[rgba(17,24,39,0.08)] bg-[rgba(251,246,239,0.95)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
             <DocumentPreview
               src={selectedDocument.previewSrc}
               kind={selectedDocument.kind}
@@ -151,7 +151,7 @@ export function UploadZone({
       }}
     >
       <div className="flex min-h-[24rem] flex-col items-center justify-center text-center">
-        <div className="flex size-24 items-center justify-center rounded-[2rem] bg-[linear-gradient(180deg,rgba(212,96,58,0.16),rgba(31,122,90,0.1))] text-[var(--color-ink)] shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)]">
+        <div className="flex size-24 items-center justify-center rounded-[2rem] bg-[rgba(212,96,58,0.12)] text-[var(--color-ink)] shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)]">
           <div className="relative">
             <FileText className="size-12" strokeWidth={1.8} />
             <Camera className="absolute -bottom-2 -right-3 size-6 rounded-full bg-[var(--color-paper)] p-1 text-[var(--color-accent)] shadow-[0_8px_16px_rgba(17,24,39,0.14)]" />
