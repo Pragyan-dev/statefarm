@@ -470,3 +470,90 @@ a {
     opacity: 0;
   }
 }
+
+.decoder-upload-pulse {
+  animation: decoderBorderPulse 2.6s ease-in-out infinite;
+}
+
+.decoder-scan-glow {
+  background:
+    linear-gradient(180deg, rgba(55, 138, 221, 0.08), transparent 20%, transparent 80%, rgba(55, 138, 221, 0.06)),
+    radial-gradient(circle at center, rgba(55, 138, 221, 0.08), transparent 58%);
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #378add, transparent);
+  box-shadow: 0 0 12px rgba(55, 138, 221, 0.5);
+  animation: scanLine 2.5s ease-in-out forwards;
+}
+
+.decoder-fragment {
+  animation: decoderFragmentFly 1.4s ease-out forwards;
+  opacity: 0;
+}
+
+.decoder-shield-segment {
+  animation: decoderSegmentEnter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.decoder-gap-pulse {
+  animation: decoderGapPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes decoderBorderPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 96, 58, 0.08), 0 22px 50px rgba(17, 24, 39, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(212, 96, 58, 0.06), 0 22px 50px rgba(17, 24, 39, 0.1);
+  }
+}
+
+@keyframes scanLine {
+  from {
+    top: 0%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes decoderFragmentFly {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(10px, 200px, 0) scale(0.82);
+  }
+}
+
+@keyframes decoderSegmentEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes decoderGapPulse {
+  0%,
+  100% {
+    box-shadow: inset 4px 0 0 #e24b4a, 0 18px 34px rgba(17, 24, 39, 0.08);
+  }
+  50% {
+    box-shadow: inset 6px 0 0 #e24b4a, 0 22px 40px rgba(17, 24, 39, 0.12);
+  }
+}
