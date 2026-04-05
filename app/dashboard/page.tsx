@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, BadgeAlert, ShieldCheck, Sparkles, Upload, WalletCards } from "lucide-react";
+import { ArrowRight, BadgeAlert, ShieldCheck, Sparkles, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ProgressChecklist, type ChecklistItem } from "@/components/ProgressChecklist";
@@ -104,12 +104,6 @@ export default function DashboardPage() {
       title: t("dashboardDecodeTitle"),
       description: t("dashboardDecodeCopy"),
       icon: Upload,
-    },
-    {
-      href: "/afford",
-      title: t("dashboardBudgetTitle"),
-      description: t("dashboardBudgetCopy"),
-      icon: WalletCards,
     },
     {
       href: "/newcomer-guide",

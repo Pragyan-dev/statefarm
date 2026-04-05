@@ -11,7 +11,6 @@ import {
   Settings2,
   Shield,
   Sparkles,
-  WalletCards,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -41,7 +40,6 @@ export function AppShell({
     { href: "/coverage", label: t("coverage"), icon: Shield },
     { href: "/decode", label: t("policyDecoder"), icon: ScanSearch },
     { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
-    { href: "/afford", label: t("dashboardBudgetTitle"), icon: WalletCards },
   ];
 
   if (!isReady) {

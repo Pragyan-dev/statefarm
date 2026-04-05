@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Home, PhoneCall, ScanSearch, Shield, Sparkles, WalletCards } from "lucide-react";
+import { BookOpen, Home, PhoneCall, ScanSearch, Shield, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function BottomNav() {
@@ -40,11 +40,6 @@ export function BottomNav() {
       label: t("claimCoach"),
       icon: PhoneCall,
     },
-    {
-      href: "/afford",
-      label: t("dashboardBudgetTitle"),
-      icon: WalletCards,
-    },
   ];
 
   return (
@@ -52,7 +47,7 @@ export function BottomNav() {
       aria-label="Main navigation"
       className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[430px] border-t border-white/10 bg-[rgb(8_10_18_/_0.86)] px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-xl"
     >
-      <ul className="grid grid-cols-7 gap-2">
+      <ul className="grid grid-cols-6 gap-2">
         {items.map((item) => {
           const active = pathname.startsWith(item.href);
           const Icon = item.icon;
