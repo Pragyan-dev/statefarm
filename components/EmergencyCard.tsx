@@ -56,7 +56,7 @@ export function EmergencyCard({
         ref={cardRef}
         className="mt-5 rounded-[2rem] bg-[var(--color-ink)] p-5 text-[var(--color-paper)]"
       >
-        <p className="text-xs uppercase tracking-[0.3em] text-white/60">ArriveSafe</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-white/60">FirstCover</p>
         <h3 className="mt-2 font-display text-3xl">
           {profile.visaStatus} · {profile.state}
         </h3>

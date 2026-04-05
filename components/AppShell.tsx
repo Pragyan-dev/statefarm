@@ -108,39 +108,31 @@ export function AppShell({
             <div className="website-topbar">
               <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6 lg:px-8">
                 <Link href="/" className="font-display text-3xl leading-none text-white">
-                  ArriveSafe
+                  FirstCover
                 </Link>
-                <div className="hidden items-center gap-5 text-xs font-semibold uppercase tracking-[0.18em] text-white/85 lg:flex">
-                  <span>{t("websiteView")}</span>
-                  <span>{t("language")}: EN / ES</span>
-                  <span>{t("accessibility")}</span>
+                <div className="flex flex-wrap items-center justify-end gap-2 lg:gap-3">
+                  <LanguageToggle tone="light" className="website-topbar-toggle" />
+                  <ViewModeToggle tone="light" compact className="website-topbar-toggle" />
+                  <button
+                    type="button"
+                    onClick={() => setMenuOpen(true)}
+                    aria-label={t("accessibility")}
+                    className="website-topbar-action"
+                  >
+                    <Settings2 className="size-4" />
+                    <span>{t("accessibility")}</span>
+                  </button>
                 </div>
               </div>
             </div>
 
             <div className="website-header backdrop-blur-xl">
               <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-                <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-                  <div className="min-w-0">
-                    <p className="web-kicker">{t("appName")}</p>
-                    <p className="mt-2 max-w-[56ch] text-sm leading-6 text-[var(--color-muted)]">
-                      {t("tagline")}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2 xl:justify-end">
-                    <LanguageToggle tone="light" />
-                    <ViewModeToggle tone="light" compact />
-                    <button
-                      type="button"
-                      onClick={() => setMenuOpen(true)}
-                      aria-label={t("accessibility")}
-                      className="web-secondary-button"
-                    >
-                      <Settings2 className="size-4" />
-                      <span className="hidden sm:inline">{t("accessibility")}</span>
-                    </button>
-                  </div>
+                <div className="min-w-0">
+                  <p className="web-kicker">{t("appName")}</p>
+                  <p className="mt-2 max-w-[56ch] text-sm leading-6 text-[var(--color-muted)]">
+                    {t("tagline")}
+                  </p>
                 </div>
 
                 <nav aria-label="Main navigation" className="mt-5 flex flex-wrap gap-2">

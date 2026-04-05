@@ -17,7 +17,7 @@ const sourceSans3 = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "ArriveSafe",
+  title: "FirstCover",
   description: "Insurance onboarding and policy decoding for immigrants in the US.",
 };
 

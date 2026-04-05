@@ -6,8 +6,10 @@ import { useAccessibility } from "@/hooks/useAccessibility";
 
 export function LanguageToggle({
   tone = "dark",
+  className = "",
 }: {
   tone?: "dark" | "light";
+  className?: string;
 }) {
   const t = useTranslations();
   const { settings, setSettings } = useAccessibility();
@@ -18,7 +20,7 @@ export function LanguageToggle({
         tone === "light"
           ? "border-[var(--color-border)] bg-white/80"
           : "border-white/20 bg-white/10 backdrop-blur"
-      }`}
+      } ${className}`}
       role="group"
       aria-label={t("language")}
     >

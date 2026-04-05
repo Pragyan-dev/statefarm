@@ -633,6 +633,38 @@ a {
   color: #fff8f4;
 }
 
+.website-topbar-toggle {
+  border-color: rgba(255, 255, 255, 0.36) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+}
+
+.website-topbar-toggle button {
+  min-height: 3.15rem;
+  padding-left: 1.55rem;
+  padding-right: 1.55rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.website-topbar-action {
+  display: inline-flex;
+  min-height: 3.15rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.85rem 1.45rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.website-topbar-action:hover {
+  color: var(--color-accent);
+}
+
 .website-header {
   border-bottom: 1px solid rgba(59, 58, 57, 0.1);
   background: rgba(255, 255, 255, 0.98);
