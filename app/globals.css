@@ -928,3 +928,136 @@ a {
   border-color: rgba(211, 60, 39, 0.5);
   background: #fff8f6;
 }
+
+.home-workspace-shell {
+  min-height: 100%;
+}
+
+.home-workspace-main {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.home-overview-panel,
+.home-builder-card {
+  border: 1px solid rgba(59, 58, 57, 0.12);
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 50px rgba(59, 58, 57, 0.06);
+}
+
+.home-overview-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.2rem;
+  background:
+    radial-gradient(circle at top left, rgba(198, 61, 54, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 242, 234, 0.96) 100%);
+}
+
+.home-overview-layout {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  min-height: 100%;
+}
+
+.home-overview-copy {
+  max-width: 30rem;
+}
+
+.home-safi-figure {
+  position: relative;
+  min-height: 10.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.home-safi-character {
+  width: min(100%, 14rem);
+}
+
+.home-builder-card {
+  padding: 1.1rem;
+}
+
+.home-builder-choice,
+.home-builder-toggle {
+  border: 1px solid rgba(59, 58, 57, 0.12);
+  border-radius: 1.2rem;
+  background: #ffffff;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.home-builder-choice {
+  display: grid;
+  place-items: center;
+  min-height: 2.9rem;
+  padding: 0.7rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.home-builder-toggle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  cursor: pointer;
+}
+
+.home-builder-choice-active {
+  border-color: rgba(198, 61, 54, 0.45);
+  background: #fff8f6;
+  transform: translateY(-1px);
+}
+
+@media (min-width: 1024px) {
+  .home-workspace-main {
+    min-height: calc(100dvh - 4.9rem);
+    min-height: 0;
+    grid-template-columns: minmax(0, 1.12fr) minmax(22.5rem, 24.75rem);
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  .home-overview-panel,
+  .home-builder-card {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .home-overview-panel {
+    padding: 1.25rem;
+  }
+
+  .home-overview-layout {
+    grid-template-columns: minmax(0, 1fr) 14rem;
+    gap: 1.25rem;
+  }
+
+  .home-overview-copy {
+    align-self: center;
+  }
+
+  .home-safi-figure {
+    min-height: 100%;
+    align-items: end;
+    justify-items: center;
+  }
+
+  .home-safi-character {
+    width: min(100%, 15rem);
+  }
+
+  .home-builder-card {
+    overflow: hidden;
+  }
+}

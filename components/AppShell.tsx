@@ -46,11 +46,14 @@ export function AppShell({
   const [isDashboardBuilt, , accessReady] = useDashboardAccess();
   const routeAccessible = canAccessRoute(pathname, isDashboardBuilt);
   const shouldRedirectHome = accessReady && !routeAccessible;
+  const shouldRedirectLandingToDashboard = accessReady && isDashboardBuilt && isLanding;
   const waitingOnProtectedAccess = !accessReady && isProtectedRoute(pathname);
-  const shouldRenderFallbackChildren = !waitingOnProtectedAccess && !shouldRedirectHome;
+  const shouldRenderFallbackChildren =
+    !waitingOnProtectedAccess && !shouldRedirectHome && !shouldRedirectLandingToDashboard;
   const hasActiveSimulatorStory = isSimulator && Boolean(storySession?.scenarioId);
   const shouldUseWebsiteShell =
     (isSimulator && !hasActiveSimulatorStory) || (!isSimulator && resolvedMode === "website");
+  const showWebsiteChrome = accessReady && isDashboardBuilt;
 
   const websiteNav = [
     { href: "/dashboard", label: t("dashboard"), icon: Home },
@@ -60,19 +63,23 @@ export function AppShell({
     { href: "/decode", label: t("policyDecoder"), icon: ScanSearch },
     { href: "/claim", label: t("claimCoach"), icon: PhoneCall },
   ];
-  const shellNav = accessReady && isDashboardBuilt
-    ? [{ href: "/", label: t("websiteOverview") }, ...websiteNav]
-    : [{ href: "/", label: t("websiteOverview") }];
+  const shellNav = showWebsiteChrome ? websiteNav : [{ href: "/", label: t("websiteOverview") }];
 
   useEffect(() => {
-    if (!shouldRedirectHome) {
+    if (!shouldRedirectHome && !shouldRedirectLandingToDashboard) {
       return;
     }
 
-    router.replace("/");
-  }, [router, shouldRedirectHome]);
+    router.replace(shouldRedirectLandingToDashboard ? "/dashboard" : "/");
+  }, [router, shouldRedirectHome, shouldRedirectLandingToDashboard]);
 
-  if (!isReady || !isStorySessionReady || waitingOnProtectedAccess || shouldRedirectHome) {
+  if (
+    !isReady ||
+    !isStorySessionReady ||
+    waitingOnProtectedAccess ||
+    shouldRedirectHome ||
+    shouldRedirectLandingToDashboard
+  ) {
     return (
       <>
         <a
@@ -101,10 +108,10 @@ export function AppShell({
           {t("skipToContent")}
         </a>
         <div className="website-shell min-h-dvh">
-          <header className="sticky top-0 z-40">
+          <header className="z-40">
             <div className="website-topbar">
               <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6 lg:px-8">
-                <Link href="/" className="font-display text-3xl leading-none text-white">
+                <Link href={showWebsiteChrome ? "/dashboard" : "/"} className="font-display text-3xl leading-none text-white">
                   FirstCover
                 </Link>
                 <div className="flex flex-wrap items-center justify-end gap-2 lg:gap-3">
@@ -123,65 +130,66 @@ export function AppShell({
               </div>
             </div>
 
-            <div className="website-header backdrop-blur-xl">
-              <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-                <div className="min-w-0">
-                  <p className="web-kicker">{t("appName")}</p>
-                  <p className="mt-2 max-w-[56ch] text-sm leading-6 text-[var(--color-muted)]">
-                    {t("tagline")}
-                  </p>
+            {showWebsiteChrome ? (
+              <div className="website-header backdrop-blur-xl">
+                <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+                  <div className="min-w-0">
+                    <p className="web-kicker">{t("appName")}</p>
+                    <p className="mt-2 max-w-[56ch] text-sm leading-6 text-[var(--color-muted)]">
+                      {t("tagline")}
+                    </p>
+                  </div>
+
+                  <nav aria-label="Main navigation" className="mt-5 flex flex-wrap gap-2">
+                    {shellNav.map((item) => {
+                      const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                      const Icon = "icon" in item ? item.icon : null;
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          aria-current={active ? "page" : undefined}
+                          className={`website-navlink whitespace-nowrap ${
+                            active ? "website-navlink-active" : ""
+                          }`}
+                        >
+                          {Icon ? <Icon className="size-4" /> : null}
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
                 </div>
-
-                <nav aria-label="Main navigation" className="mt-5 flex flex-wrap gap-2">
-                  {shellNav.map((item) => {
-                    const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-                    const Icon = "icon" in item ? item.icon : null;
-
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        aria-current={active ? "page" : undefined}
-                        className={`website-navlink whitespace-nowrap ${
-                          active ? "website-navlink-active" : ""
-                        }`}
-                      >
-                        {Icon ? <Icon className="size-4" /> : null}
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
               </div>
-            </div>
+            ) : null}
           </header>
 
           <main
             id="main-content"
-            className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10"
+            className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${
+              showWebsiteChrome ? "py-8 lg:py-10" : "py-4 lg:py-5"
+            }`}
           >
             {children}
           </main>
-          <footer className="website-footer-band">
-            <div className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
-              <div>
-                <p className="web-kicker">{t("websiteOverview")}</p>
-                <p className="mt-2 max-w-[56ch] text-base leading-7 text-[var(--color-muted)]">
-                  {t("homePitchCopy")}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <Link href="/" className="web-primary-button">
-                  {t("getStarted")}
-                </Link>
-                {accessReady && isDashboardBuilt ? (
-                  <Link href="/dashboard" className="web-secondary-button">
+          {showWebsiteChrome ? (
+            <footer className="website-footer-band">
+              <div className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
+                <div>
+                  <p className="web-kicker">{t("websiteOverview")}</p>
+                  <p className="mt-2 max-w-[56ch] text-base leading-7 text-[var(--color-muted)]">
+                    {t("homePitchCopy")}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link href="/dashboard" className="web-primary-button">
                     {t("dashboard")}
                   </Link>
-                ) : null}
+                </div>
               </div>
-            </div>
-          </footer>
+            </footer>
+          ) : null}
           <AccessibilityMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
         </div>
       </>
