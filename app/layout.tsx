@@ -32,7 +32,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${archivo.variable} ${sourceSans3.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
+      <body suppressHydrationWarning className="min-h-full">
         <AppProviders>
           <AppShell>{children}</AppShell>
         </AppProviders>
