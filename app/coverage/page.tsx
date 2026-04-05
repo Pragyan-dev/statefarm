@@ -2,21 +2,17 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
-import ssnRequirements from "@/data/ssn-requirements.json";
 
 import { ApartmentCoverageCard } from "@/components/ApartmentCoverageCard";
 import { ApartmentSelector } from "@/components/ApartmentSelector";
+import { AutoInsuranceEstimator } from "@/components/coverage/AutoInsuranceEstimator";
 import { FemaTimeline } from "@/components/FemaTimeline";
-import { ReadAloud } from "@/components/ReadAloud";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useViewMode } from "@/hooks/useViewMode";
 import {
   DEFAULT_APARTMENT_ZIP,
   deriveProfileLocation,
-  formatCurrency,
-  getStateCosts,
   isSupportedApartmentZip,
   resolveApartmentZip,
 } from "@/lib/content";
@@ -41,14 +37,7 @@ const CoverageMap = dynamic(
   },
 );
 
-type Requirements = {
-  autoNeedsSsn: boolean;
-  acceptsItin: boolean;
-  undocumentedLicense: boolean;
-};
-
 export default function CoveragePage() {
-  const t = useTranslations();
   const [profile, setProfile, isReady] = useUserProfile();
   const { settings } = useAccessibility();
   const { resolvedMode } = useViewMode();
@@ -57,7 +46,7 @@ export default function CoveragePage() {
   const [activeZip, setActiveZip] = useState(DEFAULT_APARTMENT_ZIP);
   const [selectedApartmentAddress, setSelectedApartmentAddress] = useState<string | null>(null);
   const [disasterData, setDisasterData] = useState<DisasterHistoryPayload>(
-    buildFallbackDisasterHistory("AZ", "en", "fetch-failed"),
+    buildFallbackDisasterHistory("Tempe", "AZ", "en", "fetch-failed"),
   );
   const [loadingDisasters, setLoadingDisasters] = useState(false);
   const initializedRef = useRef(false);
@@ -103,30 +92,32 @@ export default function CoveragePage() {
       setLoadingDisasters(true);
 
       try {
-        const response = await fetch(`/api/fema?state=${coverageState}&language=${settings.language}`);
+        const params = new URLSearchParams({
+          city: zipData.city,
+          state: coverageState,
+          language: settings.language,
+        });
+        for (const area of zipData.disasterAreaMatches ?? [zipData.city]) {
+          params.append("area", area);
+        }
+
+        const response = await fetch(`/api/fema?${params.toString()}`);
         const payload = (await response.json()) as DisasterHistoryPayload;
         setDisasterData(payload);
       } catch {
-        setDisasterData(buildFallbackDisasterHistory(coverageState, settings.language, "fetch-failed"));
+        setDisasterData(buildFallbackDisasterHistory(zipData.city, coverageState, settings.language, "fetch-failed"));
       } finally {
         setLoadingDisasters(false);
       }
     }
 
     void loadDisasters();
-  }, [coverageState, isReady, settings.language]);
+  }, [coverageState, isReady, settings.language, zipData.city, zipData.disasterAreaMatches]);
 
   const selectedApartment =
     zipData.apartments.find((apartment) => apartment.address === selectedApartmentAddress) ??
     zipData.apartments[0] ??
     null;
-
-  const requirements = useMemo(
-    () =>
-      (ssnRequirements as Record<string, Requirements>)[coverageState] ??
-      (ssnRequirements as Record<string, Requirements>)["AZ"],
-    [coverageState],
-  );
 
   if (!isReady || !selectedApartment) {
     return (
@@ -135,21 +126,6 @@ export default function CoveragePage() {
       </div>
     );
   }
-
-  const costs = getStateCosts(coverageState);
-  const stateCallout = isSpanish
-    ? `En ${coverageState}, el seguro de auto ${requirements.autoNeedsSsn ? "puede requerir" : "no requiere"} SSN. ITIN aceptado: ${requirements.acceptsItin ? "si" : "no"}.`
-    : `In ${coverageState}, auto insurance does ${
-        requirements.autoNeedsSsn ? "" : "not "
-      }require an SSN. ITIN accepted: ${requirements.acceptsItin ? "yes" : "no"}.`;
-
-  const heroCopy = isWebsite
-    ? isSpanish
-      ? "Entra a un lugar real, toca un apartamento y mira lo que realmente protege el seguro de inquilino."
-      : "Drop into a real place, tap an apartment, and see what renter's coverage actually protects."
-    : isSpanish
-      ? "Toca un pin de apartamento cercano y mira al instante la brecha de proteccion del inquilino."
-      : "Tap a nearby apartment pin and see the renter's protection gap instantly.";
 
   function updateSupportedZip(nextZip: string) {
     const trimmedZip = nextZip.trim();
@@ -183,68 +159,18 @@ export default function CoveragePage() {
 
   return (
     <div className="mx-auto max-w-[1380px] py-4 lg:py-6">
-      <section className={`grid gap-4 ${isWebsite ? "xl:grid-cols-[minmax(0,0.92fr)_minmax(360px,0.78fr)]" : ""}`}>
-        <section className="panel-card hero-ambient mt-0 overflow-hidden">
-          <p className="eyebrow">{isSpanish ? "Buscador de cobertura" : "Coverage finder"}</p>
-          <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[11ch]">
-            {isSpanish
-              ? "El seguro se entiende mejor cuando puedes ver la cuadra, no solo la cuenta."
-              : "Insurance hits harder when you can see the block, not just the bill."}
-          </h1>
-          <p className="mt-4 max-w-[42ch] text-base text-[var(--color-muted)]">{heroCopy}</p>
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <div className="rounded-full bg-[var(--color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--color-accent)]">
-              {zipData.city}, {zipData.state} {activeZip}
-            </div>
-            <div className="rounded-full border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-muted)]">
-              {formatCurrency(selectedApartment.estimate, settings.language)}
-              {isSpanish ? "/mes promedio para tu apartamento seleccionado" : "/mo average for your selected apartment"}
-            </div>
+      <section className="mb-6">
+        <p className="eyebrow">{isSpanish ? "Cobertura" : "Coverage"}</p>
+        <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[12ch] lg:text-5xl">
+          {isSpanish
+            ? "Cobertura para donde vives y lo que manejas."
+            : "Coverage for where you live and what you drive."}
+        </h1>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="rounded-full bg-[var(--color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--color-accent)]">
+            {zipData.city}, {zipData.state} {activeZip}
           </div>
-        </section>
-
-        <section className="panel-card mt-0">
-          <p className="eyebrow">{t("stateRequirements")}</p>
-          <h2 className="font-display text-2xl text-[var(--color-ink)]">
-            {requirements.autoNeedsSsn
-              ? isSpanish
-                ? `Algunas aseguradoras en ${coverageState} pueden pedir SSN.`
-                : `Some insurers in ${coverageState} may ask for an SSN.`
-              : isSpanish
-                ? `NO necesitas SSN para el seguro de auto en ${coverageState}.`
-                : `You do NOT need an SSN for auto insurance in ${coverageState}.`}
-          </h2>
-          <p className="mt-4 text-sm text-[var(--color-muted)]">{stateCallout}</p>
-          <div className="mt-5">
-            <ReadAloud text={stateCallout} />
-          </div>
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-                {isSpanish ? "Responsabilidad auto" : "Auto liability"}
-              </p>
-              <p className="mt-2 text-2xl font-bold text-[var(--color-ink)]">
-                {formatCurrency(costs.autoLiability, settings.language)}
-              </p>
-            </div>
-            <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-                {isSpanish ? "Base de inquilino por ZIP" : "ZIP renter baseline"}
-              </p>
-              <p className="mt-2 text-2xl font-bold text-[var(--color-ink)]">
-                {formatCurrency(zipData.avgRenters, settings.language)}
-              </p>
-            </div>
-            <div className="rounded-[1.5rem] border border-[var(--color-border)] px-4 py-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)]">
-                {isSpanish ? "Multa sin seguro" : "No-insurance fine"}
-              </p>
-              <p className="mt-2 text-2xl font-bold text-[var(--color-danger)]">
-                {formatCurrency(costs.noAutoFine, settings.language)}
-              </p>
-            </div>
-          </div>
-        </section>
+        </div>
       </section>
 
       <div className="sr-only" aria-live="polite" aria-atomic="true">
@@ -256,19 +182,14 @@ export default function CoveragePage() {
       <section className={`mt-6 grid items-start gap-6 ${isWebsite ? "xl:grid-cols-[minmax(0,1.18fr)_minmax(360px,0.82fr)]" : ""}`}>
         <div className="grid gap-6 min-w-0">
           <section className="panel-card mt-0 overflow-hidden">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div className="max-w-[40rem]">
-                <p className="eyebrow">{isSpanish ? "Mapa + apartamentos" : "Map + apartments"}</p>
-                <h2 className="font-display text-3xl leading-tight text-[var(--color-ink)]">
-                  {isSpanish
-                    ? "Explora la zona primero. Luego elige el apartamento que encaja con tu presupuesto."
-                    : "Explore the block first. Then choose the apartment that matches your budget."}
-                </h2>
-              </div>
-              <p className="max-w-[30ch] text-sm text-[var(--color-muted)]">
+            <div className="max-w-[40rem]">
+              <h2 className="font-display text-3xl leading-tight text-[var(--color-ink)] lg:text-4xl">
+                {isSpanish ? "Cobertura de inquilino" : "Renters coverage"}
+              </h2>
+              <p className="mt-3 text-sm text-[var(--color-muted)]">
                 {isSpanish
-                  ? "Los pines, el cambio de ZIP y las tarjetas se mantienen sincronizados para que el panel de cobertura siempre refleje el lugar que elegiste."
-                  : "Pins, ZIP changes, and apartment cards stay synchronized so the coverage panel on the right always reflects the place you picked."}
+                  ? "Elige un apartamento y mira cuanto podria costar proteger tus cosas alli."
+                  : "Pick an apartment and see what it could cost to protect your belongings there."}
               </p>
             </div>
 
@@ -297,12 +218,6 @@ export default function CoveragePage() {
         </div>
 
         <div className={`grid gap-6 ${isWebsite ? "xl:sticky xl:top-28" : ""}`}>
-          <ApartmentCoverageCard
-            apartment={selectedApartment}
-            zipData={zipData}
-            language={settings.language}
-          />
-
           <FemaTimeline
             state={coverageState}
             language={settings.language}
@@ -310,7 +225,17 @@ export default function CoveragePage() {
             topRisks={zipData.topRisks}
             loading={loadingDisasters}
           />
+
+          <ApartmentCoverageCard
+            apartment={selectedApartment}
+            zipData={zipData}
+            language={settings.language}
+          />
         </div>
+      </section>
+
+      <section className="mt-6">
+        <AutoInsuranceEstimator state={coverageState} zip={activeZip} />
       </section>
     </div>
   );

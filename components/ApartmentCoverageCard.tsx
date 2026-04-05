@@ -5,6 +5,8 @@ import { Home, ShieldCheck, Sofa, TriangleAlert } from "lucide-react";
 import { formatCurrency, pickText } from "@/lib/content";
 import type { ApartmentListing, ApartmentZipData, Language } from "@/lib/types";
 
+const STATE_FARM_RENTERS_INFO_URL = "https://www.statefarm.com/insurance/renters";
+
 function getLowerRentAmount(range: string) {
   const match = range.replaceAll(",", "").match(/\$([0-9]+)/);
   return match ? Number(match[1]) : 1200;
@@ -62,7 +64,12 @@ export function ApartmentCoverageCard({
         </a>
       </div>
 
-      <div className="mt-5 grid gap-4 rounded-[1.7rem] bg-[var(--color-paper)] p-5 shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)]">
+      <a
+        href={STATE_FARM_RENTERS_INFO_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-5 grid gap-4 rounded-[1.7rem] bg-[var(--color-paper)] p-5 shadow-[inset_0_0_0_1px_rgba(14,18,32,0.06)] transition hover:bg-[var(--color-accent-soft)]"
+      >
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-muted)]">
@@ -101,7 +108,7 @@ export function ApartmentCoverageCard({
             />
           </div>
         </div>
-      </div>
+      </a>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {coverageItems.map((item) => {

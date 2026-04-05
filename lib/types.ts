@@ -70,6 +70,7 @@ export interface ApartmentListing {
 export interface ApartmentZipData {
   city: string;
   state: string;
+  disasterAreaMatches?: string[];
   center: {
     lat: number;
     lng: number;
@@ -114,6 +115,7 @@ export interface ClaimGuideResult {
 export interface NewcomerGuideStep {
   week: number;
   step: LocalizedText;
+  timing?: LocalizedText;
   details: LocalizedText;
   docs: string[];
   mapsQuery?: string | null;
