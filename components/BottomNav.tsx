@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Home, PhoneCall, ScanSearch, Shield, Sparkles } from "lucide-react";
+import { BookOpen, ClipboardList, Home, ScanSearch, Shield, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function BottomNav() {
@@ -38,7 +38,7 @@ export function BottomNav() {
     {
       href: "/claim",
       label: t("claimCoach"),
-      icon: PhoneCall,
+      icon: ClipboardList,
     },
   ];
 

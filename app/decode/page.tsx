@@ -36,7 +36,7 @@ export default function DecodePage() {
   const isWebsite = resolvedMode === "website";
   const shouldFillViewport = isWebsite && phase !== "results";
   const uploadLayoutClass = isWebsite
-    ? "mt-2 grid gap-3 xl:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.92fr)] xl:items-stretch"
+    ? "mx-auto mt-2 grid w-full max-w-[72rem] gap-3 xl:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.92fr)] xl:items-center"
     : "mt-6";
   const primaryActionClass =
     "inline-flex min-h-[3.35rem] w-full items-center justify-center gap-2 rounded-full border border-[rgba(212,96,58,0.18)] bg-[#d4603a] px-5 text-sm font-semibold text-[#fff7ef] shadow-[0_14px_28px_rgba(212,96,58,0.24)] transition hover:-translate-y-px hover:bg-[#c95731] hover:shadow-[0_18px_34px_rgba(212,96,58,0.28)]";
@@ -200,15 +200,20 @@ export default function DecodePage() {
     window.location.assign(STATE_FARM_COVERAGE_URL);
   }
 
+  const websiteResultsLayout = phase === "results" && analysis && isWebsite;
+  const appResultsLayout = phase === "results" && analysis && !isWebsite;
+
   return (
     <div
-      className={`py-3 lg:py-4 ${isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""} ${
+      className={`${shouldFillViewport ? "website-centered-intake min-h-full" : ""} py-3 lg:py-4 ${
+        isWebsite ? "mx-auto max-w-[72rem] lg:-mt-2" : ""
+      } ${
         shouldFillViewport ? "flex flex-1 flex-col justify-center" : ""
       }`}
     >
       {phase === "upload" ? (
         <div className={uploadLayoutClass}>
-          <section className="panel-card hero-ambient overflow-hidden xl:mt-0 xl:flex xl:min-h-[25.5rem] xl:flex-col xl:justify-between xl:px-7 xl:py-6">
+          <section className="panel-blend hero-ambient overflow-hidden xl:mt-0 xl:flex xl:min-h-[25.5rem] xl:flex-col xl:justify-between xl:px-7 xl:py-6">
             <div>
               <p className="eyebrow">{isSpanish ? "Decodificador visual de polizas" : "Visual policy decoder"}</p>
               <h1 className="mt-2 max-w-[15ch] font-display text-[clamp(2.7rem,4.1vw,4.2rem)] leading-[0.9] text-[var(--color-ink)]">
@@ -284,7 +289,88 @@ export default function DecodePage() {
         </div>
       ) : null}
 
-      {phase === "results" && analysis ? (
+      {websiteResultsLayout ? (
+        <div className="mt-6 grid gap-6">
+          <div className="grid gap-6 xl:grid-cols-[minmax(280px,0.76fr)_minmax(0,1.24fr)]">
+            <StaggeredFadeIn delay={0} immediate={settings.reducedMotion}>
+              <PolicyHealthGauge score={analysis.healthScore} layout="website" />
+            </StaggeredFadeIn>
+
+            <StaggeredFadeIn delay={180} immediate={settings.reducedMotion}>
+              <PolicySummaryHeader analysis={analysis} layout="website" />
+            </StaggeredFadeIn>
+          </div>
+
+          <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.72fr)]">
+            <div className="grid min-w-0 gap-6">
+              <StaggeredFadeIn delay={360} immediate={settings.reducedMotion}>
+                <CoverageShield
+                  analysis={analysis}
+                  onFixGap={goToStateFarmCoverage}
+                  layout="website"
+                />
+              </StaggeredFadeIn>
+
+              <StaggeredFadeIn delay={540} immediate={settings.reducedMotion}>
+                <DeductibleReality
+                  amount={analysis.deductible.amount}
+                  comparisons={analysis.deductible.comparisons}
+                  layout="website"
+                />
+              </StaggeredFadeIn>
+            </div>
+
+            <div className="grid gap-4 xl:sticky xl:top-28">
+              {analysis.gaps.map((gap, index) => (
+                <StaggeredFadeIn
+                  key={`${gap.title}-${index}`}
+                  delay={720 + index * 160}
+                  immediate={settings.reducedMotion}
+                >
+                  <GapWarningCard
+                    gap={gap}
+                    onFixGap={goToStateFarmCoverage}
+                  />
+                </StaggeredFadeIn>
+              ))}
+
+              <StaggeredFadeIn
+                delay={720 + analysis.gaps.length * 160}
+                immediate={settings.reducedMotion}
+              >
+                <section className="panel-card w-full">
+                  <p className="eyebrow">{isSpanish ? "Siguiente movimiento" : "Next move"}</p>
+                  <h2 className="mt-2 font-display text-[2rem] leading-tight text-[var(--color-ink)]">
+                    {isSpanish ? "Compara esta poliza con una cobertura mejor." : "Compare this policy against better coverage."}
+                  </h2>
+                  <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">
+                    {isSpanish
+                      ? "Sube otra poliza o salta directo a State Farm para revisar una opcion mas fuerte."
+                      : "Upload another policy or jump straight to State Farm to review a stronger option."}
+                  </p>
+
+                  <div className="mt-5 grid gap-3">
+                    <button
+                      type="button"
+                      onClick={resetDecoder}
+                      className={secondaryActionClass}
+                    >
+                      <RefreshCcw className="size-4" />
+                      {isSpanish ? "Subir otra poliza" : "Upload another policy"}
+                    </button>
+                    <Link href={STATE_FARM_COVERAGE_URL} className={primaryActionClass}>
+                      {isSpanish ? "Conseguir mejor cobertura" : "Get better coverage"}
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
+                </section>
+              </StaggeredFadeIn>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {appResultsLayout ? (
         <div className="mt-6 grid gap-5">
           <StaggeredFadeIn delay={0} immediate={settings.reducedMotion}>
             <PolicyHealthGauge score={analysis.healthScore} />

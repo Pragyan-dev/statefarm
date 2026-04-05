@@ -25,7 +25,7 @@ export function EvidenceCollector({
         <div>
           <p className="eyebrow">{isSpanish ? "Pruebas visuales" : "Visual evidence"}</p>
           <h2 className="mt-2 font-display text-3xl leading-[0.98] text-[var(--color-ink)] sm:text-4xl">
-            {isSpanish ? "📸 Evidencia para reunir" : "📸 Evidence to collect"}
+            {isSpanish ? "Evidencia para reunir" : "Evidence to collect"}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
             {isSpanish

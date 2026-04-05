@@ -161,7 +161,7 @@ export default function CoveragePage() {
     <div className="mx-auto max-w-[1380px] py-4 lg:py-6">
       <section className="mb-6">
         <p className="eyebrow">{isSpanish ? "Cobertura" : "Coverage"}</p>
-        <h1 className="font-display text-4xl text-[var(--color-ink)] lg:max-w-[12ch] lg:text-5xl">
+        <h1 className="font-display text-4xl text-[var(--color-ink)] lg:text-5xl">
           {isSpanish
             ? "Cobertura para donde vives y lo que manejas."
             : "Coverage for where you live and what you drive."}

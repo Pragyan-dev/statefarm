@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Settings2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -46,8 +46,9 @@ export function AppShell({
   const shouldUseWebsiteShell =
     (isSimulator && !hasActiveSimulatorStory) || (!isSimulator && resolvedMode === "website");
   const showWebsiteChrome = accessReady && isDashboardBuilt;
-  const shouldPinFooterBelowFold = pathname.startsWith("/decode") || pathname.startsWith("/claim");
   const shouldUseFullBleedSimulatorShell = isSimulator && hasActiveSimulatorStory;
+  const topbarRef = useRef<HTMLElement | null>(null);
+  const [topbarHeight, setTopbarHeight] = useState(0);
 
   const websiteNav = [
     { href: "/dashboard", label: t("dashboard") },
@@ -71,6 +72,38 @@ export function AppShell({
 
     router.replace(shouldRedirectLandingToDashboard ? "/dashboard" : "/");
   }, [router, shouldRedirectHome, shouldRedirectLandingToDashboard]);
+
+  useEffect(() => {
+    if (!shouldUseWebsiteShell || !topbarRef.current) {
+      return;
+    }
+
+    const topbar = topbarRef.current;
+    const updateHeight = () => {
+      setTopbarHeight(Math.round(topbar.getBoundingClientRect().height));
+    };
+
+    updateHeight();
+
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateHeight);
+
+      return () => {
+        window.removeEventListener("resize", updateHeight);
+      };
+    }
+
+    const observer = new ResizeObserver(() => {
+      updateHeight();
+    });
+    observer.observe(topbar);
+    window.addEventListener("resize", updateHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, [shouldUseWebsiteShell, showWebsiteChrome]);
 
   if (
     !isReady ||
@@ -98,6 +131,10 @@ export function AppShell({
   }
 
   if (shouldUseWebsiteShell) {
+    const websiteShellStyle = {
+      "--website-topbar-height": `${topbarHeight}px`,
+    } as CSSProperties;
+
     return (
       <>
         <a
@@ -106,9 +143,9 @@ export function AppShell({
         >
           {t("skipToContent")}
         </a>
-        <div className="website-shell min-h-dvh">
-          <div className={shouldPinFooterBelowFold ? "flex min-h-dvh flex-col" : undefined}>
-            <header className="website-topbar z-40">
+        <div className="website-shell min-h-dvh" style={websiteShellStyle}>
+          <div className="website-shell-frame">
+            <header ref={topbarRef} className="website-topbar z-40">
               <div className="website-topbar-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="website-topbar-row">
                   <Link
@@ -161,9 +198,9 @@ export function AppShell({
 
             <main
               id="main-content"
-              className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${
-                shouldPinFooterBelowFold ? "flex flex-1 flex-col" : ""
-              } ${showWebsiteChrome ? "py-8 lg:py-10" : "py-4 lg:py-5"}`}
+              className={`website-main mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${
+                showWebsiteChrome ? "py-8 lg:py-10" : "py-4 lg:py-5"
+              }`}
             >
               {children}
             </main>

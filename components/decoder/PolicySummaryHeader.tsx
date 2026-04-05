@@ -10,8 +10,10 @@ import type { DecoderAnalysisResponse } from "@/types/policy";
 
 export function PolicySummaryHeader({
   analysis,
+  layout = "app",
 }: {
   analysis: DecoderAnalysisResponse;
+  layout?: "app" | "website";
 }) {
   const { settings } = useAccessibility();
   const isSpanish = settings.language === "es";
@@ -21,9 +23,13 @@ export function PolicySummaryHeader({
     .slice(0, 2)
     .map((token) => token.charAt(0).toUpperCase())
     .join("");
+  const containerClass =
+    layout === "website"
+      ? "panel-card flex h-full w-full flex-col justify-between px-6 py-6 xl:px-7 xl:py-7"
+      : "panel-card mx-auto w-full max-w-[36rem]";
 
   return (
-    <section className="panel-card mx-auto w-full max-w-[36rem]">
+    <section className={containerClass}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
           <div className="flex size-14 items-center justify-center rounded-[1.25rem] bg-[rgba(212,96,58,0.14)] font-semibold text-[var(--color-ink)] shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)]">
@@ -47,7 +53,7 @@ export function PolicySummaryHeader({
         <ShieldCheck className="size-6 text-[var(--color-accent)]" />
       </div>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className={`mt-5 grid gap-3 sm:grid-cols-2 ${layout === "website" ? "xl:grid-cols-3" : "lg:grid-cols-3"}`}>
         <InfoChip
           icon={<CalendarDays className="size-4" />}
           label={isSpanish ? "Vence" : "Expires"}
