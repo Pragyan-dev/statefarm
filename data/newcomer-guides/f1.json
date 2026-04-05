@@ -1,6 +1,6 @@
 {
   "visa": "F1",
-  "title": { "en": "F-1 Student Visa — First Steps", "es": "F-1 Estudiante — Primeros Pasos" },
+  "title": { "en": "F-1 Student Visa: First Steps", "es": "F-1 Estudiante — Primeros Pasos" },
   "steps": [
     { "week": 1, "phase": "now", "timing": { "en": "Within 24 hours", "es": "Dentro de 24 horas" }, "step": { "en": "Download your I-94 record", "es": "Descarga tu registro I-94" }, "details": { "en": "Visit CBP.gov to retrieve and save your I-94 (arrival/departure) record as a PDF.", "es": "Visita CBP.gov para obtener y guardar tu registro I-94 como PDF." }, "docs": ["I-94 PDF"], "mapsQuery": "CBP deferred inspection office", "resources": [{ "label": { "en": "CBP I-94 portal", "es": "Portal I-94 de CBP" }, "href": "https://i94.cbp.dhs.gov/" }], "link": "https://i94.cbp.dhs.gov/" },
     { "week": 2, "phase": "now", "timing": { "en": "By program start date", "es": "Para la fecha de inicio del programa" }, "step": { "en": "Check in with your university international office (activate SEVIS)", "es": "Regístrate con la oficina internacional de la universidad (activa SEVIS)" }, "details": { "en": "Contact your DSO, confirm SEVIS activation and next onboarding steps.", "es": "Contacta a tu DSO, confirma la activación de SEVIS y los siguientes pasos." }, "docs": ["I-20", "University emails"], "mapsQuery": "international student office", "link": null },

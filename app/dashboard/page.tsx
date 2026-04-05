@@ -251,7 +251,7 @@ export default function DashboardPage() {
     : `In ${profile.state}, you can usually buy auto insurance without an SSN.`;
   const heroDescription = isSpanish
     ? `Tu panel organiza cobertura, documentos y prioridades de llegada para ${profile.city}, ${profile.state}.`
-    : `Your dashboard organizes coverage, documents, and newcomer priorities for ${profile.city}, ${profile.state}.`;
+    : `Your dashboard keeps your coverage, documents, and first steps in one place for ${profile.city}, ${profile.state}.`;
   const documentReadiness = needsSsnPacket
     ? {
         value: isSpanish ? "Paquete SSN" : "SSN packet",
@@ -299,7 +299,7 @@ export default function DashboardPage() {
               : `Use ${profile.zip} to confirm minimum limits and the type of protection you need in ${profile.state}.`,
             reason: isSpanish
               ? "Conduces ahora mismo, asi que esta es tu mayor exposicion financiera."
-              : "You are driving now, so this is your biggest financial exposure.",
+              : "You are driving now, so this is the biggest risk to address first.",
             status: isSpanish ? "Prioridad alta" : "High priority",
             href: "/coverage",
             ctaLabel: isSpanish ? "Revisar cobertura" : "Review coverage",
@@ -319,7 +319,7 @@ export default function DashboardPage() {
               : `Compare pricing and local risk for ${profile.zip} before you finalize your apartment setup.`,
             reason: isSpanish
               ? "Tu vivienda y tus pertenencias necesitan una proteccion separada del seguro de auto."
-              : "Your home and belongings need protection that is separate from auto insurance.",
+              : "Your home and belongings need coverage that is separate from auto insurance.",
             status: isSpanish ? "Esta semana" : "This week",
             href: "/coverage",
             ctaLabel: isSpanish ? "Ver cobertura" : "View coverage",
@@ -339,7 +339,7 @@ export default function DashboardPage() {
               : "Have your employer or sponsor letter ready before your SSA visit.",
             reason: isSpanish
               ? "Tener este paquete listo reduce friccion cuando pases de orientacion a compra."
-              : "Having this packet ready reduces friction when you move from onboarding to purchase.",
+              : "Having this paperwork ready makes the next steps easier.",
             status: isSpanish ? "Importante" : "Important",
             href: "/newcomer-guide",
             ctaLabel: isSpanish ? "Preparar tramite" : "Prepare paperwork",
@@ -351,10 +351,10 @@ export default function DashboardPage() {
       : []),
     createPriority({
       id: "policy-review",
-      title: isSpanish ? "Ten una poliza lista para revisar" : "Keep one policy ready to review",
+      title: isSpanish ? "Ten una poliza lista para revisar" : "Keep a policy ready to review",
       description: isSpanish
         ? "Sube una foto o PDF cuando compares opciones para traducir limites, deducibles y exclusiones."
-        : "Upload a photo or PDF when comparing options to translate limits, deductibles, and exclusions.",
+        : "Upload a photo or PDF when comparing options so you can clearly read the limits, deductible, and exclusions.",
       reason: isSpanish
         ? "El decodificador te ayuda a evitar firmar algo que no entiendes por completo."
         : "The decoder helps you avoid signing something you do not fully understand.",
@@ -370,10 +370,10 @@ export default function DashboardPage() {
       title: isSpanish ? "Corre un escenario real" : "Run a real-world scenario",
       description: isSpanish
         ? "Mira primero el golpe financiero mas probable para tu configuracion actual."
-        : "See the most likely financial hit for your current setup first.",
+        : "See the most likely out-of-pocket cost for your current setup first.",
       reason: isSpanish
         ? "La comparacion en dolares te ayuda a decidir que cubrir primero."
-        : "The dollar comparison helps you decide what to cover first.",
+        : "The dollar comparison helps you decide what to protect first.",
       status: isSpanish ? "Contexto rapido" : "Quick context",
       href: "/simulate",
       ctaLabel: t("dashboardRunSimulator"),
@@ -383,10 +383,10 @@ export default function DashboardPage() {
     }),
     createPriority({
       id: "claim-readiness",
-      title: isSpanish ? "Ten ayuda de reclamo a mano" : "Keep claim help close by",
+      title: isSpanish ? "Ten ayuda de reclamo a mano" : "Keep claim help nearby",
       description: isSpanish
         ? "Guarda la guia de reclamo para saber que hacer si algo pasa hoy."
-        : "Keep the claim coach ready so you know what to do if something happens today.",
+        : "Keep the claim coach handy so you know what to do if something happens today.",
       reason: isSpanish
         ? "La respuesta temprana importa cuando necesitas documentar un incidente."
         : "Early response matters when you need to document an incident.",
