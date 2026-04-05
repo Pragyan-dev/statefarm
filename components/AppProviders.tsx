@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { useEffect } from "react";
 
 import { AccessibilityProvider } from "@/components/AccessibilityProvider";
+import { DashboardAccessProvider } from "@/components/DashboardAccessProvider";
 import { ViewModeProvider } from "@/components/ViewModeProvider";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useViewMode } from "@/hooks/useViewMode";
@@ -94,9 +95,11 @@ export function AppProviders({
 }>) {
   return (
     <ViewModeProvider>
-      <AccessibilityProvider>
-        <AppClassBridge>{children}</AppClassBridge>
-      </AccessibilityProvider>
+      <DashboardAccessProvider>
+        <AccessibilityProvider>
+          <AppClassBridge>{children}</AppClassBridge>
+        </AccessibilityProvider>
+      </DashboardAccessProvider>
     </ViewModeProvider>
   );
 }

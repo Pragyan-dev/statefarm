@@ -70,6 +70,13 @@ export function deriveProfileLocation(zip: string) {
   };
 }
 
+export function buildGoogleMapsSearchUrl(service: string, zip: string) {
+  const normalizedZip = zip.trim() || DEFAULT_APARTMENT_ZIP;
+  const query = `${service} near ${normalizedZip}`;
+
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 export function getStateCosts(state: string) {
   return (insuranceCosts as Record<string, {
     rentersMonthly: number;
@@ -86,21 +93,6 @@ export function getStateCosts(state: string) {
     noAutoFine: number;
     licenseSuspensionDays: number;
   }>)["AZ"];
-}
-
-export function affordabilityCopy(
-  monthlyIncome: number,
-  monthlyPremium: number,
-  language: Language,
-) {
-  const safeIncome = monthlyIncome || 2800;
-  const percent = ((monthlyPremium / safeIncome) * 100).toFixed(1);
-
-  if (language === "es") {
-    return `Eso es ${percent}% de tu ingreso mensual. Es pequeno comparado con una emergencia sin cobertura.`;
-  }
-
-  return `That is ${percent}% of your monthly income. Small compared with an uncovered emergency.`;
 }
 
 export function getProfileHeadline(profile: UserProfile, language: Language) {

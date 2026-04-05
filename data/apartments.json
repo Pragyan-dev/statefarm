@@ -2,6 +2,7 @@
   "85281": {
     "city": "Tempe",
     "state": "AZ",
+    "disasterAreaMatches": ["Tempe", "Maricopa", "Phoenix", "Mesa", "Scottsdale", "Chandler", "Guadalupe"],
     "center": {
       "lat": 33.4255,
       "lng": -111.94
@@ -95,6 +96,7 @@
   "78705": {
     "city": "Austin",
     "state": "TX",
+    "disasterAreaMatches": ["Austin", "Travis", "Williamson", "Round Rock", "Pflugerville"],
     "center": {
       "lat": 30.2861,
       "lng": -97.7394
@@ -154,6 +156,7 @@
   "10027": {
     "city": "New York",
     "state": "NY",
+    "disasterAreaMatches": ["New York", "Manhattan", "Harlem", "Bronx", "Kings", "Queens", "Richmond"],
     "center": {
       "lat": 40.8116,
       "lng": -73.9582

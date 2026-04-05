@@ -54,12 +54,12 @@ export function AccessibilityMenu({
         aria-label={t("accessibility")}
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="relative border-b border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(251,246,239,0.98))] px-5 py-5 sm:px-6">
-          <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[rgba(212,96,58,0.12)] blur-3xl" />
+        <header className="relative border-b border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,252,251,0.96),rgba(251,246,239,0.98))] px-5 py-5 sm:px-6">
+          <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[var(--color-accent-wash)] blur-3xl" />
           <div className="relative flex items-start justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">
-                ArriveSafe
+                FirstCover
               </p>
               <h2 className="font-display text-2xl leading-tight text-[var(--color-ink)] sm:text-3xl">
                 {t("accessibility")}
@@ -98,7 +98,7 @@ export function AccessibilityMenu({
                     }
                     className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
                       settings.language === language
-                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_rgba(212,96,58,0.24)]"
+                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
                         : "border-[var(--color-border)] bg-white text-[var(--color-ink)]"
                     }`}
                   >
@@ -129,7 +129,7 @@ export function AccessibilityMenu({
                     }
                     className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
                       settings.textSize === item.value
-                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_rgba(212,96,58,0.24)]"
+                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
                         : "border-[var(--color-border)] bg-white text-[var(--color-ink)]"
                     }`}
                   >
@@ -263,7 +263,7 @@ export function AccessibilityMenu({
                     }
                     className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
                       settings.colorBlindMode === item.value
-                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_rgba(212,96,58,0.24)]"
+                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-paper)] shadow-[0_10px_24px_var(--color-accent-glow-strong)]"
                         : "border-[var(--color-border)] bg-white text-[var(--color-ink)]"
                     }`}
                   >

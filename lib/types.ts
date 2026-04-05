@@ -70,6 +70,7 @@ export interface ApartmentListing {
 export interface ApartmentZipData {
   city: string;
   state: string;
+  disasterAreaMatches?: string[];
   center: {
     lat: number;
     lng: number;
@@ -111,22 +112,19 @@ export interface ClaimGuideResult {
   fallbackReason?: string;
 }
 
-export type ScamFlag = "SCAM" | "PREDATORY" | "WARNING" | "SAFE";
-
-export interface ScamVerdictResult {
-  verdict: ScamFlag;
-  explanation: string;
-  reasons: string[];
-  matchedPattern?: string;
-  demoMode?: boolean;
-  aiSource?: "openrouter" | "local";
-  fallbackReason?: string;
-}
-
-export interface VisaGuideStep {
+export interface NewcomerGuideStep {
   week: number;
   step: LocalizedText;
+  timing?: LocalizedText;
   details: LocalizedText;
   docs: string[];
+  mapsQuery?: string | null;
+  resources?: Array<{
+    label: LocalizedText;
+    href: string;
+  }>;
   link: string | null;
 }
+
+// Backwards compatibility type alias (update imports to NewcomerGuideStep)
+export type VisaGuideStep = NewcomerGuideStep;

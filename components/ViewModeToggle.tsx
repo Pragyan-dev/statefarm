@@ -54,7 +54,7 @@ export function ViewModeToggle({
             onClick={() => setMode(mode.value)}
             aria-pressed={active}
             className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition ${
-              compact ? "min-w-[110px]" : "min-w-[128px]"
+              compact ? "min-w-[96px]" : "min-w-[128px]"
             } ${isActiveClass(active, tone)}`}
           >
             <Icon className="size-4" />

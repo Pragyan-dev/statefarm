@@ -5,6 +5,7 @@ export interface DisasterSummary {
   date: string;
   incidentType?: string;
   area?: string;
+  href?: string;
 }
 
 export interface DisasterHistoryPayload {
@@ -13,20 +14,26 @@ export interface DisasterHistoryPayload {
   source: "live" | "fallback";
 }
 
-function getLiveInsight(state: string, language: Language) {
-  if (language === "es") {
-    return `Estas declaraciones federales muestran los eventos grandes en ${state}. Los danos pequenos por agua, calor o robo aun pueden golpear a los inquilinos aunque no terminen en FEMA.`;
-  }
-
-  return `These federal declarations capture the biggest events in ${state}. Smaller renter losses like water damage, heat-related failures, and theft can still hurt you even when they never show up in FEMA.`;
+function buildDisasterHref(disasterNumber: string | number, language: Language) {
+  return language === "es"
+    ? `https://www.fema.gov/es/disaster/${disasterNumber}`
+    : `https://www.fema.gov/disaster/${disasterNumber}`;
 }
 
-function getLowDeclarationInsight(state: string, language: Language) {
+function getLiveInsight(city: string, state: string, language: Language) {
   if (language === "es") {
-    return `${state} no tiene muchas declaraciones federales recientes, pero las inundaciones repentinas, el calor extremo y los danos por agua todavia son riesgos reales para inquilinos.`;
+    return `Estas declaraciones muestran eventos en ${city} o cerca de ${city}, ${state}. Perdidas mas pequenas por agua, calor o robo aun pueden afectar a los inquilinos.`;
   }
 
-  return `${state} has few recent federal declarations, but flash floods, extreme heat, and everyday water losses still matter for renters.`;
+  return `These declarations show events in or near ${city}, ${state}. Smaller losses like water damage, heat issues, and theft can still affect renters.`;
+}
+
+function getLowDeclarationInsight(city: string, state: string, language: Language) {
+  if (language === "es") {
+    return `No encontramos declaraciones recientes de FEMA para ${city} o sus alrededores, pero las inundaciones repentinas, el calor extremo y los danos por agua siguen siendo riesgos reales para inquilinos.`;
+  }
+
+  return `We did not find recent FEMA declarations for ${city} or nearby areas, but flash floods, extreme heat, and everyday water losses still matter for renters.`;
 }
 
 function getUnavailableInsight(language: Language) {
@@ -38,6 +45,7 @@ function getUnavailableInsight(language: Language) {
 }
 
 export function buildFallbackDisasterHistory(
+  city: string,
   state: string,
   language: Language,
   reason: "no-results" | "fetch-failed",
@@ -46,17 +54,19 @@ export function buildFallbackDisasterHistory(
     items: [],
     insight:
       reason === "no-results"
-        ? getLowDeclarationInsight(state, language)
+        ? getLowDeclarationInsight(city, state, language)
         : getUnavailableInsight(language),
     source: "fallback",
   };
 }
 
 export async function fetchDisasterHistory(
+  city: string,
   state: string,
+  areaMatches: string[],
   language: Language,
 ): Promise<DisasterHistoryPayload> {
-  const url = `https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries?$filter=state%20eq%20'${state}'&$orderby=declarationDate%20desc&$top=5`;
+  const url = `https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries?$filter=state%20eq%20'${state}'&$orderby=declarationDate%20desc&$top=60`;
 
   const response = await fetch(url, {
     headers: {
@@ -74,31 +84,42 @@ export async function fetchDisasterHistory(
   const payload = (await response.json()) as {
     DisasterDeclarationsSummaries?: Array<{
       declarationTitle?: string;
+      title?: string;
       declarationDate?: string;
       incidentType?: string;
       designatedArea?: string;
+      declaredCountyArea?: string;
+      disasterNumber?: string | number;
     }>;
   };
 
+  const normalizedAreaMatches = areaMatches.map((value) => value.toLowerCase());
+
   const items = (payload.DisasterDeclarationsSummaries ?? [])
-    .slice(0, 5)
     .map((item) => ({
       title:
+        item.title ??
         item.declarationTitle ??
         (language === "es" ? "Declaracion de desastre" : "Disaster declaration"),
       date: item.declarationDate ?? "",
       incidentType: item.incidentType ?? "",
-      area: item.designatedArea ?? "",
+      area: item.declaredCountyArea ?? item.designatedArea ?? "",
+      href: item.disasterNumber ? buildDisasterHref(item.disasterNumber, language) : undefined,
     }))
+    .filter((item) => {
+      const areaText = `${item.title} ${item.area}`.toLowerCase();
+      return normalizedAreaMatches.some((match) => areaText.includes(match));
+    })
+    .slice(0, 5)
     .filter((item) => Boolean(item.date || item.title));
 
   if (!items.length) {
-    return buildFallbackDisasterHistory(state, language, "no-results");
+    return buildFallbackDisasterHistory(city, state, language, "no-results");
   }
 
   return {
     items,
-    insight: getLiveInsight(state, language),
+    insight: getLiveInsight(city, state, language),
     source: "live",
   };
 }

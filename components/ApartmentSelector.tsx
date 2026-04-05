@@ -111,7 +111,7 @@ export function ApartmentSelector({
                 isWebsite ? "min-h-[186px]" : "min-h-[170px] min-w-[82%] snap-start"
               } ${
                 isSelected
-                  ? "border-[var(--color-accent)] bg-[#FFF2E7] shadow-[0_18px_36px_rgba(212,96,58,0.16)]"
+                  ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] shadow-[0_18px_36px_var(--color-accent-glow)]"
                   : "border-[var(--color-border)] bg-white/85 hover:border-[var(--color-accent)] hover:bg-[var(--color-paper)]"
               }`}
             >
